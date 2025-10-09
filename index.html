@@ -2,37 +2,693 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Interview Kickstart - AEO Dashboard v19 (Updated)</title>
+  <title>Interview Kickstart - AEO Dashboard v26</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: #F5F5F7; margin: 0; padding: 24px; color: #1D1D1F;}
-    .container {max-width: 1200px; margin: 0 auto;}
-    .content {background: #FFF; border-radius: 12px; padding: 28px; box-shadow: 0 6px 20px rgba(0,0,0,0.04);}
-    .dashboard-title {font-size: 28px; font-weight: 700; margin-bottom: 6px;}
-    .dashboard-subtitle {color: #86868B; margin-bottom: 20px;}
-    .button {padding: 12px 20px; border-radius: 10px; font-weight: 600; background: #4A9B8E; color: #FFF; border: none; cursor: pointer; transition: all .2s ease;}
-    .button:hover {background: #3e8c80;}
-    .opportunity-btn {margin-top: 24px; display: flex; justify-content: center;}
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+      background: #F5F5F7;
+      margin: 0;
+      padding: 24px;
+      color: #1D1D1F;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+    .content { background: #FFF; border-radius: 16px; padding: 40px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+
+    /* Stepper / Form */
+    .progress { display:flex; align-items:center; gap:8px; color:#86868B; margin-bottom:16px; font-size:13px; font-weight:500; }
+    .progress-dot { width:8px; height:8px; background:#4A9B8E; border-radius:50%; }
+    .question { font-size:24px; font-weight:600; margin-bottom:20px; letter-spacing:-0.02em; }
+    .input-wrapper { width:100%; margin-bottom:20px; }
+    .input { width:100%; height:52px; padding:14px 16px; font-size:16px; border-radius:12px; border:1px solid #D2D2D7; background:#FFF; outline:none; transition: all 0.2s; font-family: inherit; }
+    .input:focus { box-shadow:0 0 0 4px rgba(74,155,142,0.12); border:2px solid #4A9B8E; padding:13px 15px; }
+    .button { padding:14px 24px; border-radius:12px; font-weight:600; font-size:15px; background:#4A9B8E; color:#FFF; border:none; cursor:pointer; transition: all 0.2s; }
+    .button:hover { background:#3d8275; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(74,155,142,0.3); }
+    .button:active { transform: translateY(0); }
+    .button:disabled{ opacity:0.5; background:#D2D2D7; cursor:not-allowed; transform: none; }
+    .button-secondary { background:#F5F5F7; color:#1D1D1F; border:1.5px solid #D2D2D7; }
+    .button-secondary:hover { background:#E8E8ED; border-color:#86868B; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+    /* Dashboard */
+    .section-title { font-size:32px; font-weight:700; margin-bottom:8px; letter-spacing:-0.03em; }
+    .section-subtitle { color:#86868B; margin-bottom:40px; font-size:16px; line-height:1.5; }
+
+    .accordion { background:#FFF; border-radius:12px; border:1px solid #E8E8ED; margin-bottom:8px; overflow:hidden; transition: all 0.2s; }
+    .accordion:hover { border-color:#D2D2D7; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .accordion-header { display:flex; justify-content:space-between; align-items:center; padding:20px 24px; cursor:pointer; transition:background .15s; }
+    .accordion-header:hover { background:#FAFAFA; }
+    .accordion-title { font-size:16px; font-weight:600; color:#1D1D1F; letter-spacing:-0.01em; line-height:1.4; }
+
+    .accordion .chev { transition: transform .2s cubic-bezier(0.4, 0, 0.2, 1); color:#86868B; font-size:18px; }
+    .accordion.expanded .chev { transform: rotate(180deg); }
+
+    .accordion-content { max-height:0; overflow:hidden; transition:max-height .3s cubic-bezier(0.4, 0, 0.2, 1); background:#FAFAFA; }
+    .accordion.expanded .accordion-content { max-height:800px; }
+    .accordion-inner { padding:24px; font-size:14px; color:#1D1D1F; line-height:1.7; border-top:1px solid #E8E8ED; }
+    .accordion-inner p { margin:12px 0; }
+    .accordion-inner p:first-child { margin-top:0; }
+    a { color:#4A9B8E; text-decoration:none; font-weight:500; }
+    a:hover { text-decoration:underline; }
+
+    .muted { color:#86868B; font-size:13px; font-weight:400; }
+    .rank-badge { display:inline-block; padding:6px 12px; background:#F5F5F7; border-radius:8px; font-size:13px; font-weight:600; color:#6B6B70; }
+    .rank-badge.critical { background:#FFF3E0; color:#D97706; }
+
+    .show-more-wrapper { text-align:center; margin:32px 0 56px 0; }
+
+    .chart-wrap { background:#FAFAFA; padding:24px; border-radius:12px; margin-bottom:24px; border:1px solid #E8E8ED; }
+    canvas { width:100%; height:240px; display:block; }
+    .tooltip { position:absolute; background:#1D1D1F; color:#FFF; padding:12px 14px; font-size:13px; border-radius:8px; pointer-events:none; transform:translate(-50%,-120%); white-space:nowrap; z-index:100; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+
+    .suggestion-box { background:#F0F9FF; border:1px solid #BFDBFE; padding:16px; border-radius:10px; margin-top:16px; }
+    .suggestion-title { font-weight:600; color:#1E40AF; margin-bottom:8px; font-size:14px; }
+    .suggestion-text { color:#1E3A8A; font-size:13px; line-height:1.6; }
+
+    .checklist { background:#FAFAFA; border:1px solid #E8E8ED; padding:20px 24px; border-radius:12px; margin-bottom:16px; }
+    .checklist-title { font-weight:700; margin-bottom:16px; color:#1D1D1F; font-size:16px; }
+    .checklist-item { display:flex; align-items:flex-start; gap:12px; margin-bottom:12px; cursor:pointer; transition: all 0.2s; padding:8px; border-radius:8px; }
+    .checklist-item:hover { background:#F5F5F7; }
+    .checklist-item:last-child { margin-bottom:0; }
+    .checkbox-custom { width:20px; height:20px; border:2px solid #D2D2D7; border-radius:6px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition: all 0.2s; margin-top:2px; }
+    .checklist-item input[type="checkbox"] { display:none; }
+    .checklist-item input[type="checkbox"]:checked + .checkbox-custom { background:#4A9B8E; border-color:#4A9B8E; }
+    .checklist-item input[type="checkbox"]:checked + .checkbox-custom::after { content:'✓'; color:#FFF; font-size:14px; font-weight:700; }
+    .checklist-item label { flex:1; font-size:14px; line-height:1.6; color:#1D1D1F; cursor:pointer; }
+    .checklist-item input[type="checkbox"]:checked ~ label { color:#86868B; text-decoration:line-through; }
+
+    @media (max-width:900px) { 
+      .container { padding:16px; } 
+      .content { padding:24px; } 
+      .section-title { font-size:28px; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="content">
-      <h1 class="dashboard-title">Top High-Visibility Prompts Featuring Interview Kickstart</h1>
-      <p class="dashboard-subtitle">Key queries where Interview Kickstart appears prominently in AI and organic search results</p>
-
-      <!-- Existing accordion and dashboard content stays here -->
-
-      <div class="opportunity-btn">
-        <button class="button" id="opportunitiesBtn">🔍 View Opportunities & Competitor Analysis</button>
+    <div class="content" id="container">
+      <div class="progress"><div class="progress-dot"></div><span>Step 1 of 5</span></div>
+      <h1 class="question">What is your category?</h1>
+      <div class="input-wrapper">
+        <input type="text" class="input" id="catInput" placeholder="Enter your category">
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <button class="button" id="btn1" disabled>Continue</button>
+        <div class="muted">Tip: try "Upskilling / Coaching"</div>
       </div>
     </div>
   </div>
 
   <script>
-    document.getElementById('opportunitiesBtn').addEventListener('click', function() {
-      alert('Opening Opportunities & Competitor Analysis (mock)');
-    });
+    let formData = {};
+
+    const containerEl = document.getElementById('container');
+    const catInput = document.getElementById('catInput');
+    const btn1 = document.getElementById('btn1');
+
+    catInput.oninput = function() {
+      if (catInput.value.trim()) { formData.category = catInput.value.trim(); btn1.disabled = false; } else { btn1.disabled = true; }
+    }
+    catInput.onfocus = function() { setTimeout(()=>{ if(!catInput.value){ catInput.value = 'Upskilling / Coaching'; formData.category = catInput.value; btn1.disabled = false; } }, 200); }
+
+    btn1.onclick = function() {
+      containerEl.innerHTML = `
+        <div class="progress"><div class="progress-dot"></div><span>Step 2 of 5</span></div>
+        <h1 class="question">What is your brand name?</h1>
+        <div class="input-wrapper">
+          <input type="text" class="input" id="brandInput" placeholder="Enter your brand name">
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <button class="button" id="btn2" disabled>Continue</button>
+          <div class="muted">Tip: try "Interview Kickstart"</div>
+        </div>
+      `;
+
+      const brandInput = document.getElementById('brandInput');
+      const btn2 = document.getElementById('btn2');
+      brandInput.onfocus = function(){ setTimeout(()=>{ if(!brandInput.value){ brandInput.value = 'Interview Kickstart'; formData.brand = brandInput.value; btn2.disabled = false; } }, 200); }
+      brandInput.oninput = function(){ if(brandInput.value.trim()){ formData.brand = brandInput.value.trim(); btn2.disabled = false;} else btn2.disabled = true; }
+      btn2.onclick = step3;
+    }
+
+    function step3(){
+      containerEl.innerHTML = `
+        <div class="progress"><div class="progress-dot"></div><span>Step 3 of 5</span></div>
+        <h1 class="question">Which country do you want to track?</h1>
+        <div class="input-wrapper">
+          <input type="text" class="input" id="countryInput" placeholder="Enter country">
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <button class="button" id="btn3" disabled>Continue</button>
+          <div class="muted">Tip: try "United States"</div>
+        </div>
+      `;
+
+      const countryInput = document.getElementById('countryInput');
+      const btn3 = document.getElementById('btn3');
+      countryInput.onfocus = function(){ setTimeout(()=>{ if(!countryInput.value){ countryInput.value = 'United States'; formData.country = countryInput.value; btn3.disabled = false; } }, 200); }
+      countryInput.oninput = function(){ if(countryInput.value.trim()){ formData.country = countryInput.value.trim(); btn3.disabled = false;} else btn3.disabled = true; }
+      btn3.onclick = step4;
+    }
+
+    function step4(){
+      containerEl.innerHTML = `
+        <div class="progress"><div class="progress-dot"></div><span>Step 4 of 5</span></div>
+        <h1 class="question">What is your website?</h1>
+        <div class="input-wrapper">
+          <input type="text" class="input" id="websiteInput" placeholder="Enter website URL">
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <button class="button" id="btn4" disabled>Continue</button>
+          <div class="muted">Tip: try "InterviewKickstart.com"</div>
+        </div>
+      `;
+
+      const websiteInput = document.getElementById('websiteInput');
+      const btn4 = document.getElementById('btn4');
+      websiteInput.onfocus = function(){ setTimeout(()=>{ if(!websiteInput.value){ websiteInput.value = 'InterviewKickstart.com'; formData.website = websiteInput.value; btn4.disabled = false; } }, 200); }
+      websiteInput.oninput = function(){ if(websiteInput.value.trim()){ formData.website = websiteInput.value.trim(); btn4.disabled = false;} else btn4.disabled = true; }
+      btn4.onclick = step5;
+    }
+
+    function step5(){
+      containerEl.innerHTML = `
+        <div class="progress"><div class="progress-dot"></div><span>Step 5 of 5</span></div>
+        <h1 class="question">List your top 3 competitors</h1>
+        <div style="width:100%;display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+          <input type="text" class="input" id="c1" placeholder="Competitor 1">
+          <input type="text" class="input" id="c2" placeholder="Competitor 2">
+          <input type="text" class="input" id="c3" placeholder="Competitor 3">
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <button class="button" id="btn5" disabled>Generate Report</button>
+          <div class="muted">Tip: try AlgoExpert, Educative, LeetCode</div>
+        </div>
+      `;
+
+      const c1 = document.getElementById('c1');
+      const c2 = document.getElementById('c2');
+      const c3 = document.getElementById('c3');
+      const btn5 = document.getElementById('btn5');
+
+      let filled = 0;
+      function check(){ if(filled >= 1){ btn5.disabled = false; } }
+
+      c1.onfocus = function(){ setTimeout(()=>{ if(!c1.value){ c1.value = 'AlgoExpert'; formData.c1 = c1.value; filled++; check(); } }, 150); }
+      c2.onfocus = function(){ setTimeout(()=>{ if(!c2.value){ c2.value = 'Educative'; formData.c2 = c2.value; filled++; check(); } }, 150); }
+      c3.onfocus = function(){ setTimeout(()=>{ if(!c3.value){ c3.value = 'LeetCode'; formData.c3 = c3.value; filled++; check(); } }, 150); }
+
+      c1.oninput = function(){ formData.c1 = c1.value; }
+      c2.oninput = function(){ formData.c2 = c2.value; }
+      c3.oninput = function(){ formData.c3 = c3.value; }
+
+      btn5.onclick = loading;
+    }
+
+    function loading(){
+      containerEl.innerHTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;">
+          <div style="width:64px;height:64px;border-radius:50%;border:4px solid #E8E8ED;border-top:4px solid #4A9B8E;animation:spin 1s linear infinite"></div>
+          <div style="margin-top:24px;color:#86868B;font-size:16px;font-weight:500;">Generating your report...</div>
+        </div>
+      `;
+      setTimeout(dashboard, 900);
+    }
+
+    function dashboard(){
+      const prompts = [
+        { question: "Is Interview Kickstart worth it?", link: "https://www.yoreoyster.com/review/interview-kickstart/", authority: "YoreOyster.com – High-authority review site", mentions: 14, position: 1, competitors: "Exponent, AlgoExpert, Educative", howShown: "Appears as the most comprehensive FAANG prep program", perception: "Positive" },
+        { question: "Interview Kickstart vs. Exponent: Which is better for FAANG prep?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Trusted comparison platform", mentions: 9, position: 2, competitors: "Exponent, AlgoExpert", howShown: "Featured in direct side-by-side comparison", perception: "Positive" },
+        { question: "Interview Kickstart pricing and course fees", link: "https://www.bestcolleges.com/bootcamps/reviews/interview-kickstart/", authority: "BestColleges – Recognized education resource", mentions: 10, position: 3, competitors: "LeetCode, AlgoExpert", howShown: "Shown as premium pricing tier with ROI justification", perception: "Neutral" },
+        { question: "Interview Kickstart reviews and student testimonials", link: "https://www.trustpilot.com/review/interviewkickstart.com", authority: "TrustPilot – Verified student reviews", mentions: 120, position: 1, competitors: "Exponent, Educative", howShown: "Displayed as verified feedback hub", perception: "Positive" },
+        { question: "Alternatives to Interview Kickstart for system design prep", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Competitive analysis source", mentions: 8, position: 2, competitors: "AlgoExpert, Educative", howShown: "Featured in system design prep comparison", perception: "Neutral" },
+        { question: "Interview Kickstart vs. AlgoExpert: Which is better for coding interviews?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Course comparison article", mentions: 12, position: 3, competitors: "AlgoExpert, Exponent", howShown: "Highlighted for structured mentorship and mock interview quality", perception: "Positive" },
+        { question: "Interview Kickstart's ROI: Is it worth the investment?", link: "https://www.yoreoyster.com/review/interview-kickstart/", authority: "YoreOyster – ROI-focused review", mentions: 6, position: 1, competitors: "Exponent, Pramp", howShown: "Shown as high-value premium course", perception: "Positive" },
+        { question: "Interview Kickstart vs. Pramp: Which mock interview platform is better?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Platform comparison site", mentions: 5, position: 3, competitors: "Pramp, AlgoExpert", howShown: "Positioned as structured vs. peer-led contrast", perception: "Positive" },
+        { question: "How to prepare for system design interviews: Interview Kickstart's approach", link: "https://interviewkickstart.com/reviews", authority: "InterviewKickstart.com – Official resource", mentions: 15, position: 2, competitors: "Educative, AlgoExpert", howShown: "Featured as methodology-led prep approach", perception: "Positive" },
+        { question: "Interview Kickstart's impact on interview success rates", link: "https://interviewkickstart.com/reviews", authority: "InterviewKickstart.com – Student outcomes page", mentions: 18, position: 3, competitors: "Exponent, LeetCode", howShown: "Highlighted for measurable student outcomes", perception: "Positive" }
+      ];
+
+      const lowPrompts = [
+        { 
+          question: 'Best free mock interview platforms', 
+          link: 'https://igotanoffer.com/en/advice/interview-kickstart-alternatives', 
+          authority: 'IGotAnOffer – Alternative platforms guide', 
+          position: 5, 
+          mentions: 4, 
+          competitors: 'Pramp, LeetCode, Interviewing.io', 
+          howShown: 'Appears in listicles but ranked below free alternatives',
+          perception: 'Neutral',
+          suggestion: 'Create a freemium tier or free trial to compete in "free platform" searches. Develop content comparing free vs. paid value proposition with ROI calculators.'
+        },
+        { 
+          question: 'Top system design courses for beginners', 
+          link: 'https://www.bestcolleges.com/bootcamps/reviews/interview-kickstart/', 
+          authority: 'BestColleges – Beginner course rankings', 
+          position: 6, 
+          mentions: 2, 
+          competitors: 'Educative, AlgoExpert, Grokking the System Design', 
+          howShown: 'Ranked lower in beginner-focused aggregated lists',
+          perception: 'Neutral',
+          suggestion: 'Launch a "System Design Fundamentals" beginner track. Create SEO-optimized blog series: "System Design for Beginners: 30-Day Guide" with free resources.'
+        },
+        { 
+          question: 'Affordable coding interview prep options', 
+          link: 'https://www.yoreoyster.com/review/interview-kickstart/', 
+          authority: 'YoreOyster – Budget-focused comparison', 
+          position: 4, 
+          mentions: 3, 
+          competitors: 'AlgoExpert, LeetCode Premium, CodeSignal', 
+          howShown: 'Mentioned but not top-ranked due to premium pricing',
+          perception: 'Neutral',
+          suggestion: 'Offer income-share agreements or payment plans. Create comparison content: "Premium vs. Budget Interview Prep: True Cost Analysis" highlighting long-term ROI over upfront cost.'
+        }
+      ];
+
+      containerEl.innerHTML = `
+        <div>
+          <h1 class="section-title">Top High-Visibility Prompts</h1>
+          <div class="section-subtitle">Key queries where Interview Kickstart appears prominently in AI and organic search results</div>
+
+          <div id="promptsList">
+            ${prompts.map((p, idx) => `
+              <div class="accordion" style="${idx >= 3 ? 'display:none;' : ''}" data-index="${idx}">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                  <div class="accordion-title">${p.question}</div>
+                  <div style="display:flex;align-items:center;gap:16px;">
+                    <span class="rank-badge">Rank ${p.position}</span>
+                    <div class="chev">▼</div>
+                  </div>
+                </div>
+                <div class="accordion-content">
+                  <div class="accordion-inner">
+                    <p><strong>Top Citation:</strong> <a href="${p.link}" target="_blank">${p.link}</a></p>
+                    <p><strong>Authority:</strong> ${p.authority}</p>
+                    <p><strong>Mentions:</strong> ${p.mentions}</p>
+                    <p><strong>Brand Position:</strong> Rank ${p.position}</p>
+                    <p><strong>Brand Perception:</strong> <span style="display:inline-block;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;background:${p.perception === 'Positive' ? '#E8F8ED' : p.perception === 'Negative' ? '#FFE8E8' : '#F5F5F7'};color:${p.perception === 'Positive' ? '#34C759' : p.perception === 'Negative' ? '#FF6B6B' : '#6B6B70'}">${p.perception}</span></p>
+                    <p><strong>Competitors:</strong> ${p.competitors}</p>
+                    <p><strong>How You're Shown:</strong> ${p.howShown}</p>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="show-more-wrapper">
+            <button class="button button-secondary" id="showMoreBtn" onclick="toggleShowMore()">Show ${prompts.length - 3} More Prompts</button>
+          </div>
+
+          <!-- Opportunities & Competitor Analysis Section -->
+          <h1 class="section-title" style="margin-top:64px;">Opportunities & Competitor Analysis</h1>
+          <div class="section-subtitle">Track competitor performance trends and identify strategic gaps in visibility</div>
+
+          <div class="chart-wrap">
+            <div style="font-weight:600;margin-bottom:16px;color:#1D1D1F;">Competitor Share of Voice (6 months)</div>
+            <canvas id="sovChart" width="800" height="240"></canvas>
+            <div id="chartTooltip" class="tooltip" style="display:none;"></div>
+            <div style="display:flex;gap:16px;margin-top:16px;flex-wrap:wrap;align-items:center;">
+              <div class="muted" style="font-weight:600;">Legend:</div>
+              <div style="display:flex;gap:8px;align-items:center;"> <div style="width:14px;height:10px;background:#d9534f;border-radius:3px;"></div><div class="muted">InterviewKickstart</div></div>
+              <div style="display:flex;gap:8px;align-items:center;"> <div style="width:14px;height:10px;background:#f0ad4e;border-radius:3px;"></div><div class="muted">AlgoExpert</div></div>
+              <div style="display:flex;gap:8px;align-items:center;"> <div style="width:14px;height:10px;background:#337ab7;border-radius:3px;"></div><div class="muted">Educative</div></div>
+              <div style="display:flex;gap:8px;align-items:center;"> <div style="width:14px;height:10px;background:#5bc0de;border-radius:3px;"></div><div class="muted">LeetCode</div></div>
+              <div style="display:flex;gap:8px;align-items:center;"> <div style="width:14px;height:10px;background:#5cb85c;border-radius:3px;"></div><div class="muted">Exponent</div></div>
+            </div>
+          </div>
+
+          <div style="margin-top:48px;">
+            <h2 style="font-size:24px;font-weight:700;margin-bottom:8px;letter-spacing:-0.02em;">Critical Low Visibility Prompts</h2>
+            <div class="section-subtitle" style="margin-bottom:24px;">Key queries where Interview Kickstart is underperforming or missing in AI and organic search results</div>
+            
+            <div id="lowPromptsList">
+              ${lowPrompts.map((p, idx) => `
+                <div class="accordion">
+                  <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <div class="accordion-title">${p.question}</div>
+                    <div style="display:flex;align-items:center;gap:16px;">
+                      <span class="rank-badge critical">Rank ${p.position}</span>
+                      <div class="chev">▼</div>
+                    </div>
+                  </div>
+                  <div class="accordion-content">
+                    <div class="accordion-inner">
+                      <p><strong>Top Citation:</strong> <a href="${p.link}" target="_blank">${p.link}</a></p>
+                      <p><strong>Authority:</strong> ${p.authority}</p>
+                      <p><strong>Mentions:</strong> ${p.mentions}</p>
+                      <p><strong>Brand Position:</strong> Rank ${p.position}</p>
+                      <p><strong>Brand Perception:</strong> <span style="display:inline-block;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;background:#F5F5F7;color:#6B6B70">${p.perception}</span></p>
+                      <p><strong>Competitors:</strong> ${p.competitors}</p>
+                      <p><strong>How You're Shown:</strong> ${p.howShown}</p>
+                      
+                      <div class="suggestion-box">
+                        <div class="suggestion-title">💡 Suggested Action</div>
+                        <div class="suggestion-text">${p.suggestion}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div style="margin-top:48px;">
+            <h2 style="font-size:24px;font-weight:700;margin-bottom:24px;letter-spacing:-0.02em;">Actionable Recommendations</h2>
+
+            <!-- Impact Dashboard -->
+            <div style="background:linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); border:2px solid #BAE6FD; border-radius:16px; padding:32px; margin-bottom:32px; position:relative; overflow:hidden;">
+              
+              <!-- Decorative element -->
+              <div style="position:absolute; top:-20px; right:-20px; width:120px; height:120px; background:rgba(56, 189, 248, 0.1); border-radius:50%;"></div>
+              
+              <div style="position:relative; z-index:1;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:24px;">
+                  
+                  <!-- Current vs Potential -->
+                  <div style="flex:1; min-width:280px;">
+                    <div style="color:#0369A1; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">SHARE OF VOICE OPPORTUNITY</div>
+                    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:8px;">
+                      <div>
+                        <div style="font-size:48px; font-weight:800; color:#0C4A6E; line-height:1; letter-spacing:-0.03em;">42%</div>
+                        <div style="font-size:13px; color:#0369A1; font-weight:500; margin-top:4px;">Current</div>
+                      </div>
+                      <div style="font-size:32px; color:#0369A1; font-weight:300;">→</div>
+                      <div>
+                        <div style="font-size:48px; font-weight:800; color:#059669; line-height:1; letter-spacing:-0.03em;">67%</div>
+                        <div style="font-size:13px; color:#047857; font-weight:500; margin-top:4px;">Potential</div>
+                      </div>
+                    </div>
+                    <div style="background:#FFF; border-radius:12px; padding:16px; margin-top:16px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                      <div style="font-size:14px; font-weight:600; color:#0C4A6E; margin-bottom:8px;">+25% Growth Opportunity</div>
+                      <div style="font-size:13px; color:#64748B; line-height:1.5;">Implementing these recommendations could increase your visibility by 25 percentage points, positioning Interview Kickstart as the dominant voice in the category.</div>
+                    </div>
+                  </div>
+
+                  <!-- Visual Progress Bar -->
+                  <div style="flex:1; min-width:280px;">
+                    <div style="background:#FFF; border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                      <div style="font-size:14px; font-weight:600; color:#0C4A6E; margin-bottom:16px;">Visibility Progress</div>
+                      
+                      <!-- Progress bar container -->
+                      <div style="position:relative; height:40px; background:#E0F2FE; border-radius:10px; overflow:hidden; margin-bottom:12px;">
+                        <!-- Current progress -->
+                        <div style="position:absolute; left:0; top:0; height:100%; width:42%; background:linear-gradient(90deg, #0EA5E9 0%, #0284C7 100%); border-radius:10px; display:flex; align-items:center; justify-content:center; transition:width 1s ease;">
+                          <span style="color:#FFF; font-size:13px; font-weight:700;">42%</span>
+                        </div>
+                        <!-- Potential progress (faded) -->
+                        <div style="position:absolute; left:0; top:0; height:100%; width:67%; background:linear-gradient(90deg, rgba(16, 185, 129, 0.3) 0%, rgba(5, 150, 105, 0.3) 100%); border-radius:10px; border:2px dashed #10B981;"></div>
+                        <!-- Target marker -->
+                        <div style="position:absolute; left:67%; top:-8px; width:2px; height:56px; background:#059669;"></div>
+                        <div style="position:absolute; left:67%; top:-12px; transform:translateX(-50%); background:#059669; color:#FFF; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700;">TARGET</div>
+                      </div>
+
+                      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                        <div style="font-size:12px; color:#64748B;">0%</div>
+                        <div style="font-size:12px; color:#64748B; font-weight:600;">Unlocked Potential: 25%</div>
+                        <div style="font-size:12px; color:#64748B;">100%</div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- Impact Breakdown -->
+                <div style="background:#FFF; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <div style="font-size:16px; font-weight:700; color:#0C4A6E;">Impact Breakdown by Action</div>
+                    <div style="background:#FEF3C7; color:#92400E; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">ACT NOW</div>
+                  </div>
+
+                  <div style="display:grid; gap:12px;">
+                    <!-- High Impact Items -->
+                    <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#F0FDF4; border-left:4px solid #10B981; border-radius:8px;">
+                      <div style="flex:1;">
+                        <div style="font-size:14px; font-weight:600; color:#064E3B; margin-bottom:4px;">Create system-design content with diagrams</div>
+                        <div style="font-size:12px; color:#065F46;">High Priority · Content Strategy</div>
+                      </div>
+                      <div style="text-align:right; min-width:80px;">
+                        <div style="font-size:24px; font-weight:800; color:#059669;">+8%</div>
+                        <div style="font-size:11px; color:#065F46; font-weight:600;">HIGH IMPACT</div>
+                      </div>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#F0FDF4; border-left:4px solid #10B981; border-radius:8px;">
+                      <div style="flex:1;">
+                        <div style="font-size:14px; font-weight:600; color:#064E3B; margin-bottom:4px;">Launch freemium tier or free trial</div>
+                        <div style="font-size:12px; color:#065F46;">High Priority · Product</div>
+                      </div>
+                      <div style="text-align:right; min-width:80px;">
+                        <div style="font-size:24px; font-weight:800; color:#059669;">+7%</div>
+                        <div style="font-size:11px; color:#065F46; font-weight:600;">HIGH IMPACT</div>
+                      </div>
+                    </div>
+
+                    <!-- Medium Impact Items -->
+                    <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#FFFBEB; border-left:4px solid #F59E0B; border-radius:8px;">
+                      <div style="flex:1;">
+                        <div style="font-size:14px; font-weight:600; color:#78350F; margin-bottom:4px;">Add comparison pages: "Interview Kickstart vs. X"</div>
+                        <div style="font-size:12px; color:#92400E;">Medium Priority · Content Strategy</div>
+                      </div>
+                      <div style="text-align:right; min-width:80px;">
+                        <div style="font-size:24px; font-weight:800; color:#D97706;">+4%</div>
+                        <div style="font-size:11px; color:#92400E; font-weight:600;">MEDIUM</div>
+                      </div>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#FFFBEB; border-left:4px solid #F59E0B; border-radius:8px;">
+                      <div style="flex:1;">
+                        <div style="font-size:14px; font-weight:600; color:#78350F; margin-bottom:4px;">Optimize schema for reviews & rich snippets</div>
+                        <div style="font-size:12px; color:#92400E;">Medium Priority · SEO</div>
+                      </div>
+                      <div style="text-align:right; min-width:80px;">
+                        <div style="font-size:24px; font-weight:800; color:#D97706;">+3%</div>
+                        <div style="font-size:11px; color:#92400E; font-weight:600;">MEDIUM</div>
+                      </div>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#FFFBEB; border-left:4px solid #F59E0B; border-radius:8px;">
+                      <div style="flex:1;">
+                        <div style="font-size:14px; font-weight:600; color:#78350F; margin-bottom:4px;">Co-create courses with authority blogs</div>
+                        <div style="font-size:12px; color:#92400E;">Medium Priority · Partnerships</div>
+                      </div>
+                      <div style="text-align:right; min-width:80px;">
+                        <div style="font-size:24px; font-weight:800; color:#D97706;">+3%</div>
+                        <div style="font-size:11px; color:#92400E; font-weight:600;">MEDIUM</div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div style="margin-top:20px; padding:16px; background:#FEF2F2; border-radius:10px; border:1px solid #FEE2E2;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                      <div style="font-size:24px;">⚠️</div>
+                      <div style="flex:1;">
+                        <div style="font-size:13px; font-weight:700; color:#991B1B; margin-bottom:4px;">Time-Sensitive Opportunity</div>
+                        <div style="font-size:12px; color:#B91C1C; line-height:1.5;">Competitors are actively improving their visibility. Implementing these actions within the next 60 days could secure your position as category leader before the opportunity window closes.</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Checklist -->
+            <div class="checklist">
+              <div class="checklist-title">Content Strategy</div>
+              <div class="checklist-item">
+                <input type="checkbox" id="check1">
+                <div class="checkbox-custom"></div>
+                <label for="check1">Create 3 long-form pieces targeting system-design queries with clear TL;DR and diagrams</label>
+              </div>
+              <div class="checklist-item">
+                <input type="checkbox" id="check2">
+                <div class="checkbox-custom"></div>
+                <label for="check2">Add canonical comparison pages: "Interview Kickstart vs. X" with structured tables and outcomes</label>
+              </div>
+              <div class="checklist-item">
+                <input type="checkbox" id="check3">
+                <div class="checkbox-custom"></div>
+                <label for="check3">Develop beginner-friendly content series: "System Design 101" with video tutorials</label>
+              </div>
+            </div>
+
+            <div class="checklist">
+              <div class="checklist-title">SEO & Product</div>
+              <div class="checklist-item">
+                <input type="checkbox" id="check4">
+                <div class="checkbox-custom"></div>
+                <label for="check4">Optimize schema markup for student reviews to improve rich snippets on review queries</label>
+              </div>
+              <div class="checklist-item">
+                <input type="checkbox" id="check5">
+                <div class="checkbox-custom"></div>
+                <label for="check5">Publish a public outcomes dataset and A/B test landing pages for ROI-focused keywords</label>
+              </div>
+              <div class="checklist-item">
+                <input type="checkbox" id="check6">
+                <div class="checkbox-custom"></div>
+                <label for="check6">Launch freemium tier or extended free trial to compete in "free platform" searches</label>
+              </div>
+            </div>
+
+            <div class="checklist">
+              <div class="checklist-title">Partnerships & Growth</div>
+              <div class="checklist-item">
+                <input type="checkbox" id="check7">
+                <div class="checkbox-custom"></div>
+                <label for="check7">Co-create system-design mini-courses with high-authority blogs (e.g., IGotAnOffer)</label>
+              </div>
+              <div class="checklist-item">
+                <input type="checkbox" id="check8">
+                <div class="checkbox-custom"></div>
+                <label for="check8">Run targeted PR around student success stories with measurable timelines</label>
+              </div>
+              <div class="checklist-item">
+                <input type="checkbox" id="check9">
+                <div class="checkbox-custom"></div>
+                <label for="check9">Introduce income-share agreements or flexible payment plans for affordability positioning</label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      `;
+
+      // Initialize show more functionality
+      window.toggleShowMore = function() {
+        const hiddenPrompts = document.querySelectorAll('.accordion[data-index]');
+        const btn = document.getElementById('showMoreBtn');
+        const isShowing = hiddenPrompts[3].style.display !== 'none';
+        
+        hiddenPrompts.forEach((prompt, idx) => {
+          if (idx >= 3) {
+            prompt.style.display = isShowing ? 'none' : 'block';
+          }
+        });
+        
+        btn.textContent = isShowing ? `Show ${prompts.length - 3} More Prompts` : 'Show Less';
+      };
+
+      // Accordion toggle function
+      window.toggleAccordion = function(header) {
+        header.parentElement.classList.toggle('expanded');
+      };
+
+      // Initialize chart
+      initChart();
+
+      // Add keyboard accessibility
+      document.querySelectorAll('.accordion-header').forEach(h => { 
+        h.tabIndex = 0; 
+        h.addEventListener('keydown', (e) => { 
+          if(e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            h.click();
+          }
+        }); 
+      });
+
+      // Checklist item click handling
+      document.querySelectorAll('.checklist-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+          if(e.target.tagName !== 'INPUT') {
+            const checkbox = this.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+          }
+        });
+      });
+    }
+
+    function initChart(){
+      const canvas = document.getElementById('sovChart');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width;
+      const H = canvas.height;
+
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+      const datasets = [
+        { label: 'InterviewKickstart', color: '#d9534f', data: [38, 40, 45, 42, 50, 55], width: 3 },
+        { label: 'AlgoExpert', color: '#f0ad4e', data: [35, 36, 38, 39, 43, 46], width: 2 },
+        { label: 'Educative', color: '#337ab7', data: [30, 32, 33, 34, 36, 38], width: 2 },
+        { label: 'LeetCode', color: '#5bc0de', data: [28, 30, 31, 33, 36, 39], width: 2 },
+        { label: 'Exponent', color: '#5cb85c', data: [25, 26, 27, 28, 30, 33], width: 2 }
+      ];
+
+      const padding = { left: 44, right: 16, top: 16, bottom: 32 };
+      const chartW = W - padding.left - padding.right;
+      const chartH = H - padding.top - padding.bottom;
+      const maxVal = 80;
+
+      function drawGrid(){
+        ctx.clearRect(0,0,W,H);
+        ctx.font = '12px -apple-system, BlinkMacSystemFont, SF Pro Display';
+        ctx.fillStyle = '#86868B';
+
+        ctx.strokeStyle = '#E8E8ED'; ctx.lineWidth = 1;
+        for(let i=0;i<=4;i++){
+          const y = padding.top + (chartH * (i/4));
+          ctx.beginPath(); ctx.moveTo(padding.left, y); ctx.lineTo(padding.left + chartW, y); ctx.stroke();
+          const val = Math.round(maxVal - (maxVal*(i/4)));
+          ctx.fillText(val + '%', 6, y+4);
+        }
+
+        ctx.fillStyle = '#86868B'; ctx.textAlign = 'center';
+        months.forEach((m, idx) => {
+          const x = padding.left + (chartW * (idx/(months.length-1)));
+          ctx.fillText(m, x, H - 8);
+        });
+      }
+
+      function drawLines(){
+        datasets.forEach(ds => {
+          ctx.beginPath();
+          ds.data.forEach((val, i) => {
+            const x = padding.left + (chartW * (i/(ds.data.length-1)));
+            const y = padding.top + chartH - ( (val/maxVal) * chartH );
+            if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+          });
+          ctx.strokeStyle = ds.color; ctx.lineWidth = ds.width; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke();
+
+          ds.data.forEach((val, i) =>{
+            const x = padding.left + (chartW * (i/(ds.data.length-1)));
+            const y = padding.top + chartH - ( (val/maxVal) * chartH );
+            ctx.beginPath(); ctx.fillStyle = '#FFF'; ctx.strokeStyle = ds.color; ctx.lineWidth = 2; ctx.arc(x,y,5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+          });
+        });
+      }
+
+      drawGrid(); drawLines();
+
+      const tooltip = document.getElementById('chartTooltip');
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        let nearest = 0; let nearestDist = Infinity;
+        months.forEach((m, idx) => {
+          const x = padding.left + (chartW * (idx/(months.length-1)));
+          const d = Math.abs(mx - x);
+          if(d < nearestDist){ nearest = idx; nearestDist = d; }
+        });
+
+        const tx = padding.left + (chartW * (nearest/(months.length-1)));
+        tooltip.style.left = (canvas.offsetLeft + tx) + 'px';
+        tooltip.style.top = (canvas.offsetTop + padding.top + 6) + 'px';
+
+        let html = `<div style="font-weight:700;margin-bottom:8px;">${months[nearest]} 2025</div>`;
+        datasets.forEach(ds => { html += `<div style="display:flex;justify-content:space-between;gap:16px;margin:4px 0;"><div style="width:130px">${ds.label}</div><div style="font-weight:700;">${ds.data[nearest]}%</div></div>`; });
+        tooltip.innerHTML = html; tooltip.style.display = 'block';
+      });
+      canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+    }
+
+    // Spin animation
+    const style = document.createElement('style');
+    style.innerHTML = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+
   </script>
 </body>
 </html>
