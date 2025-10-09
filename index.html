@@ -171,6 +171,78 @@
         .accordion-inner {
             padding: 32px;
         }
+
+        /* New styles for prompt accordions */
+        .prompt-accordion {
+            background: #FFF;
+            border-radius: 8px;
+            border-left: 3px solid #4A9B8E;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .prompt-header {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .prompt-header:hover {
+            background: #F9F9F9;
+        }
+        .prompt-text {
+            font-size: 15px;
+            color: #1D1D1F;
+            padding-right: 16px;
+        }
+        .prompt-arrow {
+            font-size: 12px;
+            transition: transform 0.3s;
+            color: #86868B;
+        }
+        .prompt-accordion.expanded .prompt-arrow {
+            transform: rotate(180deg);
+        }
+        .prompt-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease-in-out, padding 0.35s ease-in-out;
+            padding: 0 24px;
+            background: #FAFAFC;
+        }
+        .prompt-accordion.expanded .prompt-content {
+            max-height: 500px;
+            padding: 20px 24px;
+            border-top: 1px solid #E8E8ED;
+        }
+        .prompt-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 16px;
+        }
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-label {
+            font-size: 13px;
+            color: #86868B;
+            margin-bottom: 4px;
+        }
+        .detail-value {
+            font-size: 15px;
+            font-weight: 500;
+            color: #1D1D1F;
+        }
+        .detail-value a {
+            color: #4A9B8E;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .detail-value a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -191,7 +263,6 @@
     <script>
         let formData = {};
 
-        // Setup category input
         const catInput = document.getElementById('catInput');
         const btn1 = document.getElementById('btn1');
         
@@ -322,37 +393,13 @@
                 <div class="dashboard">
                     <div style="margin-bottom: 40px;">
                         <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 8px; color: #1D1D1F;">
-                            Top Prompts Where You're Visible Today
+                            Top High-Visibility Prompts Featuring Interview Kickstart
                         </h1>
                         <p style="font-size: 15px; color: #86868B; margin-bottom: 24px;">
-                            These are the key queries where Interview Kickstart appears in AI-powered search results
+                            These are the key queries where Interview Kickstart appears in AI-powered search results. Click to expand.
                         </p>
-                        <div style="display: grid; gap: 12px;">
-                            <div style="background: #FFF; padding: 16px 20px; border-radius: 8px; border-left: 3px solid #4A9B8E; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-                                <span style="font-size: 15px; color: #1D1D1F;">How do I start preparing for FAANG interviews from scratch?</span>
+                        <div id="prompt-list">
                             </div>
-                            <div style="background: #FFF; padding: 16px 20px; border-radius: 8px; border-left: 3px solid #4A9B8E; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-                                <span style="font-size: 15px; color: #1D1D1F;">What's the best roadmap to learn data structures and algorithms?</span>
-                            </div>
-                            <div style="background: #FFF; padding: 16px 20px; border-radius: 8px; border-left: 3px solid #4A9B8E; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-                                <span style="font-size: 15px; color: #1D1D1F;">How long does it take to prepare for a software engineering interview?</span>
-                            </div>
-                            <div style="background: #FFF; padding: 16px 20px; border-radius: 8px; border-left: 3px solid #4A9B8E; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-                                <span style="font-size: 15px; color: #1D1D1F;">Are there structured programs that guide you through mock interviews?</span>
-                            </div>
-                            <div style="background: #FFF; padding: 16px 20px; border-radius: 8px; border-left: 3px solid #4A9B8E; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-                                <span style="font-size: 15px; color: #1D1D1F;">What's the easiest way to get interview-ready for product companies?</span>
-                            </div>
-                            <div style="background: #FFF; padding: 16px 20px; border-radius: 8px; border-left: 3px solid #4A9B8E; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-                                <span style="font-size: 15px; color: #1D1D1F;">What's expected in FAANG system design rounds?</span>
-                            </div>
-                            <div style="background: #FFF; padding: 16px 20px; border-radius: 8px; border-left: 3px solid #4A9B8E; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-                                <span style="font-size: 15px; color: #1D1D1F;">Are there executive-level interview prep coaches?</span>
-                            </div>
-                            <div style="background: #FFF; padding: 16px 20px; border-radius: 8px; border-left: 3px solid #4A9B8E; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-                                <span style="font-size: 15px; color: #1D1D1F;">Is Interview Kickstart good for beginners?</span>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="accordion">
@@ -392,6 +439,63 @@
                         </div>
                     </div>
                 </div>`;
+
+            const prompts = [
+                { q: "Is Interview Kickstart worth it?", url: "https://www.yoreoyster.com/review/interview-kickstart/", domain: "yoreoyster.com", auth: "High", pos: "1.2", mentions: 4, comps: "None" },
+                { q: "Interview Kickstart vs. Exponent: Which is better for FAANG prep?", url: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", domain: "igotanoffer.com", auth: "High", pos: "2.1", mentions: 2, comps: "Exponent" },
+                { q: "Interview Kickstart pricing and course fees", url: "https://www.bestcolleges.com/bootcamps/reviews/interview-kickstart/", domain: "bestcolleges.com", auth: "Medium", pos: "3.5", mentions: 5, comps: "None" },
+                { q: "Interview Kickstart reviews and student testimonials", url: "https://www.trustpilot.com/review/interviewkickstart.com", domain: "trustpilot.com", auth: "High", pos: "1.1", mentions: "8+", comps: "None" },
+                { q: "Alternatives to Interview Kickstart for system design prep", url: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", domain: "igotanoffer.com", auth: "High", pos: "4.3", mentions: 1, comps: "AlgoExpert, Educative" },
+                { q: "Interview Kickstart vs. AlgoExpert: Which is better for coding interviews?", url: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", domain: "igotanoffer.com", auth: "High", pos: "2.4", mentions: 2, comps: "AlgoExpert" },
+                { q: "Interview Kickstart's ROI: Is it worth the investment?", url: "https://www.yoreoyster.com/review/interview-kickstart/", domain: "yoreoyster.com", auth: "High", pos: "1.8", mentions: 3, comps: "None" },
+                { q: "Interview Kickstart vs. Pramp: Which mock interview platform is better?", url: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", domain: "igotanoffer.com", auth: "Medium", pos: "3.1", mentions: 2, comps: "Pramp" },
+                { q: "How to prepare for system design interviews: Interview Kickstart's approach", url: "https://interviewkickstart.com/reviews", domain: "interviewkickstart.com", auth: "High (Owned)", pos: "1.0", mentions: 6, comps: "None" },
+                { q: "Interview Kickstart's impact on interview success rates", url: "https://interviewkickstart.com/reviews", domain: "interviewkickstart.com", auth: "High (Owned)", pos: "1.0", mentions: "5+", comps: "None" },
+            ];
+
+            const promptListContainer = document.getElementById('prompt-list');
+            let promptHTML = '';
+            prompts.forEach(p => {
+                promptHTML += `
+                    <div class="prompt-accordion">
+                        <div class="prompt-header">
+                            <span class="prompt-text">“${p.q}”</span>
+                            <span class="prompt-arrow">▼</span>
+                        </div>
+                        <div class="prompt-content">
+                            <div class="prompt-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Citation</span>
+                                    <span class="detail-value"><a href="${p.url}" target="_blank">${p.domain}</a></span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Citation Authority</span>
+                                    <span class="detail-value">${p.auth}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Brand Position</span>
+                                    <span class="detail-value">${p.pos}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Number of Mentions</span>
+                                    <span class="detail-value">${p.mentions}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Competitors Mentioned</span>
+                                    <span class="detail-value">${p.comps}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            promptListContainer.innerHTML = promptHTML;
+
+            document.querySelectorAll('.prompt-header').forEach(header => {
+                header.addEventListener('click', event => {
+                    header.parentElement.classList.toggle('expanded');
+                });
+            });
         }
     </script>
 </body>
