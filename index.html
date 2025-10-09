@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Interview Kickstart - AEO Dashboard v19</title>
+  <title>Interview Kickstart - AEO Dashboard v23</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     * { box-sizing: border-box; }
@@ -14,16 +14,8 @@
       color: #1D1D1F;
       -webkit-font-smoothing: antialiased;
     }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .content {
-      background: #FFF;
-      border-radius: 12px;
-      padding: 28px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.04);
-    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .content { background: #FFF; border-radius: 12px; padding: 28px; box-shadow: 0 6px 20px rgba(0,0,0,0.04); position:relative; }
 
     /* Stepper / Form */
     .progress { display:flex; align-items:center; gap:8px; color:#86868B; margin-bottom:12px; font-size:13px; }
@@ -60,18 +52,35 @@
     .card-title { font-weight:700; margin-bottom:8px; }
     .metric-large { font-size:28px; color:#4A9B8E; font-weight:700; }
 
-    /* small helper */
+    /* Slide-out panel */
+    .side-toggle { position:absolute; right:20px; top:20px; z-index:40; }
+    .panel-toggle { padding:10px 14px; border-radius:10px; background:#2D2D2F; color:#FFF; border:none; font-weight:600; cursor:pointer; }
+
+    .panel { position:fixed; right:0; top:0; height:100vh; width:520px; max-width:95%; background:#FFF; box-shadow:-30px 10px 60px rgba(2,6,23,0.24); transform:translateX(100%); transition:transform .36s cubic-bezier(.22,.9,.36,1); z-index:50; display:flex; flex-direction:column; }
+    .panel.open { transform:translateX(0); }
+    .panel-header { padding:18px 20px; border-bottom:1px solid #F1F1F4; display:flex; justify-content:space-between; align-items:center; }
+    .panel-body { padding:18px 20px; overflow:auto; }
+
+    .chart-wrap { background:#FAFAFB; padding:12px; border-radius:8px; margin-bottom:12px; }
+    canvas { width:100%; height:220px; display:block; }
+
+    .tooltip { position:absolute; background:#1D1D1F; color:#FFF; padding:8px 10px; font-size:13px; border-radius:6px; pointer-events:none; transform:translate(-50%,-120%); white-space:nowrap; }
+
+    .low-list { display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
+    .low-item { border:1px solid #F0F0F2; padding:12px; border-radius:8px; display:flex; justify-content:space-between; gap:12px; align-items:flex-start; background:#FFF; }
+    .low-item .left { max-width:70%; }
     .muted { color:#6B6B70; font-size:13px; }
 
-    @media (max-width:820px) {
-      .grid { grid-template-columns:1fr; }
-    }
+    .recommendation { background:#FBFFFB; border:1px solid #E8F7EA; padding:12px; border-radius:8px; margin-bottom:12px; }
+
+    @media (max-width:900px) { .panel { width:100%; } .container { padding:12px; } }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="content" id="container">
-      <!-- Initial wizard content will be injected here by JS -->
+      <div class="side-toggle"><button class="panel-toggle" id="openPanel">Opportunities & Competitor Analysis</button></div>
+
       <div class="progress"><div class="progress-dot"></div><span>Step 1 of 5</span></div>
       <h1 class="question">What is your category?</h1>
       <div class="input-wrapper">
@@ -84,10 +93,92 @@
     </div>
   </div>
 
+  <!-- Slide-out panel -->
+  <div class="panel" id="panel">
+    <div class="panel-header">
+      <div>
+        <div style="font-weight:700;font-size:16px;">Opportunities & Competitor Analysis</div>
+        <div class="muted">Share of Voice trends • Low visibility prompts • Actions</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="button" id="exportPanel">Export CSV</button>
+        <button class="panel-toggle" id="closePanel">Close</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="chart-wrap">
+        <div class="muted" style="margin-bottom:6px;font-weight:600;">Competitor Share of Voice (6 months)</div>
+        <canvas id="sovChart" width="800" height="220"></canvas>
+        <div id="chartTooltip" class="tooltip" style="display:none;"></div>
+        <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;align-items:center;">
+          <div class="muted">Legend:</div>
+          <div style="display:flex;gap:8px;align-items:center;"> <div style="width:12px;height:8px;background:#d9534f;border-radius:3px;"></div><div class="muted">InterviewKickstart</div></div>
+          <div style="display:flex;gap:8px;align-items:center;"> <div style="width:12px;height:8px;background:#f0ad4e;border-radius:3px;"></div><div class="muted">AlgoExpert</div></div>
+          <div style="display:flex;gap:8px;align-items:center;"> <div style="width:12px;height:8px;background:#337ab7;border-radius:3px;"></div><div class="muted">Educative</div></div>
+          <div style="display:flex;gap:8px;align-items:center;"> <div style="width:12px;height:8px;background:#5bc0de;border-radius:3px;"></div><div class="muted">LeetCode</div></div>
+          <div style="display:flex;gap:8px;align-items:center;"> <div style="width:12px;height:8px;background:#5cb85c;border-radius:3px;"></div><div class="muted">Exponent</div></div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-weight:700;">Low Visibility Prompts</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <select id="filterRank" style="padding:8px;border-radius:8px;border:1px solid #EEF0F2;">
+              <option value="all">Show all</option>
+              <option value="4">Rank ≥ 4</option>
+              <option value="5">Rank ≥ 5</option>
+            </select>
+            <select id="sortBy" style="padding:8px;border-radius:8px;border:1px solid #EEF0F2;">
+              <option value="rank">Sort by rank</option>
+              <option value="mentions">Sort by mentions</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="low-list" id="lowList"></div>
+
+        <div style="margin-top:18px;">
+          <div style="font-weight:700;margin-bottom:8px;">Actionable Recommendations</div>
+
+          <div class="recommendation">
+            <div style="font-weight:600;">Content</div>
+            <ul style="margin:8px 0 0 18px;">
+              <li>Create 3 long-form pieces targeting system-design queries with clear TL;DR and diagrams.</li>
+              <li>Add canonical comparison pages: "Interview Kickstart vs. X" with structured tables and outcomes.</li>
+            </ul>
+          </div>
+
+          <div class="recommendation">
+            <div style="font-weight:600;">SEO & Product</div>
+            <ul style="margin:8px 0 0 18px;">
+              <li>Optimize schema for student reviews to improve rich snippets on review queries.</li>
+              <li>Publish a public outcomes dataset and A/B test landing pages for ROI-focused keywords.</li>
+            </ul>
+          </div>
+
+          <div class="recommendation">
+            <div style="font-weight:600;">Partnerships & Growth</div>
+            <ul style="margin:8px 0 0 18px;">
+              <li>Co-create system-design mini-courses with high-authority blogs (e.g., IGotAnOffer).</li>
+              <li>Run targeted PR around student success stories with measurable timelines.</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div style="margin-top:18px;">
+          <img src="/mnt/data/586d05e4-5ac6-4eb1-9644-0e22b45b61c2.png" alt="example trend" style="width:100%;border-radius:8px;border:1px solid #F0F0F2;" />
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ---------- Existing wizard logic (unchanged) ----------
     let formData = {};
 
-    // Initial elements
     const containerEl = document.getElementById('container');
     const catInput = document.getElementById('catInput');
     const btn1 = document.getElementById('btn1');
@@ -195,28 +286,28 @@
       containerEl.innerHTML = `
         <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;">
           <div style="width:64px;height:64px;border-radius:50%;border:4px solid #EEF0F2;border-top:4px solid #4A9B8E;animation:spin 1s linear infinite"></div>
-          <div style="margin-top:18px;color:#86868B;font-size:15px;">Generating your report... </div>
+          <div style="margin-top:18px;color:#86868B;font-size:15px;">Generating your report...</div>
         </div>
       `;
       setTimeout(dashboard, 900);
     }
 
+    // ---------- Dashboard (existing main content) ----------
     function dashboard(){
-      // Default prompts array (same as the v19 dashboard)
       const prompts = [
-        { question: "Is Interview Kickstart worth it?", link: "https://www.yoreoyster.com/review/interview-kickstart/", authority: "YoreOyster.com – High-authority review site", mentions: "14 mentions", position: "Rank 1 for ROI-related searches", competitors: "Exponent, AlgoExpert, Educative", howShown: "Appears as the most comprehensive FAANG prep program" },
-        { question: "Interview Kickstart vs. Exponent: Which is better for FAANG prep?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Trusted comparison platform", mentions: "9 mentions", position: "Position 2 vs Exponent", competitors: "Exponent, AlgoExpert", howShown: "Featured in direct side-by-side comparison" },
-        { question: "Interview Kickstart pricing and course fees", link: "https://www.bestcolleges.com/bootcamps/reviews/interview-kickstart/", authority: "BestColleges – Recognized education resource", mentions: "10 mentions", position: "Top 3 for pricing transparency", competitors: "LeetCode, AlgoExpert", howShown: "Shown as premium pricing tier with ROI justification" },
-        { question: "Interview Kickstart reviews and student testimonials", link: "https://www.trustpilot.com/review/interviewkickstart.com", authority: "TrustPilot – Verified student reviews", mentions: "120+ mentions", position: "High sentiment visibility", competitors: "Exponent, Educative", howShown: "Displayed as verified feedback hub" },
-        { question: "Alternatives to Interview Kickstart for system design prep", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Competitive analysis source", mentions: "8 mentions", position: "Rank 2 in alternatives list", competitors: "AlgoExpert, Educative", howShown: "Featured in system design prep comparison" },
-        { question: "Interview Kickstart vs. AlgoExpert: Which is better for coding interviews?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Course comparison article", mentions: "12 mentions", position: "Position 3", competitors: "AlgoExpert, Exponent", howShown: "Highlighted for structured mentorship and mock interview quality" },
-        { question: "Interview Kickstart's ROI: Is it worth the investment?", link: "https://www.yoreoyster.com/review/interview-kickstart/", authority: "YoreOyster – ROI-focused review", mentions: "6 mentions", position: "Top 1 for ROI-related keyword", competitors: "Exponent, Pramp", howShown: "Shown as high-value premium course" },
-        { question: "Interview Kickstart vs. Pramp: Which mock interview platform is better?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Platform comparison site", mentions: "5 mentions", position: "Rank 3 vs Pramp", competitors: "Pramp, AlgoExpert", howShown: "Positioned as structured vs. peer-led contrast" },
-        { question: "How to prepare for system design interviews: Interview Kickstart's approach", link: "https://interviewkickstart.com/reviews", authority: "InterviewKickstart.com – Official resource", mentions: "15 mentions", position: "Rank 2 for system design prep", competitors: "Educative, AlgoExpert", howShown: "Featured as methodology-led prep approach" },
-        { question: "Interview Kickstart's impact on interview success rates", link: "https://interviewkickstart.com/reviews", authority: "InterviewKickstart.com – Student outcomes page", mentions: "18 mentions", position: "Top 3 for success rate queries", competitors: "Exponent, LeetCode", howShown: "Highlighted for measurable student outcomes" }
+        { question: "Is Interview Kickstart worth it?", link: "https://www.yoreoyster.com/review/interview-kickstart/", authority: "YoreOyster.com – High-authority review site", mentions: 14, position: 1, competitors: "Exponent, AlgoExpert, Educative", howShown: "Appears as the most comprehensive FAANG prep program", perception: "Positive" },
+        { question: "Interview Kickstart vs. Exponent: Which is better for FAANG prep?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Trusted comparison platform", mentions: 9, position: 2, competitors: "Exponent, AlgoExpert", howShown: "Featured in direct side-by-side comparison", perception: "Positive" },
+        { question: "Interview Kickstart pricing and course fees", link: "https://www.bestcolleges.com/bootcamps/reviews/interview-kickstart/", authority: "BestColleges – Recognized education resource", mentions: 10, position: 3, competitors: "LeetCode, AlgoExpert", howShown: "Shown as premium pricing tier with ROI justification", perception: "Neutral" },
+        { question: "Interview Kickstart reviews and student testimonials", link: "https://www.trustpilot.com/review/interviewkickstart.com", authority: "TrustPilot – Verified student reviews", mentions: 120, position: 1, competitors: "Exponent, Educative", howShown: "Displayed as verified feedback hub", perception: "Positive" },
+        { question: "Alternatives to Interview Kickstart for system design prep", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Competitive analysis source", mentions: 8, position: 2, competitors: "AlgoExpert, Educative", howShown: "Featured in system design prep comparison", perception: "Neutral" },
+        { question: "Interview Kickstart vs. AlgoExpert: Which is better for coding interviews?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Course comparison article", mentions: 12, position: 3, competitors: "AlgoExpert, Exponent", howShown: "Highlighted for structured mentorship and mock interview quality", perception: "Positive" },
+        { question: "Interview Kickstart's ROI: Is it worth the investment?", link: "https://www.yoreoyster.com/review/interview-kickstart/", authority: "YoreOyster – ROI-focused review", mentions: 6, position: 1, competitors: "Exponent, Pramp", howShown: "Shown as high-value premium course", perception: "Positive" },
+        { question: "Interview Kickstart vs. Pramp: Which mock interview platform is better?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Platform comparison site", mentions: 5, position: 3, competitors: "Pramp, AlgoExpert", howShown: "Positioned as structured vs. peer-led contrast", perception: "Positive" },
+        { question: "How to prepare for system design interviews: Interview Kickstart's approach", link: "https://interviewkickstart.com/reviews", authority: "InterviewKickstart.com – Official resource", mentions: 15, position: 2, competitors: "Educative, AlgoExpert", howShown: "Featured as methodology-led prep approach", perception: "Positive" },
+        { question: "Interview Kickstart's impact on interview success rates", link: "https://interviewkickstart.com/reviews", authority: "InterviewKickstart.com – Student outcomes page", mentions: 18, position: 3, competitors: "Exponent, LeetCode", howShown: "Highlighted for measurable student outcomes", perception: "Positive" }
       ];
 
-      // Build dashboard HTML
+      // Render main dashboard (keeps wizard snapshot and quick actions)
       containerEl.innerHTML = `
         <div>
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;">
@@ -247,21 +338,22 @@
                 <div class="accordion-header" onclick="this.parentElement.classList.toggle('expanded')">
                   <div style="display:flex;flex-direction:column;">
                     <div class="accordion-title">${p.question}</div>
-                    <div class="accordion-meta">${p.authority} • ${p.mentions}</div>
+                    <div class="accordion-meta">${p.authority} • ${p.mentions} mentions</div>
                   </div>
                   <div style="display:flex;flex-direction:column;align-items:flex-end;">
-                    <div class="muted">${p.position}</div>
+                    <div class="muted">Rank ${p.position}</div>
                     <div class="chev">▼</div>
                   </div>
                 </div>
                 <div class="accordion-content">
                   <div class="accordion-inner">
-                    <p><strong>Citation:</strong> <a href="${p.link}" target="_blank">${p.link}</a></p>
+                    <p><strong>Top Citation:</strong> <a href="${p.link}" target="_blank">${p.link}</a></p>
                     <p><strong>Authority:</strong> ${p.authority}</p>
                     <p><strong>Mentions:</strong> ${p.mentions}</p>
-                    <p><strong>Brand Position:</strong> ${p.position}</p>
+                    <p><strong>Brand Position:</strong> Rank ${p.position}</p>
+                    <p><strong>Brand Perception:</strong> <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;background:${p.perception === 'Positive' ? '#E8F8ED' : p.perception === 'Negative' ? '#FFE8E8' : '#F5F5F7'};color:${p.perception === 'Positive' ? '#34C759' : p.perception === 'Negative' ? '#FF6B6B' : '#6B6B70'}">${p.perception}</span></p>
                     <p><strong>Competitors:</strong> ${p.competitors}</p>
-                    <p><strong>How You’re Shown:</strong> ${p.howShown}</p>
+                    <p><strong>How You're Shown:</strong> ${p.howShown}</p>
                   </div>
                 </div>
               </div>
@@ -276,7 +368,7 @@
                 </div>
                 <div class="card">
                   <div class="card-title">Average Position</div>
-                  <div class="metric-large">3.1</div>
+                  <div class="metric-large">2.1</div>
                   <div class="muted">Lower is better (1 = top)</div>
                 </div>
               </div>
@@ -286,14 +378,168 @@
         </div>
       `;
 
-      // Simple accessibility: make accordions keyboard-toggleable
       document.querySelectorAll('.accordion-header').forEach(h => { h.tabIndex = 0; h.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') h.click(); }); });
+
+      // Re-attach open panel button listener as DOM refreshed
+      document.getElementById('openPanel').addEventListener('click', () => { openPanel(); });
     }
 
-    // spin animation
-    const style = document.createElement('style');
-    style.innerHTML = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
-    document.head.appendChild(style);
+    // ---------- Panel open/close ----------
+    const panel = document.getElementById('panel');
+    const openBtn = document.getElementById('openPanel');
+    const closeBtn = document.getElementById('closePanel');
+    const exportBtn = document.getElementById('exportPanel');
+
+    function openPanel(){ panel.classList.add('open'); }
+    function closePanel(){ panel.classList.remove('open'); }
+    openBtn && openBtn.addEventListener('click', openPanel);
+    closeBtn && closeBtn.addEventListener('click', closePanel);
+    exportBtn && exportBtn.addEventListener('click', () => { alert('Export CSV (mock)'); });
+
+    // ---------- Simple Share-of-Voice chart (canvas) ----------
+    (function(){
+      const canvas = document.getElementById('sovChart');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width;
+      const H = canvas.height;
+
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+      const datasets = [
+        { label: 'InterviewKickstart', color: '#d9534f', data: [38, 40, 45, 42, 50, 55], width: 3 },
+        { label: 'AlgoExpert', color: '#f0ad4e', data: [35, 36, 38, 39, 43, 46], width: 2 },
+        { label: 'Educative', color: '#337ab7', data: [30, 32, 33, 34, 36, 38], width: 2 },
+        { label: 'LeetCode', color: '#5bc0de', data: [28, 30, 31, 33, 36, 39], width: 2 },
+        { label: 'Exponent', color: '#5cb85c', data: [25, 26, 27, 28, 30, 33], width: 2 }
+      ];
+
+      // responsive scaling for display (canvas CSS sets width to 100% but internal is fixed)
+      const padding = { left: 44, right: 16, top: 16, bottom: 32 };
+      const chartW = W - padding.left - padding.right;
+      const chartH = H - padding.top - padding.bottom;
+      const maxVal = 80; // percent scale (0-80 in sample)
+
+      function drawGrid(){
+        ctx.clearRect(0,0,W,H);
+        ctx.font = '12px Inter, system-ui';
+        ctx.fillStyle = '#6B6B70';
+
+        // horizontal grid lines
+        ctx.strokeStyle = '#F1F2F4'; ctx.lineWidth = 1;
+        for(let i=0;i<=4;i++){
+          const y = padding.top + (chartH * (i/4));
+          ctx.beginPath(); ctx.moveTo(padding.left, y); ctx.lineTo(padding.left + chartW, y); ctx.stroke();
+          const val = Math.round(maxVal - (maxVal*(i/4)));
+          ctx.fillText(val + '%', 6, y+4);
+        }
+
+        // months labels
+        ctx.fillStyle = '#6B6B70'; ctx.textAlign = 'center';
+        months.forEach((m, idx) => {
+          const x = padding.left + (chartW * (idx/(months.length-1)));
+          ctx.fillText(m, x, H - 8);
+        });
+      }
+
+      function drawLines(){
+        datasets.forEach(ds => {
+          ctx.beginPath();
+          ds.data.forEach((val, i) => {
+            const x = padding.left + (chartW * (i/(ds.data.length-1)));
+            const y = padding.top + chartH - ( (val/maxVal) * chartH );
+            if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+          });
+          ctx.strokeStyle = ds.color; ctx.lineWidth = ds.width; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke();
+
+          // draw circles
+          ds.data.forEach((val, i) =>{
+            const x = padding.left + (chartW * (i/(ds.data.length-1)));
+            const y = padding.top + chartH - ( (val/maxVal) * chartH );
+            ctx.beginPath(); ctx.fillStyle = '#FFF'; ctx.strokeStyle = ds.color; ctx.lineWidth = 2; ctx.arc(x,y,4,0,Math.PI*2); ctx.fill(); ctx.stroke();
+          });
+        });
+      }
+
+      drawGrid(); drawLines();
+
+      // tooltip logic - show month aggregated values on hover
+      const tooltip = document.getElementById('chartTooltip');
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        // find nearest month index by x
+        let nearest = 0; let nearestDist = Infinity;
+        months.forEach((m, idx) => {
+          const x = padding.left + (chartW * (idx/(months.length-1)));
+          const d = Math.abs(mx - x);
+          if(d < nearestDist){ nearest = idx; nearestDist = d; }
+        });
+
+        // position tooltip above the x position
+        const tx = padding.left + (chartW * (nearest/(months.length-1)));
+        tooltip.style.left = (canvas.offsetLeft + tx) + 'px';
+        tooltip.style.top = (canvas.offsetTop + padding.top + 6) + 'px';
+
+        // build html
+        let html = `<div style="font-weight:700;margin-bottom:6px;">${months[nearest]} 2025</div>`;
+        datasets.forEach(ds => { html += `<div style="display:flex;justify-content:space-between;gap:12px;margin:2px 0;"><div style=\"width:100px\">${ds.label}</div><div style=\"font-weight:700;\">${ds.data[nearest]}%</div></div>`; });
+        tooltip.innerHTML = html; tooltip.style.display = 'block';
+      });
+      canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+
+    })();
+
+    // ---------- Low visibility prompts (demo data) ----------
+    (function(){
+      const lowList = document.getElementById('lowList');
+      const filterRank = document.getElementById('filterRank');
+      const sortBy = document.getElementById('sortBy');
+
+      const lowPrompts = [
+        { id:1, question: 'Best free mock interview platforms', link: 'https://igotanoffer.com/en/advice/interview-kickstart-alternatives', authority: 'IGotAnOffer', position: 5, mentions: 4, perception: 'Neutral', competitors: 'Pramp, LeetCode', howShown: 'Appears in listicles as alternative platforms' },
+        { id:2, question: 'Top system design courses for beginners', link: 'https://www.bestcolleges.com/bootcamps/reviews/interview-kickstart/', authority: 'BestColleges', position: 6, mentions: 2, perception: 'Neutral', competitors: 'Educative, AlgoExpert', howShown: 'Ranked lower in aggregated lists' },
+        { id:3, question: 'Affordable coding interview prep options', link: 'https://www.yoreoyster.com/review/interview-kickstart/', authority: 'YoreOyster', position: 4, mentions: 3, perception: 'Neutral', competitors: 'AlgoExpert, LeetCode', howShown: 'Mentioned but not top-ranked' }
+      ];
+
+      function render(list){
+        lowList.innerHTML = '';
+        list.forEach(item => {
+          const el = document.createElement('div'); el.className = 'low-item';
+          el.innerHTML = `
+            <div class="left">
+              <div style="font-weight:700;margin-bottom:6px;">${item.question}</div>
+              <div class="muted">${item.authority} • Rank ${item.position} • ${item.mentions} mentions</div>
+              <div style="margin-top:8px;" class="muted"><strong>Competitors:</strong> ${item.competitors}</div>
+              <div style="margin-top:6px;">${item.howShown}</div>
+            </div>
+            <div style="min-width:120px;text-align:right;display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+              <a href="${item.link}" target="_blank" style="font-weight:600;color:#4A9B8E;">View source</a>
+              <button class="button" style="padding:8px 10px;" onclick="alert('Suggestion: create an optimized comparison page for this query (mock)')">Suggest Action</button>
+            </div>
+          `;
+          lowList.appendChild(el);
+        });
+      }
+
+      function applyFilters(){
+        let filtered = [...lowPrompts];
+        const rankVal = filterRank.value;
+        if(rankVal !== 'all') filtered = filtered.filter(p => p.position >= Number(rankVal));
+        if(sortBy.value === 'mentions') filtered.sort((a,b) => b.mentions - a.mentions); else filtered.sort((a,b) => a.position - b.position);
+        render(filtered);
+      }
+
+      filterRank.addEventListener('change', applyFilters);
+      sortBy.addEventListener('change', applyFilters);
+      applyFilters();
+    })();
+
+    // ---------- accessibility & helpers ----------
+    const style = document.createElement('style'); style.innerHTML = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }'; document.head.appendChild(style);
+
+    // attach openPanel to initial button (in case dashboard not yet rendered)
+    document.getElementById('openPanel') && document.getElementById('openPanel').addEventListener('click', openPanel);
+
   </script>
 </body>
 </html>
