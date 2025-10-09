@@ -79,7 +79,6 @@
 <body>
   <div class="container">
     <div class="content" id="container">
-      <div class="side-toggle"><button class="panel-toggle" id="openPanel">Opportunities & Competitor Analysis</button></div>
 
       <div class="progress"><div class="progress-dot"></div><span>Step 1 of 5</span></div>
       <h1 class="question">What is your category?</h1>
@@ -250,6 +249,46 @@
 
     function step5(){
       containerEl.innerHTML = `
+        function step5(){
+  containerEl.innerHTML = `
+    <div class="progress"><div class="progress-dot"></div><span>Step 5 of 5</span></div>
+    <h1 class="question">List your top 3 competitors</h1>
+    <div style="width:100%;display:flex;flex-direction:column;gap:12px;margin-bottom:12px;">
+      <input type="text" class="input" id="c1" placeholder="Competitor 1">
+      <input type="text" class="input" id="c2" placeholder="Competitor 2">
+      <input type="text" class="input" id="c3" placeholder="Competitor 3">
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <button class="button" id="btn5" disabled>Generate Report</button>
+      <button class="button panel-toggle" id="openPanel">Opportunities & Competitor Analysis</button>
+      <div class="muted">Tip: try AlgoExpert, Educative, LeetCode</div>
+    </div>
+  `;
+
+  const c1 = document.getElementById('c1');
+  const c2 = document.getElementById('c2');
+  const c3 = document.getElementById('c3');
+  const btn5 = document.getElementById('btn5');
+
+  let filled = 0;
+  function check(){ if(filled >= 1){ btn5.disabled = false; } }
+
+  c1.onfocus = function(){ setTimeout(()=>{ if(!c1.value){ c1.value = 'AlgoExpert'; formData.c1 = c1.value; filled++; check(); } }, 150); }
+  c2.onfocus = function(){ setTimeout(()=>{ if(!c2.value){ c2.value = 'Educative'; formData.c2 = c2.value; filled++; check(); } }, 150); }
+  c3.onfocus = function(){ setTimeout(()=>{ if(!c3.value){ c3.value = 'LeetCode'; formData.c3 = c3.value; filled++; check(); } }, 150); }
+
+  c1.oninput = function(){ formData.c1 = c1.value; }
+  c2.oninput = function(){ formData.c2 = c2.value; }
+  c3.oninput = function(){ formData.c3 = c3.value; }
+
+  btn5.onclick = loading;
+
+  // Attach panel open dynamically
+  const openPanelBtn = document.getElementById('openPanel');
+  openPanelBtn && openPanelBtn.addEventListener('click', openPanel);
+}
+
+
         <div class="progress"><div class="progress-dot"></div><span>Step 5 of 5</span></div>
         <h1 class="question">List your top 3 competitors</h1>
         <div style="width:100%;display:flex;flex-direction:column;gap:12px;margin-bottom:12px;">
