@@ -1,502 +1,299 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Interview Kickstart - AEO Dashboard</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-            background: #F5F5F7;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            background: #FFF;
-            width: 100%;
-            max-width: 1440px;
-            height: 900px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        .content {
-            width: 560px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 20px;
-        }
-        .progress {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 48px;
-            font-size: 13px;
-            color: #86868B;
-        }
-        .progress-dot {
-            width: 6px;
-            height: 6px;
-            background: #4A9B8E;
-            border-radius: 50%;
-        }
-        .question {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .input-wrapper {
-            width: 100%;
-            margin-bottom: 40px;
-        }
-        .input {
-            width: 100%;
-            height: 52px;
-            padding: 14px 20px;
-            font-size: 17px;
-            background: #F5F5F7;
-            border: 1px solid #D2D2D7;
-            border-radius: 10px;
-            outline: none;
-        }
-        .input:focus {
-            border: 2px solid #4A9B8E;
-            box-shadow: 0 0 0 4px rgba(74, 155, 142, 0.1);
-        }
-        .button {
-            padding: 16px 32px;
-            font-size: 15px;
-            font-weight: 600;
-            background: #4A9B8E;
-            color: #FFF;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            min-width: 200px;
-        }
-        .button:disabled {
-            background: #D2D2D7;
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        .loading-screen {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 24px;
-        }
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 3px solid #E8E8ED;
-            border-top: 3px solid #4A9B8E;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .dashboard {
-            width: 100%;
-            height: 100%;
-            background: #F5F5F7;
-            padding: 40px;
-            overflow-y: auto;
-        }
-        .dashboard-title {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 32px;
-        }
-        .metrics-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-        .card {
-            background: #FFF;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-        .card-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-        .metric-large {
-            font-size: 48px;
-            font-weight: 600;
-            color: #4A9B8E;
-        }
-        .accordion {
-            background: #FFF;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-        .accordion-header {
-            padding: 20px 24px;
-            display: flex;
-            justify-content: space-between;
-            cursor: pointer;
-            border-bottom: 1px solid #E8E8ED;
-        }
-        .accordion-header:hover {
-            background: #F5F5F7;
-        }
-        .accordion-title {
-            font-size: 20px;
-            font-weight: 600;
-        }
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s;
-        }
-        .accordion.expanded .accordion-content {
-            max-height: 3000px;
-        }
-        .accordion-inner {
-            padding: 32px;
-        }
+  <meta charset="UTF-8">
+  <title>Interview Kickstart - AEO Dashboard v19</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+      background: #F5F5F7;
+      margin: 0;
+      padding: 24px;
+      color: #1D1D1F;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .content {
+      background: #FFF;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+    }
 
-        /* New styles for prompt accordions */
-        .prompt-accordion {
-            background: #FFF;
-            border-radius: 8px;
-            border-left: 3px solid #4A9B8E;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            margin-bottom: 12px;
-            overflow: hidden;
-        }
-        .prompt-header {
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-        .prompt-header:hover {
-            background: #F9F9F9;
-        }
-        .prompt-text {
-            font-size: 15px;
-            color: #1D1D1F;
-            padding-right: 16px;
-        }
-        .prompt-arrow {
-            font-size: 12px;
-            transition: transform 0.3s;
-            color: #86868B;
-        }
-        .prompt-accordion.expanded .prompt-arrow {
-            transform: rotate(180deg);
-        }
-        .prompt-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.35s ease-in-out, padding 0.35s ease-in-out;
-            padding: 0 24px;
-            background: #FAFAFC;
-        }
-        .prompt-accordion.expanded .prompt-content {
-            max-height: 500px;
-            padding: 20px 24px;
-            border-top: 1px solid #E8E8ED;
-        }
-        .prompt-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px 16px;
-        }
-        .detail-item {
-            display: flex;
-            flex-direction: column;
-        }
-        .detail-label {
-            font-size: 13px;
-            color: #86868B;
-            margin-bottom: 4px;
-        }
-        .detail-value {
-            font-size: 15px;
-            font-weight: 500;
-            color: #1D1D1F;
-        }
-        .detail-value a {
-            color: #4A9B8E;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .detail-value a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    /* Stepper / Form */
+    .progress { display:flex; align-items:center; gap:8px; color:#86868B; margin-bottom:12px; font-size:13px; }
+    .progress-dot { width:8px; height:8px; background:#4A9B8E; border-radius:50%; }
+    .question { font-size:22px; font-weight:700; margin-bottom:16px; }
+    .input-wrapper { width:100%; margin-bottom:18px; }
+    .input { width:100%; height:48px; padding:12px 16px; font-size:15px; border-radius:10px; border:1px solid #E6E6EA; background:#F8F8FA; outline:none; }
+    .input:focus { box-shadow:0 0 0 4px rgba(74,155,142,0.08); border:2px solid #4A9B8E; background:#FFF; }
+    .button { padding:12px 20px; border-radius:10px; font-weight:600; background:#4A9B8E; color:#FFF; border:none; cursor:pointer; }
+    .button:disabled{ opacity:0.6; background:#D2D2D7; cursor:not-allowed; }
+
+    /* Dashboard */
+    .dashboard-title { font-size:28px; font-weight:700; margin-bottom:6px; }
+    .dashboard-subtitle { color:#86868B; margin-bottom:20px; }
+
+    .accordion { background:#FFF; border-radius:10px; border-left:3px solid #4A9B8E; margin-bottom:12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); overflow:hidden; }
+    .accordion-header { display:flex; justify-content:space-between; align-items:center; padding:16px 18px; cursor:pointer; transition:background .12s; }
+    .accordion-header:hover { background:#FBFBFC; }
+    .accordion-title { font-size:16px; font-weight:600; }
+    .accordion-meta { font-size:13px; color:#6B6B70; }
+
+    .accordion .chev { transition: transform .18s ease; }
+    .accordion.expanded .chev { transform: rotate(180deg); }
+
+    .accordion-content { max-height:0; overflow:hidden; transition:max-height .32s ease; background:#FAFAFB; }
+    .accordion.expanded .accordion-content { max-height:480px; }
+    .accordion-inner { padding:18px; font-size:14px; color:#333; }
+    .accordion-inner p { margin:6px 0; }
+    a { color:#4A9B8E; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px; }
+    .card { background:#FFF; padding:16px; border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+    .card-title { font-weight:700; margin-bottom:8px; }
+    .metric-large { font-size:28px; color:#4A9B8E; font-weight:700; }
+
+    /* small helper */
+    .muted { color:#6B6B70; font-size:13px; }
+
+    @media (max-width:820px) {
+      .grid { grid-template-columns:1fr; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container" id="container">
-        <div class="content">
-            <div class="progress">
-                <div class="progress-dot"></div>
-                <span>Step 1 of 5</span>
-            </div>
-            <h1 class="question">What is your category?</h1>
-            <div class="input-wrapper">
-                <input type="text" class="input" id="catInput" placeholder="Enter your category">
-            </div>
-            <button class="button" id="btn1" disabled>Continue</button>
-        </div>
+  <div class="container">
+    <div class="content" id="container">
+      <!-- Initial wizard content will be injected here by JS -->
+      <div class="progress"><div class="progress-dot"></div><span>Step 1 of 5</span></div>
+      <h1 class="question">What is your category?</h1>
+      <div class="input-wrapper">
+        <input type="text" class="input" id="catInput" placeholder="Enter your category">
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <button class="button" id="btn1" disabled>Continue</button>
+        <div class="muted">Tip: try "Upskilling / Coaching"</div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        let formData = {};
+  <script>
+    let formData = {};
 
-        const catInput = document.getElementById('catInput');
-        const btn1 = document.getElementById('btn1');
-        
-        catInput.oninput = function() {
-            if (catInput.value.trim()) {
-                formData.category = catInput.value;
-                btn1.disabled = false;
-            } else {
-                btn1.disabled = true;
-            }
-        };
+    // Initial elements
+    const containerEl = document.getElementById('container');
+    const catInput = document.getElementById('catInput');
+    const btn1 = document.getElementById('btn1');
 
-        catInput.onfocus = function() {
-            setTimeout(() => {
-                if (!catInput.value) {
-                    catInput.value = 'Upskilling / Coaching';
-                    formData.category = 'Upskilling / Coaching';
-                    btn1.disabled = false;
-                }
-            }, 300);
-        };
+    catInput.oninput = function() {
+      if (catInput.value.trim()) { formData.category = catInput.value.trim(); btn1.disabled = false; } else { btn1.disabled = true; }
+    }
+    catInput.onfocus = function() { setTimeout(()=>{ if(!catInput.value){ catInput.value = 'Upskilling / Coaching'; formData.category = catInput.value; btn1.disabled = false; } }, 200); }
 
-        btn1.onclick = function() {
-            document.getElementById('container').innerHTML = `
-                <div class="content">
-                    <div class="progress"><div class="progress-dot"></div><span>Step 2 of 5</span></div>
-                    <h1 class="question">What is your brand name?</h1>
-                    <div class="input-wrapper">
-                        <input type="text" class="input" id="brandInput" placeholder="Enter your brand name">
-                    </div>
-                    <button class="button" id="btn2" disabled>Continue</button>
-                </div>`;
-            
-            const brandInput = document.getElementById('brandInput');
-            const btn2 = document.getElementById('btn2');
-            brandInput.onfocus = function() {
-                setTimeout(() => {
-                    brandInput.value = 'Interview Kickstart';
-                    btn2.disabled = false;
-                }, 300);
-            };
-            btn2.onclick = step3;
-        };
+    btn1.onclick = function() {
+      containerEl.innerHTML = `
+        <div class="progress"><div class="progress-dot"></div><span>Step 2 of 5</span></div>
+        <h1 class="question">What is your brand name?</h1>
+        <div class="input-wrapper">
+          <input type="text" class="input" id="brandInput" placeholder="Enter your brand name">
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <button class="button" id="btn2" disabled>Continue</button>
+          <div class="muted">Tip: try "Interview Kickstart"</div>
+        </div>
+      `;
 
-        function step3() {
-            document.getElementById('container').innerHTML = `
-                <div class="content">
-                    <div class="progress"><div class="progress-dot"></div><span>Step 3 of 5</span></div>
-                    <h1 class="question">Which country do you want to track?</h1>
-                    <div class="input-wrapper">
-                        <input type="text" class="input" id="countryInput" placeholder="Enter country">
-                    </div>
-                    <button class="button" id="btn3" disabled>Continue</button>
-                </div>`;
-            
-            const countryInput = document.getElementById('countryInput');
-            const btn3 = document.getElementById('btn3');
-            countryInput.onfocus = function() {
-                setTimeout(() => {
-                    countryInput.value = 'United States';
-                    btn3.disabled = false;
-                }, 300);
-            };
-            btn3.onclick = step4;
-        }
+      const brandInput = document.getElementById('brandInput');
+      const btn2 = document.getElementById('btn2');
+      brandInput.onfocus = function(){ setTimeout(()=>{ if(!brandInput.value){ brandInput.value = 'Interview Kickstart'; formData.brand = brandInput.value; btn2.disabled = false; } }, 200); }
+      brandInput.oninput = function(){ if(brandInput.value.trim()){ formData.brand = brandInput.value.trim(); btn2.disabled = false;} else btn2.disabled = true; }
+      btn2.onclick = step3;
+    }
 
-        function step4() {
-            document.getElementById('container').innerHTML = `
-                <div class="content">
-                    <div class="progress"><div class="progress-dot"></div><span>Step 4 of 5</span></div>
-                    <h1 class="question">What is your website?</h1>
-                    <div class="input-wrapper">
-                        <input type="text" class="input" id="websiteInput" placeholder="Enter website URL">
-                    </div>
-                    <button class="button" id="btn4" disabled>Continue</button>
-                </div>`;
-            
-            const websiteInput = document.getElementById('websiteInput');
-            const btn4 = document.getElementById('btn4');
-            websiteInput.onfocus = function() {
-                setTimeout(() => {
-                    websiteInput.value = 'InterviewKickstart.com';
-                    btn4.disabled = false;
-                }, 300);
-            };
-            btn4.onclick = step5;
-        }
+    function step3(){
+      containerEl.innerHTML = `
+        <div class="progress"><div class="progress-dot"></div><span>Step 3 of 5</span></div>
+        <h1 class="question">Which country do you want to track?</h1>
+        <div class="input-wrapper">
+          <input type="text" class="input" id="countryInput" placeholder="Enter country">
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <button class="button" id="btn3" disabled>Continue</button>
+          <div class="muted">Tip: try "United States"</div>
+        </div>
+      `;
 
-        function step5() {
-            document.getElementById('container').innerHTML = `
-                <div class="content">
-                    <div class="progress"><div class="progress-dot"></div><span>Step 5 of 5</span></div>
-                    <h1 class="question">List your top 3 competitors</h1>
-                    <div style="width:100%;display:flex;flex-direction:column;gap:16px;margin-bottom:40px;">
-                        <input type="text" class="input" id="c1" placeholder="Competitor 1">
-                        <input type="text" class="input" id="c2" placeholder="Competitor 2">
-                        <input type="text" class="input" id="c3" placeholder="Competitor 3">
-                    </div>
-                    <button class="button" id="btn5" disabled>Generate Report</button>
-                </div>`;
-            
-            const c1 = document.getElementById('c1');
-            const c2 = document.getElementById('c2');
-            const c3 = document.getElementById('c3');
-            const btn5 = document.getElementById('btn5');
-            
-            let filled = 0;
-            function check() { if (filled === 3) btn5.disabled = false; }
-            
-            c1.onfocus = function() { setTimeout(() => { c1.value = 'AlgoExpert'; filled++; check(); }, 300); };
-            c2.onfocus = function() { setTimeout(() => { c2.value = 'Educative'; filled++; check(); }, 300); };
-            c3.onfocus = function() { setTimeout(() => { c3.value = 'LeetCode'; filled++; check(); }, 300); };
-            
-            btn5.onclick = loading;
-        }
+      const countryInput = document.getElementById('countryInput');
+      const btn3 = document.getElementById('btn3');
+      countryInput.onfocus = function(){ setTimeout(()=>{ if(!countryInput.value){ countryInput.value = 'United States'; formData.country = countryInput.value; btn3.disabled = false; } }, 200); }
+      countryInput.oninput = function(){ if(countryInput.value.trim()){ formData.country = countryInput.value.trim(); btn3.disabled = false;} else btn3.disabled = true; }
+      btn3.onclick = step4;
+    }
 
-        function loading() {
-            document.getElementById('container').innerHTML = `
-                <div class="loading-screen">
-                    <div class="loading-spinner"></div>
-                    <div style="font-size:17px;color:#86868B;">Generating your report...</div>
-                </div>`;
-            setTimeout(dashboard, 2000);
-        }
+    function step4(){
+      containerEl.innerHTML = `
+        <div class="progress"><div class="progress-dot"></div><span>Step 4 of 5</span></div>
+        <h1 class="question">What is your website?</h1>
+        <div class="input-wrapper">
+          <input type="text" class="input" id="websiteInput" placeholder="Enter website URL">
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <button class="button" id="btn4" disabled>Continue</button>
+          <div class="muted">Tip: try "InterviewKickstart.com"</div>
+        </div>
+      `;
 
-        function dashboard() {
-            document.getElementById('container').innerHTML = `
-                <div class="dashboard">
-                    <div style="margin-bottom: 40px;">
-                        <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 8px; color: #1D1D1F;">
-                            Top High-Visibility Prompts Featuring Interview Kickstart
-                        </h1>
-                        <p style="font-size: 15px; color: #86868B; margin-bottom: 24px;">
-                            These are the key queries where Interview Kickstart appears in AI-powered search results. Click to expand.
-                        </p>
-                        <div id="prompt-list">
-                            </div>
-                    </div>
+      const websiteInput = document.getElementById('websiteInput');
+      const btn4 = document.getElementById('btn4');
+      websiteInput.onfocus = function(){ setTimeout(()=>{ if(!websiteInput.value){ websiteInput.value = 'InterviewKickstart.com'; formData.website = websiteInput.value; btn4.disabled = false; } }, 200); }
+      websiteInput.oninput = function(){ if(websiteInput.value.trim()){ formData.website = websiteInput.value.trim(); btn4.disabled = false;} else btn4.disabled = true; }
+      btn4.onclick = step5;
+    }
 
-                    <div class="accordion">
-                        <div class="accordion-header" onclick="this.parentElement.classList.toggle('expanded')">
-                            <span class="accordion-title">Prompt Deepdive</span>
-                            <span>▼</span>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="accordion-inner">
-                                <p><strong>Prompt:</strong> Best tech interview prep courses</p>
-                                <p style="margin-top:16px;">Interview Kickstart: Position 3.1, Visibility 68%</p>
-                                <p>AlgoExpert: Position 4.5, Visibility 52%</p>
-                                <p>Educative: Position 5.2, Visibility 45%</p>
-                            </div>
-                        </div>
-                    </div>
+    function step5(){
+      containerEl.innerHTML = `
+        <div class="progress"><div class="progress-dot"></div><span>Step 5 of 5</span></div>
+        <h1 class="question">List your top 3 competitors</h1>
+        <div style="width:100%;display:flex;flex-direction:column;gap:12px;margin-bottom:12px;">
+          <input type="text" class="input" id="c1" placeholder="Competitor 1">
+          <input type="text" class="input" id="c2" placeholder="Competitor 2">
+          <input type="text" class="input" id="c3" placeholder="Competitor 3">
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <button class="button" id="btn5" disabled>Generate Report</button>
+          <div class="muted">Tip: try AlgoExpert, Educative, LeetCode</div>
+        </div>
+      `;
 
-                    <div class="accordion">
-                        <div class="accordion-header" onclick="this.parentElement.classList.toggle('expanded')">
-                            <span class="accordion-title">Competitor Analysis</span>
-                            <span>▼</span>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="accordion-inner">
-                                <div class="metrics-row" style="margin-bottom: 32px;">
-                                    <div class="card">
-                                        <h3 class="card-title">Brand Share of Voice</h3>
-                                        <div class="metric-large">68%</div>
-                                    </div>
-                                    <div class="card">
-                                        <h3 class="card-title">Average Position</h3>
-                                        <div class="metric-large">3.1</div>
-                                    </div>
-                                </div>
-                                <p>Interview Kickstart (68%) vs LeetCode (58.8%), AlgoExpert (52.5%), Educative (45.2%), Exponent (41.3%)</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
+      const c1 = document.getElementById('c1');
+      const c2 = document.getElementById('c2');
+      const c3 = document.getElementById('c3');
+      const btn5 = document.getElementById('btn5');
 
-            const prompts = [
-                { q: "Is Interview Kickstart worth it?", url: "https://www.yoreoyster.com/review/interview-kickstart/", domain: "yoreoyster.com", auth: "High", pos: "1.2", mentions: 4, comps: "None" },
-                { q: "Interview Kickstart vs. Exponent: Which is better for FAANG prep?", url: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", domain: "igotanoffer.com", auth: "High", pos: "2.1", mentions: 2, comps: "Exponent" },
-                { q: "Interview Kickstart pricing and course fees", url: "https://www.bestcolleges.com/bootcamps/reviews/interview-kickstart/", domain: "bestcolleges.com", auth: "Medium", pos: "3.5", mentions: 5, comps: "None" },
-                { q: "Interview Kickstart reviews and student testimonials", url: "https://www.trustpilot.com/review/interviewkickstart.com", domain: "trustpilot.com", auth: "High", pos: "1.1", mentions: "8+", comps: "None" },
-                { q: "Alternatives to Interview Kickstart for system design prep", url: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", domain: "igotanoffer.com", auth: "High", pos: "4.3", mentions: 1, comps: "AlgoExpert, Educative" },
-                { q: "Interview Kickstart vs. AlgoExpert: Which is better for coding interviews?", url: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", domain: "igotanoffer.com", auth: "High", pos: "2.4", mentions: 2, comps: "AlgoExpert" },
-                { q: "Interview Kickstart's ROI: Is it worth the investment?", url: "https://www.yoreoyster.com/review/interview-kickstart/", domain: "yoreoyster.com", auth: "High", pos: "1.8", mentions: 3, comps: "None" },
-                { q: "Interview Kickstart vs. Pramp: Which mock interview platform is better?", url: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", domain: "igotanoffer.com", auth: "Medium", pos: "3.1", mentions: 2, comps: "Pramp" },
-                { q: "How to prepare for system design interviews: Interview Kickstart's approach", url: "https://interviewkickstart.com/reviews", domain: "interviewkickstart.com", auth: "High (Owned)", pos: "1.0", mentions: 6, comps: "None" },
-                { q: "Interview Kickstart's impact on interview success rates", url: "https://interviewkickstart.com/reviews", domain: "interviewkickstart.com", auth: "High (Owned)", pos: "1.0", mentions: "5+", comps: "None" },
-            ];
+      let filled = 0;
+      function check(){ if(filled >= 1){ btn5.disabled = false; } }
 
-            const promptListContainer = document.getElementById('prompt-list');
-            let promptHTML = '';
-            prompts.forEach(p => {
-                promptHTML += `
-                    <div class="prompt-accordion">
-                        <div class="prompt-header">
-                            <span class="prompt-text">“${p.q}”</span>
-                            <span class="prompt-arrow">▼</span>
-                        </div>
-                        <div class="prompt-content">
-                            <div class="prompt-details">
-                                <div class="detail-item">
-                                    <span class="detail-label">Citation</span>
-                                    <span class="detail-value"><a href="${p.url}" target="_blank">${p.domain}</a></span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">Citation Authority</span>
-                                    <span class="detail-value">${p.auth}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">Brand Position</span>
-                                    <span class="detail-value">${p.pos}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">Number of Mentions</span>
-                                    <span class="detail-value">${p.mentions}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">Competitors Mentioned</span>
-                                    <span class="detail-value">${p.comps}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            promptListContainer.innerHTML = promptHTML;
+      c1.onfocus = function(){ setTimeout(()=>{ if(!c1.value){ c1.value = 'AlgoExpert'; formData.c1 = c1.value; filled++; check(); } }, 150); }
+      c2.onfocus = function(){ setTimeout(()=>{ if(!c2.value){ c2.value = 'Educative'; formData.c2 = c2.value; filled++; check(); } }, 150); }
+      c3.onfocus = function(){ setTimeout(()=>{ if(!c3.value){ c3.value = 'LeetCode'; formData.c3 = c3.value; filled++; check(); } }, 150); }
 
-            document.querySelectorAll('.prompt-header').forEach(header => {
-                header.addEventListener('click', event => {
-                    header.parentElement.classList.toggle('expanded');
-                });
-            });
-        }
-    </script>
+      c1.oninput = function(){ formData.c1 = c1.value; }
+      c2.oninput = function(){ formData.c2 = c2.value; }
+      c3.oninput = function(){ formData.c3 = c3.value; }
+
+      btn5.onclick = loading;
+    }
+
+    function loading(){
+      containerEl.innerHTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;">
+          <div style="width:64px;height:64px;border-radius:50%;border:4px solid #EEF0F2;border-top:4px solid #4A9B8E;animation:spin 1s linear infinite"></div>
+          <div style="margin-top:18px;color:#86868B;font-size:15px;">Generating your report... </div>
+        </div>
+      `;
+      setTimeout(dashboard, 900);
+    }
+
+    function dashboard(){
+      // Default prompts array (same as the v19 dashboard)
+      const prompts = [
+        { question: "Is Interview Kickstart worth it?", link: "https://www.yoreoyster.com/review/interview-kickstart/", authority: "YoreOyster.com – High-authority review site", mentions: "14 mentions", position: "Rank 1 for ROI-related searches", competitors: "Exponent, AlgoExpert, Educative", howShown: "Appears as the most comprehensive FAANG prep program" },
+        { question: "Interview Kickstart vs. Exponent: Which is better for FAANG prep?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Trusted comparison platform", mentions: "9 mentions", position: "Position 2 vs Exponent", competitors: "Exponent, AlgoExpert", howShown: "Featured in direct side-by-side comparison" },
+        { question: "Interview Kickstart pricing and course fees", link: "https://www.bestcolleges.com/bootcamps/reviews/interview-kickstart/", authority: "BestColleges – Recognized education resource", mentions: "10 mentions", position: "Top 3 for pricing transparency", competitors: "LeetCode, AlgoExpert", howShown: "Shown as premium pricing tier with ROI justification" },
+        { question: "Interview Kickstart reviews and student testimonials", link: "https://www.trustpilot.com/review/interviewkickstart.com", authority: "TrustPilot – Verified student reviews", mentions: "120+ mentions", position: "High sentiment visibility", competitors: "Exponent, Educative", howShown: "Displayed as verified feedback hub" },
+        { question: "Alternatives to Interview Kickstart for system design prep", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Competitive analysis source", mentions: "8 mentions", position: "Rank 2 in alternatives list", competitors: "AlgoExpert, Educative", howShown: "Featured in system design prep comparison" },
+        { question: "Interview Kickstart vs. AlgoExpert: Which is better for coding interviews?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Course comparison article", mentions: "12 mentions", position: "Position 3", competitors: "AlgoExpert, Exponent", howShown: "Highlighted for structured mentorship and mock interview quality" },
+        { question: "Interview Kickstart's ROI: Is it worth the investment?", link: "https://www.yoreoyster.com/review/interview-kickstart/", authority: "YoreOyster – ROI-focused review", mentions: "6 mentions", position: "Top 1 for ROI-related keyword", competitors: "Exponent, Pramp", howShown: "Shown as high-value premium course" },
+        { question: "Interview Kickstart vs. Pramp: Which mock interview platform is better?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Platform comparison site", mentions: "5 mentions", position: "Rank 3 vs Pramp", competitors: "Pramp, AlgoExpert", howShown: "Positioned as structured vs. peer-led contrast" },
+        { question: "How to prepare for system design interviews: Interview Kickstart's approach", link: "https://interviewkickstart.com/reviews", authority: "InterviewKickstart.com – Official resource", mentions: "15 mentions", position: "Rank 2 for system design prep", competitors: "Educative, AlgoExpert", howShown: "Featured as methodology-led prep approach" },
+        { question: "Interview Kickstart's impact on interview success rates", link: "https://interviewkickstart.com/reviews", authority: "InterviewKickstart.com – Student outcomes page", mentions: "18 mentions", position: "Top 3 for success rate queries", competitors: "Exponent, LeetCode", howShown: "Highlighted for measurable student outcomes" }
+      ];
+
+      // Build dashboard HTML
+      containerEl.innerHTML = `
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;">
+            <div style="flex:1">
+              <h1 class="dashboard-title">Top High-Visibility Prompts Featuring Interview Kickstart</h1>
+              <div class="dashboard-subtitle">Key queries where Interview Kickstart appears prominently in AI and organic search results</div>
+            </div>
+            <div style="width:320px">
+              <div class="card" style="padding:12px 14px;margin-bottom:12px;">
+                <div class="card-title">Snapshot</div>
+                <div class="muted">Brand: <strong>Interview Kickstart</strong></div>
+                <div class="muted">Country: <strong>${formData.country || 'United States'}</strong></div>
+                <div class="muted">Website: <strong>${formData.website || 'InterviewKickstart.com'}</strong></div>
+              </div>
+              <div class="card">
+                <div class="card-title">Quick Actions</div>
+                <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+                  <button class="button" onclick="alert('Exporting CSV (mock)')">Export data</button>
+                  <button class="button" style="background:#2D2D2F;" onclick="alert('Sharing (mock)')">Share report</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:18px;">
+            ${prompts.map(p => `
+              <div class="accordion">
+                <div class="accordion-header" onclick="this.parentElement.classList.toggle('expanded')">
+                  <div style="display:flex;flex-direction:column;">
+                    <div class="accordion-title">${p.question}</div>
+                    <div class="accordion-meta">${p.authority} • ${p.mentions}</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end;">
+                    <div class="muted">${p.position}</div>
+                    <div class="chev">▼</div>
+                  </div>
+                </div>
+                <div class="accordion-content">
+                  <div class="accordion-inner">
+                    <p><strong>Citation:</strong> <a href="${p.link}" target="_blank">${p.link}</a></p>
+                    <p><strong>Authority:</strong> ${p.authority}</p>
+                    <p><strong>Mentions:</strong> ${p.mentions}</p>
+                    <p><strong>Brand Position:</strong> ${p.position}</p>
+                    <p><strong>Competitors:</strong> ${p.competitors}</p>
+                    <p><strong>How You’re Shown:</strong> ${p.howShown}</p>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+
+            <div style="margin-top:20px;">
+              <div class="grid">
+                <div class="card">
+                  <div class="card-title">Brand Share of Voice</div>
+                  <div class="metric-large">68%</div>
+                  <div class="muted">vs LeetCode 58.8%, AlgoExpert 52.5%</div>
+                </div>
+                <div class="card">
+                  <div class="card-title">Average Position</div>
+                  <div class="metric-large">3.1</div>
+                  <div class="muted">Lower is better (1 = top)</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      // Simple accessibility: make accordions keyboard-toggleable
+      document.querySelectorAll('.accordion-header').forEach(h => { h.tabIndex = 0; h.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') h.click(); }); });
+    }
+
+    // spin animation
+    const style = document.createElement('style');
+    style.innerHTML = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+  </script>
 </body>
 </html>
