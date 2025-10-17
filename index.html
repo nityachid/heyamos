@@ -1,1164 +1,683 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Interview Kickstart - AEO Dashboard v11</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <title>Elfie — AEO Dashboard v12 (Digital Health, Singapore)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
-      background: #F5F5F7;
-      margin: 0;
-      padding: 24px;
-      color: #1D1D1F;
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.5;
-    }
-    .container { max-width: 1000px; margin: 0 auto; }
-    .content { background: #FFF; border-radius: 16px; padding: 40px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
-
-    /* Stepper / Form */
-    .progress { display:flex; align-items:center; gap:8px; color:#86868B; margin-bottom:16px; font-size:13px; font-weight:500; }
-    .progress-dot { width:8px; height:8px; background:#4A9B8E; border-radius:50%; }
-    .question { font-size:24px; font-weight:600; margin-bottom:20px; letter-spacing:-0.02em; }
-    .input-wrapper { width:100%; margin-bottom:20px; }
-    .input { width:100%; height:52px; padding:14px 16px; font-size:16px; border-radius:12px; border:1px solid #D2D2D7; background:#FFF; outline:none; transition: all 0.2s; font-family: inherit; }
-    .input:focus { box-shadow:0 0 0 4px rgba(74,155,142,0.12); border:2px solid #4A9B8E; padding:13px 15px; }
-    .button { padding:14px 24px; border-radius:12px; font-weight:600; font-size:15px; background:#4A9B8E; color:#FFF; border:none; cursor:pointer; transition: all 0.2s; }
-    .button:hover { background:#3d8275; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(74,155,142,0.3); }
-    .button:active { transform: translateY(0); }
-    .button:disabled{ opacity:0.5; background:#D2D2D7; cursor:not-allowed; transform: none; }
-    .button-secondary { background:#F5F5F7; color:#1D1D1F; border:1.5px solid #D2D2D7; }
-    .button-secondary:hover { background:#E8E8ED; border-color:#86868B; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-
-    /* Dashboard */
-    .report-header { text-align:center; padding:32px 0 40px 0; border-bottom:1px solid #F0F0F2; margin-bottom:48px; }
-    .report-title { font-size:40px; font-weight:700; margin-bottom:8px; letter-spacing:-0.04em; color:#1D1D1F; }
-    .report-meta { font-size:15px; color:#86868B; font-weight:500; }
-
-    .section-title { font-size:32px; font-weight:700; margin-bottom:8px; letter-spacing:-0.03em; }
-    .section-subtitle { color:#86868B; margin-bottom:40px; font-size:16px; line-height:1.5; }
-
-    .accordion { background:#FFF; border-radius:12px; border:1px solid #E8E8ED; margin-bottom:8px; overflow:hidden; transition: all 0.2s; }
-    .accordion:hover { border-color:#D2D2D7; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transform: scale(1.005); }
-    .accordion-header { display:flex; justify-content:space-between; align-items:center; padding:20px 24px; cursor:pointer; transition:background .15s; }
-    .accordion-header:hover { background:#FAFAFA; }
-    .accordion-title { font-size:16px; font-weight:600; color:#1D1D1F; letter-spacing:-0.01em; line-height:1.4; }
-
-    .accordion .chev { transition: transform .25s cubic-bezier(0.4, 0, 0.2, 1); color:#86868B; font-size:18px; }
-    .accordion.expanded .chev { transform: rotate(180deg); }
-
-    .accordion-content { max-height:0; overflow:hidden; transition:max-height .35s cubic-bezier(0.4, 0, 0.2, 1); background:#FAFAFA; }
-    .accordion.expanded .accordion-content { max-height:800px; }
-    .accordion-inner { padding:24px; font-size:14px; color:#1D1D1F; line-height:1.7; border-top:1px solid #E8E8ED; }
-    .accordion-inner p { margin:12px 0; }
-    .accordion-inner p:first-child { margin-top:0; }
-    a { color:#4A9B8E; text-decoration:none; font-weight:500; }
-    a:hover { text-decoration:underline; }
-
-    .accordion.secondary { border-color:#F0F0F2; }
-    .accordion.secondary:hover { border-color:#E8E8ED; }
-
-    .muted { color:#86868B; font-size:13px; font-weight:400; }
-    .rank-badge { display:inline-block; padding:6px 12px; background:#F5F5F7; border-radius:8px; font-size:13px; font-weight:600; color:#6B6B70; }
-    .rank-badge.critical { background:#FFF3E0; color:#D97706; }
-    .rank-badge.success { background:#E8F8ED; color:#059669; }
-
-    .show-more-wrapper { text-align:center; margin:32px 0 56px 0; }
-
-    .chart-wrap { background:#FAFAFA; padding:24px; border-radius:12px; margin-bottom:24px; border:1px solid #E8E8ED; }
-    canvas { width:100%; height:240px; display:block; }
-    .tooltip { position:absolute; background:#1D1D1F; color:#FFF; padding:12px 14px; font-size:13px; border-radius:8px; pointer-events:none; transform:translate(-50%,-120%); white-space:nowrap; z-index:100; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-
-    .activity-card { display:flex; align-items:flex-start; gap:16px; padding:16px; background:#FAFAFA; border-radius:10px; margin-bottom:12px; border-left:4px solid; }
-    .activity-card.positive { border-left-color:#10B981; }
-    .activity-card.negative { border-left-color:#EF4444; }
-    .activity-card.neutral { border-left-color:#3B82F6; }
-
-    .gap-card { background:#FFF; border:2px solid #E8E8ED; border-radius:12px; padding:24px; margin-bottom:16px; transition: all 0.2s; }
-    .gap-card:hover { border-color:#4A9B8E; box-shadow: 0 4px 12px rgba(74,155,142,0.15); }
-    .gap-card.checked { border-color:#4A9B8E; background:#F8FAF9; }
-
-    .checkbox-priority { width:20px; height:20px; border:2px solid #D2D2D7; border-radius:6px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition: all 0.2s; cursor:pointer; }
-    .checkbox-priority:hover { border-color:#4A9B8E; }
-    .checkbox-priority.checked { background:#4A9B8E; border-color:#4A9B8E; }
-    .checkbox-priority.checked::after { content:'✓'; color:#FFF; font-size:14px; font-weight:700; }
-
-    .tactical-options { margin-top:16px; padding-top:16px; border-top:1px solid #E8E8ED; }
-    .tactical-item { font-size:13px; color:#1D1D1F; padding:8px 0; padding-left:20px; position:relative; }
-    .tactical-item::before { content:'•'; position:absolute; left:8px; color:#4A9B8E; font-weight:700; }
-
-    .connector { text-align:center; margin:40px 0; }
-    .connector-line { width:2px; height:40px; background:linear-gradient(to bottom, #E8E8ED 0%, transparent 100%); margin:0 auto 16px auto; }
-    .connector-text { font-size:13px; color:#86868B; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
-
-    .suggestion-box { background:#F0F9FF; border:1px solid #BFDBFE; padding:16px; border-radius:10px; margin-top:16px; }
-    .suggestion-title { font-weight:600; color:#1E40AF; margin-bottom:8px; font-size:14px; }
-    .suggestion-text { color:#1E3A8A; font-size:13px; line-height:1.6; }
-
-    @media (max-width:900px) { 
-      .container { padding:16px; } 
-      .content { padding:24px; } 
-      .section-title { font-size:28px; }
-      .report-title { font-size:32px; }
-    }
-
-    @keyframes countUp { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
-    @keyframes progressGrow { from { width:0; } }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .animate-in { animation: countUp 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+    * { box-sizing:border-box; }
+    body { font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter',sans-serif; background:#F5F5F7; margin:0; padding:24px; color:#1D1D1F; -webkit-font-smoothing:antialiased; }
+    .container{ max-width:1150px; margin:0 auto; }
+    .content{ background:#FFF; border-radius:16px; padding:32px; box-shadow:0 4px 16px rgba(0,0,0,.06); }
+    .progress{ display:flex; align-items:center; gap:8px; color:#86868B; margin-bottom:16px; font-size:13px; font-weight:600; }
+    .progress-dot{ width:8px; height:8px; background:#10B981; border-radius:50%; } /* Elfie-ish green accent */
+    .question{ font-size:24px; font-weight:700; margin-bottom:16px; }
+    .input{ width:100%; height:50px; padding:12px 14px; font-size:16px; border-radius:12px; border:1px solid #D2D2D7; outline:none; transition:.2s; }
+    .input:focus{ border:2px solid #10B981; box-shadow:0 0 0 4px rgba(16,185,129,.12); }
+    .button{ padding:12px 18px; border-radius:12px; font-weight:700; font-size:14px; background:#10B981; color:#FFF; border:none; cursor:pointer; transition:.15s; }
+    .button:hover{ background:#0ea371; transform:translateY(-1px); box-shadow:0 4px 12px rgba(16,185,129,.3); }
+    .button:disabled{ opacity:.5; cursor:not-allowed; }
+    .tabbar{ position:sticky; top:0; background:#FFF; padding:8px 0; z-index:10; border-bottom:1px solid #E5E7EB; display:flex; gap:8px; }
+    .tab{ border:none; background:#F3F4F6; color:#111827; padding:8px 14px; border-radius:22px; font-weight:700; cursor:pointer; }
+    .tab.active{ background:#10B981; color:#FFF; }
+    .section{ display:none; }
+    .section.active{ display:block; animation:fade .35s ease; }
+    @keyframes fade{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+    .report-header{ text-align:center; padding:24px 0 28px; }
+    .report-title{ font-size:34px; font-weight:800; letter-spacing:-.02em; }
+    .badge{ display:inline-flex; gap:6px; align-items:center; padding:6px 12px; border-radius:20px; font-size:13px; font-weight:700; }
+    .badge.good{ background:#ECFDF5; color:#065F46; }
+    .card{ background:#FAFAFA; border:1px solid #E8E8ED; border-radius:12px; padding:18px; }
+    .accordion{ background:#FFF; border:1px solid #E8E8ED; border-radius:12px; overflow:hidden; margin-bottom:10px; }
+    .accordion:hover{ box-shadow:0 2px 10px rgba(0,0,0,.05); }
+    .acc-head{ display:flex; justify-content:space-between; align-items:center; padding:18px 20px; cursor:pointer; }
+    .acc-title{ font-size:16px; font-weight:700; }
+    .acc-chev{ color:#6B7280; transition:.2s; }
+    .accordion.expanded .acc-chev{ transform:rotate(180deg); }
+    .acc-body{ max-height:0; overflow:hidden; transition:max-height .35s ease; background:#FAFAFA; border-top:1px solid #E8E8ED; }
+    .accordion.expanded .acc-body{ max-height:1000px; }
+    table{ width:100%; border-collapse:collapse; }
+    th,td{ padding:10px 12px; font-size:13px; }
+    thead th{ background:#10B981; color:#FFF; text-align:left; }
+    .pill{ display:inline-block; padding:2px 8px; border-radius:8px; font-size:12px; font-weight:700; }
+    .pill.pos{ background:#E8F8ED; color:#059669; }
+    .pill.neu{ background:#F3F4F6; color:#374151; }
+    .pill.neg{ background:#FEE2E2; color:#B91C1C; }
+    .gap-card{ background:#FFF; border:2px solid #E8E8ED; border-radius:12px; padding:20px; margin-bottom:14px; }
+    .gap-card:hover{ border-color:#10B981; box-shadow:0 4px 12px rgba(16,185,129,.15); }
+    .tick{ width:20px; height:20px; border:2px solid #D1D5DB; border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+    .tick.checked{ background:#10B981; border-color:#10B981; color:#FFF; font-weight:900; }
+    .chart-wrap{ position:relative; background:#FAFAFA; border:1px solid #E8E8ED; border-radius:12px; padding:16px; }
+    canvas{ display:block; width:100%; height:300px; }
+    .tooltip{ position:absolute; background:#111827; color:#FFF; padding:10px 12px; font-size:12px; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,.3); pointer-events:none; display:none; white-space:nowrap; }
+    .hero{ background:linear-gradient(135deg,#ECFDF5 0%,#DCFCE7 100%); border:1px solid #bbf7d0; border-radius:16px; padding:28px; text-align:center; }
+    .subtle{ color:#6B7280; font-size:13px; }
+    .opp-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:20px;}
+    .opp-card{background:#FFF;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,.04);padding:18px 20px;border-left:5px solid #10B981;transition:.2s;}
+    .opp-card:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.08);}
+    .opp-card h4{margin:0 0 6px;font-size:16px;}
+    .opp-card p{margin:0;font-size:14px;color:#374151;}
+    .ghost-btn{background:transparent;border:1.5px solid #10B981;color:#065F46;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:700;margin-top:10px;}
+    .ghost-btn:hover{background:#ECFDF5;}
+    @keyframes spin{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="content" id="container">
-      <div class="progress"><div class="progress-dot"></div><span>Step 1 of 5</span></div>
-      <h1 class="question">What is your category?</h1>
-      <div class="input-wrapper">
-        <input type="text" class="input" id="catInput" placeholder="Enter your category">
+<div class="container">
+  <div class="content" id="root">
+    <!-- Step 1 -->
+    <div class="progress"><div class="progress-dot"></div><span>Step 1 of 5</span></div>
+    <div class="question">What is your category?</div>
+    <input id="cat" class="input" placeholder="Enter your category" />
+    <div style="margin-top:14px;"><button id="btn1" class="button" disabled>Continue</button> <span class="subtle">Prefilled: Digital Health & Wellness Engagement</span></div>
+  </div>
+</div>
+
+<script>
+let state = {};
+const root = document.getElementById('root');
+const cat = document.getElementById('cat');
+const btn1 = document.getElementById('btn1');
+setTimeout(()=>{cat.value='Digital Health & Wellness Engagement'; state.category='Digital Health & Wellness Engagement'; btn1.disabled=false;},250);
+cat.oninput=()=>{state.category=cat.value.trim(); btn1.disabled=!state.category; };
+btn1.onclick=step2;
+
+function step2(){
+  root.innerHTML = `
+    <div class="progress"><div class="progress-dot"></div><span>Step 2 of 5</span></div>
+    <div class="question">What is your brand?</div>
+    <input id="brand" class="input" placeholder="Enter your brand" />
+    <div style="margin-top:14px;"><button id="btn2" class="button" disabled>Continue</button> <span class="subtle">Prefilled: Elfie</span></div>`;
+  const b=document.getElementById('brand'); const btn2=document.getElementById('btn2');
+  setTimeout(()=>{b.value='Elfie'; state.brand='Elfie'; btn2.disabled=false;},200);
+  b.oninput=()=>{state.brand=b.value.trim(); btn2.disabled=!state.brand; };
+  btn2.onclick=step3;
+}
+
+function step3(){
+  root.innerHTML = `
+    <div class="progress"><div class="progress-dot"></div><span>Step 3 of 5</span></div>
+    <div class="question">Which country?</div>
+    <input id="country" class="input" placeholder="Enter country" />
+    <div style="margin-top:14px;"><button id="btn3" class="button" disabled>Continue</button> <span class="subtle">Prefilled: Singapore</span></div>`;
+  const c=document.getElementById('country'); const btn3=document.getElementById('btn3');
+  setTimeout(()=>{c.value='Singapore'; state.country='Singapore'; btn3.disabled=false;},200);
+  c.oninput=()=>{state.country=c.value.trim(); btn3.disabled=!state.country; };
+  btn3.onclick=step4;
+}
+
+function step4(){
+  root.innerHTML = `
+    <div class="progress"><div class="progress-dot"></div><span>Step 4 of 5</span></div>
+    <div class="question">Website?</div>
+    <input id="site" class="input" placeholder="Enter website URL" />
+    <div style="margin-top:14px;"><button id="btn4" class="button" disabled>Continue</button> <span class="subtle">Prefilled: elfie.co</span></div>`;
+  const s=document.getElementById('site'); const btn4=document.getElementById('btn4');
+  setTimeout(()=>{s.value='https://www.elfie.co/'; state.website=s.value; btn4.disabled=false;},200);
+  s.oninput=()=>{state.website=s.value.trim(); btn4.disabled=!state.website; };
+  btn4.onclick=step5;
+}
+
+function step5(){
+  root.innerHTML = `
+    <div class="progress"><div class="progress-dot"></div><span>Step 5 of 5</span></div>
+    <div class="question">Top competitors</div>
+    <input id="c1" class="input" placeholder="Competitor 1" />
+    <input id="c2" class="input" placeholder="Competitor 2" style="margin-top:10px;" />
+    <input id="c3" class="input" placeholder="Competitor 3" style="margin-top:10px;" />
+    <div style="margin-top:14px;"><button id="btn5" class="button" disabled>Generate Report</button> <span class="subtle">Prefilled: AIA Vitality, Prudential Pulse, Naluri</span></div>`;
+  const c1=document.getElementById('c1'), c2=document.getElementById('c2'), c3=document.getElementById('c3'), btn5=document.getElementById('btn5');
+  setTimeout(()=>{c1.value='AIA Vitality';c2.value='Prudential Pulse';c3.value='Naluri'; state.c1=c1.value; state.c2=c2.value; state.c3=c3.value; btn5.disabled=false;},200);
+  [c1,c2,c3].forEach(el=>el.oninput=()=>{state.c1=c1.value.trim();state.c2=c2.value.trim();state.c3=c3.value.trim(); btn5.disabled=!(state.c1||state.c2||state.c3);});
+  btn5.onclick=loading;
+}
+
+/* ---- Loading (≈10s) ---- */
+function loading(){
+  const steps=[
+    'Crawling Elfie site, programs & rewards',
+    'Parsing condition hubs (diabetes, BP) and engagement features',
+    'Analyzing AIA Vitality, Prudential Pulse, and Naluri content',
+    'Processing digital health discovery queries (rewards, adherence, HR)',
+    'Computing Share of Voice & sentiment across AI engines',
+    'Detecting visibility gaps (insurer-linked rewards, clinical phrasing)',
+    'Building competitive leaderboards & charts',
+    'Generating Elfie visibility dashboard'
+  ];
+  let html = `<div style="text-align:center;padding:56px 12px;">
+    <div style="width:64px;height:64px;border:4px solid #E5E7EB;border-top:4px solid #10B981;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;"></div>
+    <h2 style="margin:18px 0 6px;">Generating your Elfie report…</h2>
+    <div class="subtle">High-fidelity analysis for ${state.country||'Singapore'}</div>
+    <div style="max-width:520px;margin:18px auto;text-align:left;">`;
+  steps.forEach((t,i)=>{
+    html+=`<div id="lg${i}" style="opacity:.45;display:flex;align-items:center;gap:10px;padding:10px 0;">
+      <div style="width:16px;height:16px;border:2px solid #D1D5DB;border-radius:50%;"></div>
+      <div>${t}</div>
+    </div>`;
+  });
+  html+=`</div></div>`;
+  root.innerHTML = html;
+  steps.forEach((_,i)=>setTimeout(()=>{
+    const el=document.getElementById('lg'+i);
+    if(!el) return;
+    el.style.opacity=1;
+    const dot=el.children[0];
+    dot.style.background='#10B981'; dot.style.border='2px solid #10B981'; dot.innerHTML='<span style="color:#FFF;font-size:10px;font-weight:900;">✓</span>';
+  }, i*1200));
+  setTimeout(dashboard, steps.length*1200+300);
+}
+
+/* ---- Dashboard ---- */
+function dashboard(){
+  const brand = state.brand || 'Elfie';
+  const comp1 = state.c1 || 'AIA Vitality', comp2 = state.c2 || 'Prudential Pulse', comp3 = state.c3 || 'Naluri';
+
+  root.innerHTML = `
+    <div class="tabbar">
+      <button class="tab active" onclick="switchTab('overview', this)">💬 Channel Overview</button>
+      <button class="tab" onclick="switchTab('strengths', this)">💪 Strengths</button>
+      <button class="tab" onclick="switchTab('gaps', this)">⚠️ Gaps</button>
+      <button class="tab" onclick="switchTab('opps', this)">🚀 Opportunities</button>
+    </div>
+
+    <div id="overview" class="section active">
+      <div class="report-header">
+        <div class="report-title">${brand} in ${state.country || 'Singapore'}</div>
+        <div style="font-size:72px;font-weight:900;color:#065F46;line-height:1;">63</div>
+        <div class="badge good" style="margin-top:8px;"><span>↑</span><span>+5% from last month</span></div>
+        <div style="margin-top:10px;" class="subtle">Category: ${state.category || 'Digital Health & Wellness Engagement'}</div>
       </div>
-      <div style="display:flex;gap:12px;align-items:center;">
-        <button class="button" id="btn1" disabled>Continue</button>
-        <div class="muted">Tip: try "Upskilling / Coaching"</div>
+
+      <div class="chart-wrap">
+        <div style="font-weight:800;margin-bottom:8px;">Competitor Share of Voice — last 6 months</div>
+        <canvas id="sov"></canvas>
+        <div id="tip" class="tooltip"></div>
+      </div>
+
+      <div style="margin:10px 0 24px;" class="subtle">
+        ${brand} leads for gamified engagement and adherence challenges; ${comp1} dominates insurer-linked rewards, while ${comp2} has strong health navigation content and ${comp3} is recognized for behavior change coaching.
+      </div>
+
+      <h3 style="font-size:18px;margin:10px 0 8px;">Top Prompts for Your Category</h3>
+      <div class="card">
+        <table>
+          <thead><tr><th>Prompt</th><th>Volume</th><th>Rank</th><th>Perception</th></tr></thead>
+          <tbody>
+            <tr><td>Best health rewards app Singapore</td><td><span class="pill pos">High</span></td><td><strong>3</strong></td><td><span class="pill neu">Neutral</span></td></tr>
+            <tr><td>Digital patient engagement platform Singapore</td><td><span class="pill neu">High</span></td><td><strong>2</strong></td><td><span class="pill pos">Positive</span></td></tr>
+            <tr><td>Medication adherence rewards app</td><td><span class="pill neu">Medium</span></td><td><strong>1</strong></td><td><span class="pill pos">Positive</span></td></tr>
+            <tr><td>Chronic disease management app Singapore</td><td><span class="pill neu">Medium</span></td><td><strong>3</strong></td><td><span class="pill neu">Neutral</span></td></tr>
+            <tr><td>${comp1} vs ${brand} comparison</td><td><span class="pill neu">High</span></td><td><strong>4</strong></td><td><span class="pill neu">Neutral</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="font-size:18px;margin:14px 0 8px;">Recent Competitive Activity</h3>
+      <div class="card">
+        <ul style="margin:0 0 0 18px;">
+          <li>${comp1} added new lifestyle partners and boosted earn rates (+6% visibility)</li>
+          <li>${comp2} launched proactive checkup nudges in-app (+4%)</li>
+          <li>${brand} introduced a condition-based adherence challenge (+5%)</li>
+          <li>${comp3} expanded corporate mental wellbeing programs (+3%)</li>
+        </ul>
       </div>
     </div>
-  </div>
 
-  <script>
-    let formData = {};
-    let currentSoV = 55;
-    let checkedImpact = 0;
-
-    const containerEl = document.getElementById('container');
-    const catInput = document.getElementById('catInput');
-    const btn1 = document.getElementById('btn1');
-
-    catInput.oninput = function() {
-      if (catInput.value.trim()) { formData.category = catInput.value.trim(); btn1.disabled = false; } else { btn1.disabled = true; }
-    }
-    catInput.onfocus = function() { setTimeout(()=>{ if(!catInput.value){ catInput.value = 'Upskilling / Coaching'; formData.category = catInput.value; btn1.disabled = false; } }, 200); }
-
-    btn1.onclick = function() {
-      containerEl.innerHTML = `
-        <div class="progress"><div class="progress-dot"></div><span>Step 2 of 5</span></div>
-        <h1 class="question">What is your brand name?</h1>
-        <div class="input-wrapper">
-          <input type="text" class="input" id="brandInput" placeholder="Enter your brand name">
-        </div>
-        <div style="display:flex;gap:12px;align-items:center;">
-          <button class="button" id="btn2" disabled>Continue</button>
-          <div class="muted">Tip: try "Interview Kickstart"</div>
-        </div>
-      `;
-
-      const brandInput = document.getElementById('brandInput');
-      const btn2 = document.getElementById('btn2');
-      brandInput.onfocus = function(){ setTimeout(()=>{ if(!brandInput.value){ brandInput.value = 'Interview Kickstart'; formData.brand = brandInput.value; btn2.disabled = false; } }, 200); }
-      brandInput.oninput = function(){ if(brandInput.value.trim()){ formData.brand = brandInput.value.trim(); btn2.disabled = false;} else btn2.disabled = true; }
-      btn2.onclick = step3;
-    }
-
-    function step3(){
-      containerEl.innerHTML = `
-        <div class="progress"><div class="progress-dot"></div><span>Step 3 of 5</span></div>
-        <h1 class="question">Which country do you want to track?</h1>
-        <div class="input-wrapper">
-          <input type="text" class="input" id="countryInput" placeholder="Enter country">
-        </div>
-        <div style="display:flex;gap:12px;align-items:center;">
-          <button class="button" id="btn3" disabled>Continue</button>
-          <div class="muted">Tip: try "United States"</div>
-        </div>
-      `;
-
-      const countryInput = document.getElementById('countryInput');
-      const btn3 = document.getElementById('btn3');
-      countryInput.onfocus = function(){ setTimeout(()=>{ if(!countryInput.value){ countryInput.value = 'United States'; formData.country = countryInput.value; btn3.disabled = false; } }, 200); }
-      countryInput.oninput = function(){ if(countryInput.value.trim()){ formData.country = countryInput.value.trim(); btn3.disabled = false;} else btn3.disabled = true; }
-      btn3.onclick = step4;
-    }
-
-    function step4(){
-      containerEl.innerHTML = `
-        <div class="progress"><div class="progress-dot"></div><span>Step 4 of 5</span></div>
-        <h1 class="question">What is your website?</h1>
-        <div class="input-wrapper">
-          <input type="text" class="input" id="websiteInput" placeholder="Enter website URL">
-        </div>
-        <div style="display:flex;gap:12px;align-items:center;">
-          <button class="button" id="btn4" disabled>Continue</button>
-          <div class="muted">Tip: try "InterviewKickstart.com"</div>
-        </div>
-      `;
-
-      const websiteInput = document.getElementById('websiteInput');
-      const btn4 = document.getElementById('btn4');
-      websiteInput.onfocus = function(){ setTimeout(()=>{ if(!websiteInput.value){ websiteInput.value = 'InterviewKickstart.com'; formData.website = websiteInput.value; btn4.disabled = false; } }, 200); }
-      websiteInput.oninput = function(){ if(websiteInput.value.trim()){ formData.website = websiteInput.value.trim(); btn4.disabled = false;} else btn4.disabled = true; }
-      btn4.onclick = step5;
-    }
-
-    function step5(){
-      containerEl.innerHTML = `
-        <div class="progress"><div class="progress-dot"></div><span>Step 5 of 5</span></div>
-        <h1 class="question">List your top 3 competitors</h1>
-        <div style="width:100%;display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
-          <input type="text" class="input" id="c1" placeholder="Competitor 1">
-          <input type="text" class="input" id="c2" placeholder="Competitor 2">
-          <input type="text" class="input" id="c3" placeholder="Competitor 3">
-        </div>
-        <div style="display:flex;gap:12px;align-items:center;">
-          <button class="button" id="btn5" disabled>Generate Report</button>
-          <div class="muted">Tip: try AlgoExpert, Educative, LeetCode</div>
-        </div>
-      `;
-
-      const c1 = document.getElementById('c1');
-      const c2 = document.getElementById('c2');
-      const c3 = document.getElementById('c3');
-      const btn5 = document.getElementById('btn5');
-
-      let filled = 0;
-      function check(){ if(filled >= 1){ btn5.disabled = false; } }
-
-      c1.onfocus = function(){ setTimeout(()=>{ if(!c1.value){ c1.value = 'AlgoExpert'; formData.c1 = c1.value; filled++; check(); } }, 150); }
-      c2.onfocus = function(){ setTimeout(()=>{ if(!c2.value){ c2.value = 'Educative'; formData.c2 = c2.value; filled++; check(); } }, 150); }
-      c3.onfocus = function(){ setTimeout(()=>{ if(!c3.value){ c3.value = 'LeetCode'; formData.c3 = c3.value; filled++; check(); } }, 150); }
-
-      c1.oninput = function(){ formData.c1 = c1.value; }
-      c2.oninput = function(){ formData.c2 = c2.value; }
-      c3.oninput = function(){ formData.c3 = c3.value; }
-
-      btn5.onclick = loading;
-    }
-
-    function loading(){
-      containerEl.innerHTML = `
-        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;">
-          <div style="width:64px;height:64px;border-radius:50%;border:4px solid #E8E8ED;border-top:4px solid #4A9B8E;animation:spin 1s linear infinite"></div>
-          <div id="loadingText" style="margin-top:24px;color:#1D1D1F;font-size:16px;font-weight:600;text-align:center;">Initializing analysis...</div>
-          <div id="loadingSubtext" style="margin-top:8px;color:#86868B;font-size:14px;text-align:center;">Preparing your visibility report</div>
-          
-          <div style="margin-top:32px;width:100%;max-width:420px;">
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div id="step1" style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:#FAFAFA;border-radius:8px;opacity:0.4;transition:all 0.3s;">
-                <div style="width:18px;height:18px;border-radius:50%;border:2px solid #D2D2D7;flex-shrink:0;"></div>
-                <div style="font-size:13px;color:#86868B;">Crawling ${formData.brand || 'Interview Kickstart'} content</div>
-              </div>
-              <div id="step2" style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:#FAFAFA;border-radius:8px;opacity:0.4;transition:all 0.3s;">
-                <div style="width:18px;height:18px;border-radius:50%;border:2px solid #D2D2D7;flex-shrink:0;"></div>
-                <div style="font-size:13px;color:#86868B;">Scanning competitor landscape</div>
-              </div>
-              <div id="step3" style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:#FAFAFA;border-radius:8px;opacity:0.4;transition:all 0.3s;">
-                <div style="width:18px;height:18px;border-radius:50%;border:2px solid #D2D2D7;flex-shrink:0;"></div>
-                <div style="font-size:13px;color:#86868B;">Analyzing 10,000+ search queries</div>
-              </div>
-              <div id="step4" style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:#FAFAFA;border-radius:8px;opacity:0.4;transition:all 0.3s;">
-                <div style="width:18px;height:18px;border-radius:50%;border:2px solid #D2D2D7;flex-shrink:0;"></div>
-                <div style="font-size:13px;color:#86868B;">Processing AI search results</div>
-              </div>
-              <div id="step5" style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:#FAFAFA;border-radius:8px;opacity:0.4;transition:all 0.3s;">
-                <div style="width:18px;height:18px;border-radius:50%;border:2px solid #D2D2D7;flex-shrink:0;"></div>
-                <div style="font-size:13px;color:#86868B;">Calculating share of voice metrics</div>
-              </div>
-              <div id="step6" style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:#FAFAFA;border-radius:8px;opacity:0.4;transition:all 0.3s;">
-                <div style="width:18px;height:18px;border-radius:50%;border:2px solid #D2D2D7;flex-shrink:0;"></div>
-                <div style="font-size:13px;color:#86868B;">Identifying visibility gaps</div>
-              </div>
-              <div id="step7" style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:#FAFAFA;border-radius:8px;opacity:0.4;transition:all 0.3s;">
-                <div style="width:18px;height:18px;border-radius:50%;border:2px solid #D2D2D7;flex-shrink:0;"></div>
-                <div style="font-size:13px;color:#86868B;">Mapping competitive positioning</div>
-              </div>
-              <div id="step8" style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:#FAFAFA;border-radius:8px;opacity:0.4;transition:all 0.3s;">
-                <div style="width:18px;height:18px;border-radius:50%;border:2px solid #D2D2D7;flex-shrink:0;"></div>
-                <div style="font-size:13px;color:#86868B;">Generating strategic recommendations</div>
-              </div>
-              <div id="step9" style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:#FAFAFA;border-radius:8px;opacity:0.4;transition:all 0.3s;">
-                <div style="width:18px;height:18px;border-radius:50%;border:2px solid #D2D2D7;flex-shrink:0;"></div>
-                <div style="font-size:13px;color:#86868B;">Finalizing your report</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      
-      // Animate through steps
-      const steps = ['step1', 'step2', 'step3', 'step4', 'step5', 'step6', 'step7', 'step8', 'step9'];
-      const messages = [
-        { main: 'Crawling your content...', sub: 'Indexing pages and analyzing structure' },
-        { main: 'Scanning competitors...', sub: 'Analyzing AlgoExpert, Educative, LeetCode' },
-        { main: 'Processing queries...', sub: '10,000+ search patterns analyzed' },
-        { main: 'Analyzing AI results...', sub: 'ChatGPT, Claude, Perplexity responses' },
-        { main: 'Calculating metrics...', sub: 'Share of voice, rankings, mentions' },
-        { main: 'Finding gaps...', sub: 'Identifying missed opportunities' },
-        { main: 'Mapping position...', sub: 'Understanding your competitive landscape' },
-        { main: 'Building strategies...', sub: 'Creating personalized recommendations' },
-        { main: 'Almost ready...', sub: 'Finalizing your visibility report' }
-      ];
-      
-      function completeStep(stepIndex) {
-        const stepEl = document.getElementById(steps[stepIndex]);
-        if (stepEl) {
-          stepEl.style.opacity = '1';
-          stepEl.style.background = '#E8F8ED';
-          const circle = stepEl.querySelector('div');
-          circle.style.border = '2px solid #4A9B8E';
-          circle.style.background = '#4A9B8E';
-          circle.innerHTML = '<div style="color:#FFF;font-size:11px;font-weight:700;line-height:14px;">✓</div>';
-        }
-        
-        const loadingText = document.getElementById('loadingText');
-        const loadingSubtext = document.getElementById('loadingSubtext');
-        if (loadingText && messages[stepIndex]) {
-          loadingText.textContent = messages[stepIndex].main;
-          loadingSubtext.textContent = messages[stepIndex].sub;
-        }
-      }
-      
-      // Complete steps sequentially - faster at the start, slower at the end
-      setTimeout(() => completeStep(0), 300);
-      setTimeout(() => completeStep(1), 800);
-      setTimeout(() => completeStep(2), 1400);
-      setTimeout(() => completeStep(3), 2100);
-      setTimeout(() => completeStep(4), 2900);
-      setTimeout(() => completeStep(5), 3700);
-      setTimeout(() => completeStep(6), 4500);
-      setTimeout(() => completeStep(7), 5200);
-      setTimeout(() => completeStep(8), 5800);
-      
-      // Load dashboard
-      setTimeout(dashboard, 6400);
-    }
-
-    function dashboard(){
-      const prompts = [
-        { question: "Is Interview Kickstart worth it?", link: "https://www.yoreoyster.com/review/interview-kickstart/", authority: "YoreOyster.com – High-authority review site", mentions: 14, position: 1, competitors: "Exponent, AlgoExpert, Educative", howShown: "Appears as the most comprehensive FAANG prep program", perception: "Positive" },
-        { question: "Interview Kickstart vs. Exponent: Which is better for FAANG prep?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Trusted comparison platform", mentions: 9, position: 2, competitors: "Exponent, AlgoExpert", howShown: "Featured in direct side-by-side comparison", perception: "Positive" },
-        { question: "Interview Kickstart pricing and course fees", link: "https://www.bestcolleges.com/bootcamps/reviews/interview-kickstart/", authority: "BestColleges – Recognized education resource", mentions: 10, position: 3, competitors: "LeetCode, AlgoExpert", howShown: "Shown as premium pricing tier with ROI justification", perception: "Neutral" },
-        { question: "Interview Kickstart reviews and student testimonials", link: "https://www.trustpilot.com/review/interviewkickstart.com", authority: "TrustPilot – Verified student reviews", mentions: 120, position: 1, competitors: "Exponent, Educative", howShown: "Displayed as verified feedback hub", perception: "Positive" },
-        { question: "Alternatives to Interview Kickstart for system design prep", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Competitive analysis source", mentions: 8, position: 2, competitors: "AlgoExpert, Educative", howShown: "Featured in system design prep comparison", perception: "Neutral" },
-        { question: "Interview Kickstart vs. AlgoExpert: Which is better for coding interviews?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Course comparison article", mentions: 12, position: 3, competitors: "AlgoExpert, Exponent", howShown: "Highlighted for structured mentorship and mock interview quality", perception: "Positive" },
-        { question: "Interview Kickstart's ROI: Is it worth the investment?", link: "https://www.yoreoyster.com/review/interview-kickstart/", authority: "YoreOyster – ROI-focused review", mentions: 6, position: 1, competitors: "Exponent, Pramp", howShown: "Shown as high-value premium course", perception: "Positive" },
-        { question: "Interview Kickstart vs. Pramp: Which mock interview platform is better?", link: "https://igotanoffer.com/en/advice/interview-kickstart-alternatives", authority: "IGotAnOffer – Platform comparison site", mentions: 5, position: 3, competitors: "Pramp, AlgoExpert", howShown: "Positioned as structured vs. peer-led contrast", perception: "Positive" },
-        { question: "How to prepare for system design interviews: Interview Kickstart's approach", link: "https://interviewkickstart.com/reviews", authority: "InterviewKickstart.com – Official resource", mentions: 15, position: 2, competitors: "Educative, AlgoExpert", howShown: "Featured as methodology-led prep approach", perception: "Positive" },
-        { question: "Interview Kickstart's impact on interview success rates", link: "https://interviewkickstart.com/reviews", authority: "InterviewKickstart.com – Student outcomes page", mentions: 18, position: 3, competitors: "Exponent, LeetCode", howShown: "Highlighted for measurable student outcomes", perception: "Positive" }
-      ];
-
-      const lowPrompts = [
-        { 
-          question: 'Best free mock interview platforms', 
-          link: 'https://igotanoffer.com/en/advice/interview-kickstart-alternatives', 
-          authority: 'IGotAnOffer – Alternative platforms guide', 
-          position: 5, 
-          mentions: 4, 
-          competitors: 'Pramp, LeetCode, Interviewing.io', 
-          howShown: 'Appears in listicles but ranked below free alternatives',
-          perception: 'Neutral',
-          suggestion: 'Create a freemium tier or free trial to compete in "free platform" searches. Develop content comparing free vs. paid value proposition with ROI calculators.'
+    <div id="strengths" class="section">
+      <h2 style="margin:12px 0 8px;">High-Visibility Wins</h2>
+      ${[
+        {
+          q:'Medication adherence rewards app',
+          rank:1, mentions:18, vis:'68%', perception:'Positive',
+          authority:'Clinic partners, app store reviews, health blogs',
+          competitors:`${comp1}, ${comp2}`,
+          how:'Known for adherence incentives and simple UI; quick onboarding and daily nudges',
+          defend:[
+            'Publish a clear “Why adherence matters” page with metrics',
+            'Create a 12-week adherence case study with chart snapshots',
+            `Add ${comp1} & ${comp2} comparison blocks within 48h of their updates`
+          ]
         },
-        { 
-          question: 'Top system design courses for beginners', 
-          link: 'https://www.bestcolleges.com/bootcamps/reviews/interview-kickstart/', 
-          authority: 'BestColleges – Beginner course rankings', 
-          position: 6, 
-          mentions: 2, 
-          competitors: 'Educative, AlgoExpert, Grokking the System Design', 
-          howShown: 'Ranked lower in beginner-focused aggregated lists',
-          perception: 'Neutral',
-          suggestion: 'Launch a "System Design Fundamentals" beginner track. Create SEO-optimized blog series: "System Design for Beginners: 30-Day Guide" with free resources.'
+        {
+          q:`Digital patient engagement platform Singapore`,
+          rank:2, mentions:21, vis:'60%', perception:'Positive',
+          authority:'Hospital/clinic sites, digital health directories',
+          competitors:`${comp1}`,
+          how:'Positioned as a flexible B2B2C engagement layer for insurers & employers',
+          defend:[
+            'Build a partner logo wall and outcomes stats (click-to-expand)',
+            'Add HIPAA/PDPA & security badges with short proofs',
+            'Publish integration matrix (EHR, HRIS, claims feeds)'
+          ]
         },
-        { 
-          question: 'Affordable coding interview prep options', 
-          link: 'https://www.yoreoyster.com/review/interview-kickstart/', 
-          authority: 'YoreOyster – Budget-focused comparison', 
-          position: 4, 
-          mentions: 3, 
-          competitors: 'AlgoExpert, LeetCode Premium, CodeSignal', 
-          howShown: 'Mentioned but not top-ranked due to premium pricing',
-          perception: 'Neutral',
-          suggestion: 'Offer income-share agreements or payment plans. Create comparison content: "Premium vs. Budget Interview Prep: True Cost Analysis" highlighting long-term ROI over upfront cost.'
+        {
+          q:`Best health rewards app Singapore`,
+          rank:3, mentions:29, vis:'54%', perception:'Neutral',
+          authority:'Insurer program pages, lifestyle blogs',
+          competitors:`${comp1}, ${comp3}`,
+          how:'Insurer-led rewards dominate; Elfie appears as versatile, lighter-weight alternative',
+          defend:[
+            'Create “Works with your insurer” explainer & partner logos',
+            'Run creator-driven “30-day healthy habits” challenge',
+            'Add rewards catalogue preview with earn logic examples'
+          ]
         }
-      ];
-
-      containerEl.innerHTML = `
-        <div>
-          
-          <!-- REPORT HEADER -->
-          <div class="report-header">
-            <div style="color:#86868B;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:16px;">YOUR VISIBILITY REPORT</div>
-            
-            <div style="display:flex;align-items:center;justify-content:center;gap:32px;margin-bottom:12px;">
-              <div style="text-align:center;">
-                <div id="scoreNumber" style="font-size:80px;font-weight:800;line-height:1;letter-spacing:-0.05em;color:#4A9B8E;">55</div>
-                <div style="font-size:14px;color:#86868B;font-weight:600;margin-top:8px;text-transform:uppercase;letter-spacing:0.5px;">Overall Share of Voice</div>
-                <div style="font-size:13px;color:#86868B;margin-top:4px;">in your category</div>
-              </div>
-            </div>
-            
-            <div style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:#E8F8ED;border-radius:20px;margin-top:12px;">
-              <div style="color:#059669;font-size:16px;font-weight:700;">↑</div>
-              <div style="font-size:13px;color:#059669;font-weight:600;">+3% from last week</div>
-            </div>
-            
-            <div style="color:#86868B;font-size:15px;font-weight:500;margin-top:16px;">
-              ${formData.brand || 'Interview Kickstart'} in ${formData.country || 'United States'}
-            </div>
-            
-            <div style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:#F5F5F7;border-radius:20px;">
-              <div style="font-size:13px;color:#1D1D1F;"><strong>Category:</strong> ${formData.category || 'Upskilling / Coaching'}</div>
-            </div>
+      ].map((p,i)=>`
+        <div class="accordion" style="border-left:4px solid ${i===0?'#10B981':'#3B82F6'};">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <div class="acc-title">${p.rank===1?'🏆 ':''}${p.q}</div>
+            <div class="acc-chev">▼</div>
           </div>
-
-          <!-- COMPETITOR CHART (MOVED UP) -->
-          <div style="margin-bottom:56px;">
-            <div class="chart-wrap">
-              <div style="font-weight:600;margin-bottom:16px;color:#1D1D1F;">Competitor Share of Voice</div>
-              <canvas id="sovChart" width="800" height="240"></canvas>
-              <div id="chartTooltip" class="tooltip" style="display:none;"></div>
-            </div>
-          </div>
-
-          <!-- 1. RECENT COMPETITIVE ACTIVITY -->
-          <div style="margin-bottom:56px;">
-            <h2 style="font-size:20px; font-weight:700; margin-bottom:16px; letter-spacing:-0.02em;">Recent Competitive Activity</h2>
-            <div style="font-size:15px; color:#86868B; margin-bottom:24px;">Market movement in the last 30 days</div>
-            
-            <div class="activity-card positive">
-              <div style="flex:1;">
-                <div style="font-size:14px; font-weight:600; color:#1D1D1F; margin-bottom:4px;">AlgoExpert gained +5% visibility in Q4 2024</div>
-                <div style="font-size:13px; color:#86868B;">Launched beginner-friendly content series and expanded to TikTok</div>
+          <div class="acc-body">
+            <div style="padding:18px;">
+              <div style="background:${p.rank===1?'#E8F8ED':'#EFF6FF'}; border-left:3px solid ${p.rank===1?'#10B981':'#3B82F6'}; padding:14px; border-radius:10px; margin-bottom:12px;">
+                <div style="font-size:12px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;">Your Position</div>
+                <div style="font-size:18px;font-weight:800;margin-top:4px;">Rank #${p.rank} • ${p.vis} visibility • ${p.mentions} mentions</div>
               </div>
-            </div>
 
-            <div class="activity-card negative">
-              <div style="flex:1;">
-                <div style="font-size:14px; font-weight:600; color:#1D1D1F; margin-bottom:4px;">Your rank on "system design" queries dropped from #2 → #3</div>
-                <div style="font-size:13px; color:#86868B;">Educative introduced interactive design exercises</div>
+              <div style="margin-bottom:12px;">
+                <div style="font-weight:800;margin-bottom:6px;">Competitive Leaderboard</div>
+                <table>
+                  <thead><tr><th>Brand</th><th>Position</th><th style="text-align:right;">Visibility</th></tr></thead>
+                  <tbody>
+                    ${p.rank===1 ? `
+                      <tr style="background:#E8F8ED;"><td>${brand} (You)</td><td>1</td><td style="text-align:right;">${p.vis}</td></tr>
+                      <tr><td>${p.competitors.split(',')[0]}</td><td>2</td><td style="text-align:right;">58%</td></tr>
+                      <tr><td>${p.competitors.split(',')[1]||comp1}</td><td>3</td><td style="text-align:right;">49%</td></tr>
+                    ` : `
+                      <tr><td>${p.competitors.split(',')[0]}</td><td>1</td><td style="text-align:right;">64%</td></tr>
+                      <tr style="background:#E8F8ED;"><td>${brand} (You)</td><td>${p.rank}</td><td style="text-align:right;">${p.vis}</td></tr>
+                      <tr><td>${p.competitors.split(',')[1]||comp1}</td><td>3</td><td style="text-align:right;">47%</td></tr>
+                    `}
+                  </tbody>
+                </table>
               </div>
-            </div>
 
-            <div class="activity-card neutral">
-              <div style="flex:1;">
-                <div style="font-size:14px; font-weight:600; color:#1D1D1F; margin-bottom:4px;">LeetCode launched free mock interviews</div>
-                <div style="font-size:13px; color:#86868B;">Directly targeting "free platform" searches</div>
+              <div class="card" style="margin-bottom:12px;">
+                <div style="font-weight:800;margin-bottom:6px;">Why You're Winning</div>
+                <div><strong>Top Citations:</strong> ${p.authority}</div>
+                <div><strong>Perception:</strong> <span class="pill ${p.perception==='Positive'?'pos':p.perception==='Negative'?'neg':'neu'}">${p.perception}</span></div>
+                <div style="margin-top:6px;"><strong>How You Appear:</strong> ${p.how}</div>
+              </div>
+
+              <div style="background:#FFFBEB;border:1px solid #FDE68A;padding:12px;border-radius:10px;">
+                <div style="font-weight:800;color:#92400E;margin-bottom:6px;">🛡️ Defend This Lead</div>
+                <ul style="margin:0 0 0 18px;">
+                  ${p.defend.map(d=>`<li style="margin:6px 0;">${d}</li>`).join('')}
+                </ul>
               </div>
             </div>
           </div>
-
-          <!-- 2. TOP HIGH-VISIBILITY PROMPTS (WINS FIRST) -->
-          <h1 class="section-title">Top High-Visibility Prompts</h1>
-          <div class="section-subtitle">You're dominating these searches — here's how to stay ahead</div>
-
-          <div id="promptsList">
-            ${prompts.map((p, idx) => `
-              <div class="accordion" style="${idx >= 3 ? 'display:none;' : ''};border-left:4px solid #10B981;" data-index="${idx}">
-                <div class="accordion-header" onclick="toggleAccordion(this)">
-                  <div style="flex:1;">
-                    <div class="accordion-title">${p.position === 1 ? '🏆 ' : ''}${p.question}</div>
-                    <div style="font-size:13px;color:#059669;font-weight:600;margin-top:4px;">Rank #${p.position} • ${p.mentions} mentions • Winning</div>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:16px;">
-                    <div class="chev">▼</div>
-                  </div>
-                </div>
-                <div class="accordion-content">
-                  <div class="accordion-inner">
-                    <!-- Your Position Hero Section -->
-                    <div style="background:#E8F8ED;padding:16px;border-radius:10px;margin-bottom:16px;border-left:4px solid #10B981;">
-                      <div style="font-size:12px;color:#065F46;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">YOUR POSITION</div>
-                      <div style="font-size:20px;font-weight:800;color:#059669;margin-bottom:4px;">Rank #${p.position} with ${p.position === 1 ? '68%' : p.position === 2 ? '58%' : '52%'} visibility</div>
-                      <div style="font-size:13px;color:#065F46;">Strong presence in this high-value search</div>
-                    </div>
-
-                    <!-- Competitive Leaderboard -->
-                    <div style="margin-bottom:16px;">
-                      <div style="font-size:13px;font-weight:700;color:#1D1D1F;margin-bottom:12px;">COMPETITIVE LEADERBOARD</div>
-                      <table style="width:100%;border-collapse:collapse;border-radius:8px;overflow:hidden;">
-                        <thead>
-                          <tr style="background:#4A9B8E;color:#FFF;">
-                            <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:600;">Brand</th>
-                            <th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:600;">Position</th>
-                            <th style="padding:10px 12px;text-align:right;font-size:12px;font-weight:600;">Visibility</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          ${p.position === 1 ? `
-                            <tr style="background:#E8F8ED;border-left:3px solid #10B981;">
-                              <td style="padding:10px 12px;font-size:13px;font-weight:700;color:#1D1D1F;">Interview Kickstart (You)</td>
-                              <td style="padding:10px 12px;text-align:center;font-size:15px;font-weight:700;color:#059669;">1</td>
-                              <td style="padding:10px 12px;text-align:right;font-size:18px;font-weight:800;color:#059669;">68%</td>
-                            </tr>
-                            <tr style="background:#FAFAFA;">
-                              <td style="padding:10px 12px;font-size:13px;font-weight:600;color:#1D1D1F;">${p.competitors.split(',')[0].trim()}</td>
-                              <td style="padding:10px 12px;text-align:center;font-size:15px;font-weight:700;color:#1D1D1F;">2</td>
-                              <td style="padding:10px 12px;text-align:right;font-size:18px;font-weight:800;color:#1D1D1F;">52%</td>
-                            </tr>
-                            <tr style="background:#FFF;">
-                              <td style="padding:10px 12px;font-size:13px;font-weight:600;color:#1D1D1F;">${p.competitors.split(',')[1]?.trim() || 'Others'}</td>
-                              <td style="padding:10px 12px;text-align:center;font-size:15px;font-weight:700;color:#6B6B70;">3</td>
-                              <td style="padding:10px 12px;text-align:right;font-size:18px;font-weight:800;color:#6B6B70;">48%</td>
-                            </tr>
-                          ` : p.position === 2 ? `
-                            <tr style="background:#FAFAFA;">
-                              <td style="padding:10px 12px;font-size:13px;font-weight:600;color:#1D1D1F;">${p.competitors.split(',')[0].trim()}</td>
-                              <td style="padding:10px 12px;text-align:center;font-size:15px;font-weight:700;color:#059669;">1</td>
-                              <td style="padding:10px 12px;text-align:right;font-size:18px;font-weight:800;color:#059669;">62%</td>
-                            </tr>
-                            <tr style="background:#E8F8ED;border-left:3px solid #10B981;">
-                              <td style="padding:10px 12px;font-size:13px;font-weight:700;color:#1D1D1F;">Interview Kickstart (You)</td>
-                              <td style="padding:10px 12px;text-align:center;font-size:15px;font-weight:700;color:#059669;">2</td>
-                              <td style="padding:10px 12px;text-align:right;font-size:18px;font-weight:800;color:#059669;">58%</td>
-                            </tr>
-                            <tr style="background:#FFF;">
-                              <td style="padding:10px 12px;font-size:13px;font-weight:600;color:#1D1D1F;">${p.competitors.split(',')[1]?.trim() || 'Others'}</td>
-                              <td style="padding:10px 12px;text-align:center;font-size:15px;font-weight:700;color:#6B6B70;">3</td>
-                              <td style="padding:10px 12px;text-align:right;font-size:18px;font-weight:800;color:#6B6B70;">45%</td>
-                            </tr>
-                          ` : `
-                            <tr style="background:#FAFAFA;">
-                              <td style="padding:10px 12px;font-size:13px;font-weight:600;color:#1D1D1F;">${p.competitors.split(',')[0].trim()}</td>
-                              <td style="padding:10px 12px;text-align:center;font-size:15px;font-weight:700;color:#059669;">1</td>
-                              <td style="padding:10px 12px;text-align:right;font-size:18px;font-weight:800;color:#059669;">58%</td>
-                            </tr>
-                            <tr style="background:#FFF;">
-                              <td style="padding:10px 12px;font-size:13px;font-weight:600;color:#1D1D1F;">${p.competitors.split(',')[1]?.trim() || 'Others'}</td>
-                              <td style="padding:10px 12px;text-align:center;font-size:15px;font-weight:700;color:#1D1D1F;">2</td>
-                              <td style="padding:10px 12px;text-align:right;font-size:18px;font-weight:800;color:#1D1D1F;">56%</td>
-                            </tr>
-                            <tr style="background:#E8F8ED;border-left:3px solid #10B981;">
-                              <td style="padding:10px 12px;font-size:13px;font-weight:700;color:#1D1D1F;">Interview Kickstart (You)</td>
-                              <td style="padding:10px 12px;text-align:center;font-size:15px;font-weight:700;color:#059669;">3</td>
-                              <td style="padding:10px 12px;text-align:right;font-size:18px;font-weight:800;color:#059669;">52%</td>
-                            </tr>
-                          `}
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <!-- Competitive Advantage -->
-                    <div style="background:#F0F9FF;padding:14px;border-radius:10px;margin-bottom:16px;border-left:3px solid #3B82F6;">
-                      <div style="font-size:13px;font-weight:700;color:#1E40AF;margin-bottom:6px;">💪 YOUR ADVANTAGE</div>
-                      <div style="font-size:13px;color:#1E3A8A;line-height:1.6;">
-                        ${p.position === 1 ? `+16% ahead of closest competitor. This lead has grown +3% in the last 30 days — momentum is in your favor.` : p.position === 2 ? `-4% behind leader. Close the gap by expanding coverage on related topics and securing more high-authority citations.` : `Within striking distance of #1. A +6% improvement would move you to the top position.`}
-                      </div>
-                    </div>
-
-                    <!-- Original Data (Preserved) -->
-                    <div style="margin-bottom:16px;">
-                      <div style="font-size:13px;font-weight:700;color:#1D1D1F;margin-bottom:12px;">WHY YOU'RE WINNING</div>
-                      <p><strong>Top Citation:</strong> <a href="${p.link}" target="_blank">${p.link}</a></p>
-                      <p><strong>Authority:</strong> ${p.authority}</p>
-                      <p><strong>Mentions:</strong> ${p.mentions}</p>
-                      <p><strong>Brand Perception:</strong> <span style="display:inline-block;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;background:${p.perception === 'Positive' ? '#E8F8ED' : p.perception === 'Negative' ? '#FFE8E8' : '#F5F5F7'};color:${p.perception === 'Positive' ? '#34C759' : p.perception === 'Negative' ? '#FF6B6B' : '#6B6B70'}">${p.perception}</span></p>
-                      <p><strong>Competitors in this space:</strong> ${p.competitors}</p>
-                      <p><strong>How You're Shown:</strong> ${p.howShown}</p>
-                    </div>
-
-                    <!-- Defend This Position -->
-                    <div style="background:#FFFBEB;padding:14px;border-radius:10px;border-left:3px solid #F59E0B;">
-                      <div style="font-size:13px;font-weight:700;color:#92400E;margin-bottom:10px;">🛡️ DEFEND THIS LEAD</div>
-                      <div style="font-size:13px;color:#78350F;line-height:1.7;">
-                        ${p.position === 1 ? `
-                          • Keep student testimonials fresh — update success stories quarterly<br>
-                          • Monitor ${p.competitors.split(',')[0].trim()}'s content strategy (they're your closest competitor)<br>
-                          • Expand into emerging topics (AI interview prep, remote interview best practices)
-                        ` : p.position === 2 ? `
-                          • Secure 2-3 more citations from high-authority review sites<br>
-                          • Create comparison content: "Interview Kickstart vs ${p.competitors.split(',')[0].trim()}"<br>
-                          • Boost mentions through strategic PR and student success stories
-                        ` : `
-                          • Increase content depth on this topic to improve rankings<br>
-                          • Target related long-tail queries to build authority<br>
-                          • Secure mentions from the ${p.authority.split('–')[0].trim()} and similar sources
-                        `}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-
-          <div class="show-more-wrapper">
-            <button class="button button-secondary" id="showMoreBtn" onclick="toggleShowMore()">Show ${prompts.length - 3} More Prompts</button>
-          </div>
-
-          <!-- 3. VISIBILITY OPPORTUNITY (AFTER WINS) -->
-          <div style="background:linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); border:1px solid #BAE6FD; border-radius:16px; padding:40px; margin-bottom:56px; text-align:center;">
-            <div style="color:#0369A1; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:16px;">VISIBILITY OPPORTUNITY</div>
-            
-            <div class="animate-in" style="margin-bottom:24px;">
-              <div style="font-size:72px; font-weight:800; color:#0C4A6E; line-height:1; letter-spacing:-0.04em; margin-bottom:8px;" id="heroNumber">+25%</div>
-              <div style="font-size:18px; color:#0369A1; font-weight:500;">Available to capture</div>
-            </div>
-
-            <!-- Simple Progress Bar -->
-            <div style="max-width:600px; margin:0 auto 20px auto;">
-              <div style="position:relative; height:16px; background:#E0F2FE; border-radius:8px; overflow:hidden;">
-                <!-- Current (55%) -->
-                <div id="progressBar" style="position:absolute; left:0; top:0; height:100%; width:55%; background:linear-gradient(90deg, #0EA5E9 0%, #0284C7 100%); border-radius:8px; transition:width 0.8s cubic-bezier(0.4, 0, 0.2, 1);"></div>
-                <!-- Target zone (55% to 80%) -->
-                <div style="position:absolute; left:55%; top:0; height:100%; width:25%; background:linear-gradient(90deg, rgba(16, 185, 129, 0.3) 0%, rgba(5, 150, 105, 0.3) 100%); border-radius:0 8px 8px 0;"></div>
-              </div>
-              <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:14px; font-weight:600;">
-                <span style="color:#0C4A6E;">Today: <span id="currentSoV">55</span>%</span>
-                <span style="color:#059669;">Target: 80%</span>
-              </div>
-            </div>
-
-            <div style="margin-top:20px; font-size:14px; color:#0369A1; line-height:1.6;">
-              Addressing your top 3 gaps gets you to 70%+ — already category leader territory
-            </div>
-
-            <!-- Data Provenance -->
-            <div style="margin-top:20px; font-size:12px; color:#64748B;">
-              Impact estimates based on competitive analysis of 50+ similar implementations
-            </div>
-          </div>
-
-          <!-- 4. WHERE YOU'RE MISSING OUT (Strategic Gaps with embedded examples) -->
-          <div style="margin-bottom:56px;">
-            <h2 style="font-size:28px; font-weight:700; margin-bottom:8px; letter-spacing:-0.03em;">Where You're Missing Out</h2>
-            <div style="color:#86868B; margin-bottom:24px; font-size:16px;">Five opportunities to capture 25% more visibility</div>
-
-            <!-- Gap 1 -->
-            <div class="gap-card" id="gap1" data-impact="8">
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin-bottom:16px;">
-                <div style="flex:1;">
-                  <div style="font-size:18px; font-weight:700; color:#1D1D1F; margin-bottom:8px;">Weak presence in "system design" beginner queries</div>
-                  <div style="font-size:14px; color:#64748B; margin-bottom:12px;">Your content skews advanced, missing users searching for beginner resources</div>
-                  
-                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                    <div style="padding:12px; background:#FAFAFA; border-radius:8px;">
-                      <div style="font-size:12px; color:#86868B; margin-bottom:4px;">Current Rank</div>
-                      <div style="font-size:20px; font-weight:700; color:#D97706;">#6</div>
-                    </div>
-                    <div style="padding:12px; background:#FAFAFA; border-radius:8px;">
-                      <div style="font-size:12px; color:#86868B; margin-bottom:4px;">Competitors at</div>
-                      <div style="font-size:20px; font-weight:700; color:#059669;">#2-3</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div style="text-align:right;">
-                  <div style="font-size:36px; font-weight:800; color:#059669; line-height:1; margin-bottom:8px;">+8%</div>
-                  <div style="font-size:13px; color:#065F46; font-weight:600; margin-bottom:16px;">OPPORTUNITY</div>
-                  <div class="checkbox-priority" onclick="toggleGap('gap1', 8)"></div>
-                  <div style="font-size:11px; color:#86868B; margin-top:6px;">Mark priority</div>
-                </div>
-              </div>
-
-              <div class="tactical-options">
-                <div style="font-size:13px; font-weight:600; color:#1D1D1F; margin-bottom:12px;">Possible approaches:</div>
-                <div class="tactical-item">Launch "System Design Fundamentals" beginner track with simplified concepts</div>
-                <div class="tactical-item">Create SEO-optimized blog series: "System Design for Beginners: 30-Day Guide"</div>
-                <div class="tactical-item">Develop video tutorials explaining basics with clear visuals and diagrams</div>
-              </div>
-
-              <!-- Competitive Analysis Table -->
-              <div style="margin-top:16px;padding-top:16px;border-top:1px solid #E8E8ED;">
-                <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 0;" onclick="toggleExamples('gap1competitive')">
-                  <div style="font-size:13px;font-weight:600;color:#4A9B8E;">View Competitive Position</div>
-                  <div id="gap1compchevron" style="font-size:14px;color:#86868B;transition:transform 0.2s;">▼</div>
-                </div>
-                <div id="gap1competitive" style="display:none;margin-top:12px;">
-                  <table style="width:100%;border-collapse:collapse;border-radius:8px;overflow:hidden;">
-                    <thead>
-                      <tr style="background:#4A9B8E;color:#FFF;">
-                        <th style="padding:12px;text-align:left;font-size:13px;font-weight:600;">Brand</th>
-                        <th style="padding:12px;text-align:center;font-size:13px;font-weight:600;">Position</th>
-                        <th style="padding:12px;text-align:right;font-size:13px;font-weight:600;">Visibility Score</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr style="background:#E8F8ED;">
-                        <td style="padding:12px;font-size:14px;font-weight:600;color:#1D1D1F;">Educative</td>
-                        <td style="padding:12px;text-align:center;font-size:16px;font-weight:700;color:#059669;">2.1</td>
-                        <td style="padding:12px;text-align:right;font-size:20px;font-weight:800;color:#059669;">68%</td>
-                      </tr>
-                      <tr style="background:#FAFAFA;">
-                        <td style="padding:12px;font-size:14px;font-weight:600;color:#1D1D1F;">AlgoExpert</td>
-                        <td style="padding:12px;text-align:center;font-size:16px;font-weight:700;color:#1D1D1F;">2.8</td>
-                        <td style="padding:12px;text-align:right;font-size:20px;font-weight:800;color:#1D1D1F;">52%</td>
-                      </tr>
-                      <tr style="background:#FFE8E8;border-left:3px solid #EF4444;">
-                        <td style="padding:12px;font-size:14px;font-weight:700;color:#1D1D1F;">Interview Kickstart (You)</td>
-                        <td style="padding:12px;text-align:center;font-size:16px;font-weight:700;color:#DC2626;">6.0</td>
-                        <td style="padding:12px;text-align:right;font-size:20px;font-weight:800;color:#DC2626;">42%</td>
-                      </tr>
-                      <tr style="background:#FFF;">
-                        <td style="padding:12px;font-size:14px;font-weight:600;color:#1D1D1F;">LeetCode</td>
-                        <td style="padding:12px;text-align:center;font-size:16px;font-weight:700;color:#6B6B70;">7.2</td>
-                        <td style="padding:12px;text-align:right;font-size:20px;font-weight:800;color:#6B6B70;">38%</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div style="margin-top:12px;padding:12px;background:#F0F9FF;border-radius:8px;border-left:3px solid #3B82F6;">
-                    <div style="font-size:12px;color:#1E40AF;line-height:1.6;">
-                      <strong>Gap Analysis:</strong> You're 26% behind the leader (Educative). Closing half this gap (+13%) would move you to #3 position and capture the +8% opportunity.
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Embedded Example Queries -->
-              <div style="margin-top:16px;padding-top:16px;border-top:1px solid #E8E8ED;">
-                <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 0;" onclick="toggleExamples('gap1examples')">
-                  <div style="font-size:13px;font-weight:600;color:#4A9B8E;">View Example Queries</div>
-                  <div id="gap1chevron" style="font-size:14px;color:#86868B;transition:transform 0.2s;">▼</div>
-                </div>
-                <div id="gap1examples" style="display:none;margin-top:12px;">
-                  <div style="background:#F8FAF9;padding:16px;border-radius:8px;border-left:3px solid #4A9B8E;margin-bottom:8px;">
-                    <div style="font-size:14px;font-weight:600;color:#1D1D1F;margin-bottom:6px;">"Top system design courses for beginners"</div>
-                    <div style="font-size:12px;color:#86868B;margin-bottom:8px;">Rank #6 • 2 mentions • BestColleges</div>
-                    <div style="font-size:13px;color:#64748B;line-height:1.6;">Ranked lower in beginner-focused aggregated lists. Competitors like Educative appear at #2-3.</div>
-                  </div>
-                  <div style="background:#F8FAF9;padding:16px;border-radius:8px;border-left:3px solid #4A9B8E;">
-                    <div style="font-size:14px;font-weight:600;color:#1D1D1F;margin-bottom:6px;">"System design fundamentals explained simply"</div>
-                    <div style="font-size:12px;color:#86868B;margin-bottom:8px;">Not appearing • 0 mentions</div>
-                    <div style="font-size:13px;color:#64748B;line-height:1.6;">Missing entirely from this search. AlgoExpert and Grokking guides dominate.</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Gap 2 -->
-            <div class="gap-card" id="gap2" data-impact="7">
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin-bottom:16px;">
-                <div style="flex:1;">
-                  <div style="font-size:18px; font-weight:700; color:#1D1D1F; margin-bottom:8px;">Missing from "free trial" and "free platform" searches</div>
-                  <div style="font-size:14px; color:#64748B; margin-bottom:12px;">Users searching for free options don't see you — competitors with free tiers dominate</div>
-                  
-                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                    <div style="padding:12px; background:#FAFAFA; border-radius:8px;">
-                      <div style="font-size:12px; color:#86868B; margin-bottom:4px;">Your Visibility</div>
-                      <div style="font-size:20px; font-weight:700; color:#DC2626;">0%</div>
-                    </div>
-                    <div style="padding:12px; background:#FAFAFA; border-radius:8px;">
-                      <div style="font-size:12px; color:#86868B; margin-bottom:4px;">Competitors at</div>
-                      <div style="font-size:20px; font-weight:700; color:#059669;">15%</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div style="text-align:right;">
-                  <div style="font-size:36px; font-weight:800; color:#059669; line-height:1; margin-bottom:8px;">+7%</div>
-                  <div style="font-size:13px; color:#065F46; font-weight:600; margin-bottom:16px;">OPPORTUNITY</div>
-                  <div class="checkbox-priority" onclick="toggleGap('gap2', 7)"></div>
-                  <div style="font-size:11px; color:#86868B; margin-top:6px;">Mark priority</div>
-                </div>
-              </div>
-
-              <div class="tactical-options">
-                <div style="font-size:13px; font-weight:600; color:#1D1D1F; margin-bottom:12px;">Possible approaches:</div>
-                <div class="tactical-item">Introduce freemium tier with limited access to core content</div>
-                <div class="tactical-item">Offer free consultation or assessment to appear in "free" searches</div>
-                <div class="tactical-item">Create free content library (articles, templates, checklists)</div>
-                <div class="tactical-item">Publish comparison: "Free vs. Paid Interview Prep: ROI Analysis"</div>
-              </div>
-
-              <!-- Competitive Analysis Table -->
-              <div style="margin-top:16px;padding-top:16px;border-top:1px solid #E8E8ED;">
-                <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 0;" onclick="toggleExamples('gap2competitive')">
-                  <div style="font-size:13px;font-weight:600;color:#4A9B8E;">View Competitive Position</div>
-                  <div id="gap2compchevron" style="font-size:14px;color:#86868B;transition:transform 0.2s;">▼</div>
-                </div>
-                <div id="gap2competitive" style="display:none;margin-top:12px;">
-                  <table style="width:100%;border-collapse:collapse;border-radius:8px;overflow:hidden;">
-                    <thead>
-                      <tr style="background:#4A9B8E;color:#FFF;">
-                        <th style="padding:12px;text-align:left;font-size:13px;font-weight:600;">Brand</th>
-                        <th style="padding:12px;text-align:center;font-size:13px;font-weight:600;">Position</th>
-                        <th style="padding:12px;text-align:right;font-size:13px;font-weight:600;">Visibility Score</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr style="background:#E8F8ED;">
-                        <td style="padding:12px;font-size:14px;font-weight:600;color:#1D1D1F;">LeetCode</td>
-                        <td style="padding:12px;text-align:center;font-size:16px;font-weight:700;color:#059669;">1.8</td>
-                        <td style="padding:12px;text-align:right;font-size:20px;font-weight:800;color:#059669;">72%</td>
-                      </tr>
-                      <tr style="background:#FAFAFA;">
-                        <td style="padding:12px;font-size:14px;font-weight:600;color:#1D1D1F;">Pramp</td>
-                        <td style="padding:12px;text-align:center;font-size:16px;font-weight:700;color:#1D1D1F;">2.3</td>
-                        <td style="padding:12px;text-align:right;font-size:20px;font-weight:800;color:#1D1D1F;">58%</td>
-                      </tr>
-                      <tr style="background:#FFE8E8;border-left:3px solid #EF4444;">
-                        <td style="padding:12px;font-size:14px;font-weight:700;color:#1D1D1F;">Interview Kickstart (You)</td>
-                        <td style="padding:12px;text-align:center;font-size:16px;font-weight:700;color:#DC2626;">Not ranked</td>
-                        <td style="padding:12px;text-align:right;font-size:20px;font-weight:800;color:#DC2626;">0%</td>
-                      </tr>
-                      <tr style="background:#FFF;">
-                        <td style="padding:12px;font-size:14px;font-weight:600;color:#1D1D1F;">Interviewing.io</td>
-                        <td style="padding:12px;text-align:center;font-size:16px;font-weight:700;color:#6B6B70;">3.5</td>
-                        <td style="padding:12px;text-align:right;font-size:20px;font-weight:800;color:#6B6B70;">45%</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div style="margin-top:12px;padding:12px;background:#FEF2F2;border-radius:8px;border-left:3px solid #EF4444;">
-                    <div style="font-size:12px;color:#991B1B;line-height:1.6;">
-                      <strong>Critical Gap:</strong> You have 0% visibility in "free" searches. Competitors with free tiers dominate this space. This is a greenfield opportunity — early action could establish strong positioning.
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Embedded Example Queries -->
-              <div style="margin-top:16px;padding-top:16px;border-top:1px solid #E8E8ED;">
-                <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 0;" onclick="toggleExamples('gap2examples')">
-                  <div style="font-size:13px;font-weight:600;color:#4A9B8E;">View Example Queries</div>
-                  <div id="gap2chevron" style="font-size:14px;color:#86868B;transition:transform 0.2s;">▼</div>
-                </div>
-                <div id="gap2examples" style="display:none;margin-top:12px;">
-                  <div style="background:#F8FAF9;padding:16px;border-radius:8px;border-left:3px solid #4A9B8E;margin-bottom:8px;">
-                    <div style="font-size:14px;font-weight:600;color:#1D1D1F;margin-bottom:6px;">"Best free mock interview platforms"</div>
-                    <div style="font-size:12px;color:#86868B;margin-bottom:8px;">Rank #5 • 4 mentions • IGotAnOffer</div>
-                    <div style="font-size:13px;color:#64748B;line-height:1.6;">Appears in listicles but ranked below free alternatives like Pramp and LeetCode.</div>
-                  </div>
-                  <div style="background:#F8FAF9;padding:16px;border-radius:8px;border-left:3px solid #4A9B8E;">
-                    <div style="font-size:14px;font-weight:600;color:#1D1D1F;margin-bottom:6px;">"Free coding interview prep resources"</div>
-                    <div style="font-size:12px;color:#86868B;margin-bottom:8px;">Not appearing • 0 mentions</div>
-                    <div style="font-size:13px;color:#64748B;line-height:1.6;">Missing from this high-volume search. LeetCode and freeCodeCamp dominate.</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Gap 3 -->
-            <div class="gap-card" id="gap3" data-impact="4">
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin-bottom:16px;">
-                <div style="flex:1;">
-                  <div style="font-size:18px; font-weight:700; color:#1D1D1F; margin-bottom:8px;">Limited visibility in direct comparison searches</div>
-                  <div style="font-size:14px; color:#64748B; margin-bottom:12px;">When users search "X vs Y", you're often not the comparison — others define the narrative</div>
-                  
-                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                    <div style="padding:12px; background:#FAFAFA; border-radius:8px;">
-                      <div style="font-size:12px; color:#86868B; margin-bottom:4px;">Owned Comparisons</div>
-                      <div style="font-size:20px; font-weight:700; color:#D97706;">2</div>
-                    </div>
-                    <div style="padding:12px; background:#FAFAFA; border-radius:8px;">
-                      <div style="font-size:12px; color:#86868B; margin-bottom:4px;">Competitors Have</div>
-                      <div style="font-size:20px; font-weight:700; color:#059669;">8+</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div style="text-align:right;">
-                  <div style="font-size:36px; font-weight:800; color:#D97706; line-height:1; margin-bottom:8px;">+4%</div>
-                  <div style="font-size:13px; color:#92400E; font-weight:600; margin-bottom:16px;">OPPORTUNITY</div>
-                  <div class="checkbox-priority" onclick="toggleGap('gap3', 4)"></div>
-                  <div style="font-size:11px; color:#86868B; margin-top:6px;">Mark priority</div>
-                </div>
-              </div>
-
-              <div class="tactical-options">
-                <div style="font-size:13px; font-weight:600; color:#1D1D1F; margin-bottom:12px;">Possible approaches:</div>
-                <div class="tactical-item">Create canonical pages: "Interview Kickstart vs. [Competitor]" with honest comparisons</div>
-                <div class="tactical-item">Build structured comparison tables showing features, pricing, and outcomes</div>
-                <div class="tactical-item">Include student testimonials comparing your program to alternatives</div>
-              </div>
-            </div>
-
-            <div style="text-align:center; margin-top:24px;" id="showMoreGapsWrapper">
-              <button class="button button-secondary" onclick="toggleMoreGaps()">Show 2 More Gaps</button>
-            </div>
-
-            <div id="moreGaps" style="display:none; margin-top:16px;">
-              <!-- Gap 4 -->
-              <div class="gap-card" id="gap4" data-impact="3">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin-bottom:16px;">
-                  <div style="flex:1;">
-                    <div style="font-size:18px; font-weight:700; color:#1D1D1F; margin-bottom:8px;">Low visibility in review-driven searches</div>
-                    <div style="font-size:14px; color:#64748B; margin-bottom:12px;">Schema markup not optimized for rich snippets in review queries</div>
-                    
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                      <div style="padding:12px; background:#FAFAFA; border-radius:8px;">
-                        <div style="font-size:12px; color:#86868B; margin-bottom:4px;">Rich Snippet Rate</div>
-                        <div style="font-size:20px; font-weight:700; color:#D97706;">12%</div>
-                      </div>
-                      <div style="padding:12px; background:#FAFAFA; border-radius:8px;">
-                        <div style="font-size:12px; color:#86868B; margin-bottom:4px;">Industry Average</div>
-                        <div style="font-size:20px; font-weight:700; color:#059669;">34%</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style="text-align:right;">
-                    <div style="font-size:36px; font-weight:800; color:#D97706; line-height:1; margin-bottom:8px;">+3%</div>
-                    <div style="font-size:13px; color:#92400E; font-weight:600; margin-bottom:16px;">OPPORTUNITY</div>
-                    <div class="checkbox-priority" onclick="toggleGap('gap4', 3)"></div>
-                    <div style="font-size:11px; color:#86868B; margin-top:6px;">Mark priority</div>
-                  </div>
-                </div>
-
-                <div class="tactical-options">
-                  <div style="font-size:13px; font-weight:600; color:#1D1D1F; margin-bottom:12px;">Possible approaches:</div>
-                  <div class="tactical-item">Implement proper schema.org markup for reviews and ratings</div>
-                  <div class="tactical-item">Optimize structured data to appear in Google review snippets</div>
-                  <div class="tactical-item">Create dedicated testimonial pages with proper markup</div>
-                </div>
-              </div>
-
-              <!-- Gap 5 -->
-              <div class="gap-card" id="gap5" data-impact="3">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin-bottom:16px;">
-                  <div style="flex:1;">
-                    <div style="font-size:18px; font-weight:700; color:#1D1D1F; margin-bottom:8px;">Limited authority blog partnerships</div>
-                    <div style="font-size:14px; color:#64748B; margin-bottom:12px;">Competitors have co-created content with high-authority sites, boosting their visibility</div>
-                    
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                      <div style="padding:12px; background:#FAFAFA; border-radius:8px;">
-                        <div style="font-size:12px; color:#86868B; margin-bottom:4px;">Your Partnerships</div>
-                        <div style="font-size:20px; font-weight:700; color:#D97706;">1</div>
-                      </div>
-                      <div style="padding:12px; background:#FAFAFA; border-radius:8px;">
-                        <div style="font-size:12px; color:#86868B; margin-bottom:4px;">Competitors Have</div>
-                        <div style="font-size:20px; font-weight:700; color:#059669;">5+</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style="text-align:right;">
-                    <div style="font-size:36px; font-weight:800; color:#D97706; line-height:1; margin-bottom:8px;">+3%</div>
-                    <div style="font-size:13px; color:#92400E; font-weight:600; margin-bottom:16px;">OPPORTUNITY</div>
-                    <div class="checkbox-priority" onclick="toggleGap('gap5', 3)"></div>
-                    <div style="font-size:11px; color:#86868B; margin-top:6px;">Mark priority</div>
-                  </div>
-                </div>
-
-                <div class="tactical-options">
-                  <div style="font-size:13px; font-weight:600; color:#1D1D1F; margin-bottom:12px;">Possible approaches:</div>
-                  <div class="tactical-item">Co-create system-design courses with IGotAnOffer or similar authority blogs</div>
-                  <div class="tactical-item">Develop guest content series on high-traffic career development sites</div>
-                  <div class="tactical-item">Partner with tech publications for student success story features</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
         </div>
-      `;
+      `).join('')}
+    </div>
 
-      // Animate score number
-      setTimeout(() => {
-        let count = 0;
-        const target = 55;
-        const duration = 1500;
-        const increment = target / (duration / 16);
-        const scoreEl = document.getElementById('scoreNumber');
-        const counter = setInterval(() => {
-          count += increment;
-          if (count >= target) {
-            count = target;
-            clearInterval(counter);
-          }
-          scoreEl.textContent = Math.round(count);
-        }, 16);
-      }, 300);
-
-      // Animate hero number (+25%)
-      setTimeout(() => {
-        let count = 0;
-        const target = 25;
-        const duration = 1200;
-        const increment = target / (duration / 16);
-        const counter = setInterval(() => {
-          count += increment;
-          if (count >= target) {
-            count = target;
-            clearInterval(counter);
-          }
-          document.getElementById('heroNumber').textContent = '+' + Math.round(count) + '%';
-        }, 16);
-      }, 100);
-
-      // Gap toggle function
-      window.toggleGap = function(gapId, impact) {
-        const card = document.getElementById(gapId);
-        const checkbox = card.querySelector('.checkbox-priority');
-        const isChecked = checkbox.classList.contains('checked');
-        
-        if (isChecked) {
-          checkbox.classList.remove('checked');
-          card.classList.remove('checked');
-          checkedImpact -= impact;
-        } else {
-          checkbox.classList.add('checked');
-          card.classList.add('checked');
-          checkedImpact += impact;
+    <div id="gaps" class="section">
+      <h2 style="margin:12px 0 8px;">Where You're Missing Out</h2>
+      ${[
+        {
+          id:'gap1', title:'Insurance-linked wellness rewards intent', impact:7,
+          desc:`${comp1} dominates insurer-branded rewards searches`,
+          current:'Rank #5', comp:`${comp1} leads at #1–2`,
+          tactics:[
+            'Create “Works with your insurer” explainer + partner logos',
+            `Comparison page: ${brand} vs ${comp1} (benefits grid)`,
+            'Publish insurer pilot case study (engagement uplift, claims proxy)'
+          ],
+          compTable:[
+            [comp1, '1.6', '66%'],
+            [`${brand} (You)`, '5.0', '46%'],
+            [comp2, '3.7', '52%']
+          ],
+          examples:[
+            ['best wellness rewards app Singapore', 'Rank #5 • 6 mentions', `${comp1} wins insurer intent`],
+            ['health rewards with insurance app', 'Rank #4 • 5 mentions', 'Need explicit insurer compatibility messaging']
+          ]
+        },
+        {
+          id:'gap2', title:'Condition phrasing for diabetes/hypertension', impact:6,
+          desc:`Clinical phrasing underrepresented; ${comp2} and clinics surface more guides`,
+          current:'Rank #4', comp:`${comp2} favored for medical phrasing`,
+          tactics:[
+            'Launch condition hubs with guideline-aligned FAQs',
+            'Co-author content with clinics; include SMBG/BP workflows',
+            'Add schema (HowTo, FAQ, MedicalEntity) for LLM grounding'
+          ],
+          compTable:[
+            [comp2, '2.1', '63%'],
+            [`${brand} (You)`, '4.0', '50%']
+          ],
+          examples:[
+            ['diabetes program Singapore app', 'Rank #4 • 3 mentions', 'Provider-led content leads'],
+            ['hypertension management app Singapore', 'Not appearing • 0 mentions', 'Need dedicated landing pages']
+          ]
+        },
+        {
+          id:'gap3', title:'Employee wellness platform (HR buyer intent)', impact:4,
+          desc:'Low visibility for HR-focused queries in SG',
+          current:'Rank #6', comp:`${comp3} clearer on corporate outcomes`,
+          tactics:[
+            'Dedicated HR buyer page (tiers, SSO, analytics screenshots)',
+            'LinkedIn creator program targeting HR leaders',
+            'Comparison vs Naluri / Virgin Pulse with outcomes claims'
+          ],
+          compTable:[
+            [comp3, '3.0', '58%'],
+            [comp2, '3.2', '56%'],
+            [`${brand} (You)`, '6.0', '43%']
+          ],
+          examples:[
+            ['employee wellness platform Singapore', 'Rank #6 • 2 mentions', 'Needs HR landing & pricing'],
+            ['corporate wellbeing app APAC', 'Not appearing • 0 mentions', 'No enterprise outcomes page']
+          ]
+        },
+        {
+          id:'gap4', title:'Outcomes proof (adherence improvement)', impact:5,
+          desc:'Scattered evidence; lacks concise RWE briefs',
+          current:'Low presence', comp:'Competitors surface single-page outcomes snapshots',
+          tactics:[
+            'Publish 12-week adherence uplift snapshots (metric blocks)',
+            'Add methodology notes; baseline vs 12 weeks chart',
+            'Structured data so LLMs can lift stats cleanly'
+          ],
+          compTable:[
+            [comp1, '2.8', '55%'],
+            [`${brand} (You)`, '5.2', '45%']
+          ],
+          examples:[
+            ['medication adherence improvement app', 'Rank #5 • 4 mentions', 'Evidence fragmented across posts'],
+            ['real-world outcomes digital health Singapore', 'Not appearing • 0 mentions', 'Need single outcomes page']
+          ]
         }
-        
-        updateProgress();
-      };
+      ].map(g=>`
+        <div class="gap-card" id="${g.id}" data-impact="${g.impact}">
+          <div style="display:flex;justify-content:space-between;gap:16px;">
+            <div style="flex:1;">
+              <div style="font-size:18px;font-weight:800;margin-bottom:4px;">${g.title}</div>
+              <div class="subtle" style="margin-bottom:10px;">${g.desc}</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div class="card"><div class="subtle">Current</div><div style="font-weight:800">${g.current}</div></div>
+                <div class="card"><div class="subtle">Competitors</div><div style="font-weight:800">${g.comp}</div></div>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:34px;font-weight:900;color:#059669;">+${g.impact}%</div>
+              <div class="subtle" style="font-weight:800;">OPPORTUNITY</div>
+              <div class="tick" onclick="toggleGap('${g.id}', ${g.impact})"></div>
+              <div class="subtle" style="margin-top:6px;">Mark priority</div>
+            </div>
+          </div>
 
-      window.toggleMoreGaps = function() {
-        const moreGaps = document.getElementById('moreGaps');
-        const btn = event.target;
-        const isShowing = moreGaps.style.display !== 'none';
-        moreGaps.style.display = isShowing ? 'none' : 'block';
-        btn.textContent = isShowing ? 'Show 2 More Gaps' : 'Show Less';
-      };
+          <div style="margin-top:12px;">
+            <div style="font-weight:800;margin-bottom:6px;">Tactics</div>
+            <ul style="margin:0 0 0 18px;">
+              ${g.tactics.map(t=>`<li style="margin:6px 0;">${t}</li>`).join('')}
+            </ul>
+          </div>
 
-      window.toggleExamples = function(exampleId) {
-        const examples = document.getElementById(exampleId);
-        // Determine chevron ID based on the content type
-        let chevronId;
-        if (exampleId.includes('competitive')) {
-          chevronId = exampleId.replace('competitive', 'compchevron');
-        } else {
-          chevronId = exampleId.replace('examples', 'chevron');
-        }
-        const chevron = document.getElementById(chevronId);
-        const isShowing = examples.style.display !== 'none';
-        examples.style.display = isShowing ? 'none' : 'block';
-        if (chevron) {
-          chevron.style.transform = isShowing ? 'rotate(0deg)' : 'rotate(180deg)';
-        }
-      };
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid #E8E8ED;">
+            <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleBlock('${g.id}-comp')">
+              <div style="font-weight:800;color:#10B981;">View Competitive Position</div>
+              <div id="${g.id}-comp-chev" class="acc-chev">▼</div>
+            </div>
+            <div id="${g.id}-comp" style="display:none;margin-top:10px;">
+              <table>
+                <thead><tr><th>Brand</th><th>Position</th><th style="text-align:right;">Visibility</th></tr></thead>
+                <tbody>
+                  ${g.compTable.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td style="text-align:right;">${r[2]}</td></tr>`).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-      window.updateProgress = function() {
-        const newSoV = currentSoV + checkedImpact;
-        const progressBar = document.getElementById('progressBar');
-        const currentSoVDisplay = document.getElementById('currentSoV');
-        
-        progressBar.style.width = newSoV + '%';
-        
-        const start = parseInt(currentSoVDisplay.textContent);
-        const end = newSoV;
-        const duration = 600;
-        const startTime = performance.now();
-        
-        function updateNumber(currentTime) {
-          const elapsed = currentTime - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-          const eased = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-          const current = Math.round(start + (end - start) * eased);
-          currentSoVDisplay.textContent = current;
-          
-          if (progress < 1) {
-            requestAnimationFrame(updateNumber);
-          }
-        }
-        
-        requestAnimationFrame(updateNumber);
-      };
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid #E8E8ED;">
+            <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleBlock('${g.id}-ex')">
+              <div style="font-weight:800;color:#10B981;">View Example Queries</div>
+              <div id="${g.id}-ex-chev" class="acc-chev">▼</div>
+            </div>
+            <div id="${g.id}-ex" style="display:none;margin-top:10px;">
+              ${g.examples.map(e=>`
+                <div class="card" style="margin-bottom:8px;border-left:3px solid #10B981;">
+                  <div style="font-weight:700">${e[0]}</div>
+                  <div class="subtle">${e[1]}</div>
+                  <div class="subtle">${e[2]}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
 
-      window.toggleShowMore = function() {
-        const hiddenPrompts = document.querySelectorAll('.accordion[data-index]');
-        const btn = document.getElementById('showMoreBtn');
-        const isShowing = hiddenPrompts[3].style.display !== 'none';
-        
-        hiddenPrompts.forEach((prompt, idx) => {
-          if (idx >= 3) {
-            prompt.style.display = isShowing ? 'none' : 'block';
-          }
-        });
-        
-        btn.textContent = isShowing ? `Show ${prompts.length - 3} More Prompts` : 'Show Less';
-      };
+    <div id="opps" class="section">
+      <div class="hero">
+        <div style="color:#065F46;font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:12px;">Visibility Potential</div>
+        <div id="gain" style="font-size:64px;font-weight:900;color:#064E3B;letter-spacing:-.03em;margin:6px 0;">+22%</div>
+        <div style="color:#064E3B;font-size:15px;margin-bottom:6px;">${brand} can unlock an additional +22% visibility share by addressing its top competitive gaps.</div>
+        <div style="max-width:640px;margin:14px auto 0;">
+          <div style="position:relative;height:14px;background:#DCFCE7;border-radius:8px;overflow:hidden;">
+            <div id="bar" style="position:absolute;left:0;top:0;height:100%;width:63%;background:linear-gradient(90deg,#10B981,#059669);"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;font-weight:800;">
+            <span class="subtle">Current: <span id="sovNow">63</span>%</span>
+            <span style="color:#059669;">Target: 85%</span>
+          </div>
+        </div>
+        <div style="margin-top:10px;">
+          <span class="badge good">🟩 Insurer Rewards</span>
+          <span class="badge good">🟩 Clinical Phrasing</span>
+          <span class="badge good">🟩 HR Buyer Pages</span>
+          <span class="badge good">🟩 Outcomes Proof</span>
+        </div>
+      </div>
 
-      window.toggleAccordion = function(header) {
-        header.parentElement.classList.toggle('expanded');
-      };
+      <h3 style="margin-top:30px;margin-bottom:8px;">Where the Growth Comes From</h3>
+      <div class="opp-cards">
+        <div class="opp-card">
+          <h4>🏦 Insurer-Linked Rewards (+7%)</h4>
+          <p>Own insurer intent with compatibility pages, logos, and comparison grids.</p>
+        </div>
+        <div class="opp-card">
+          <h4>🩺 Condition Hubs (+6%)</h4>
+          <p>Publish guideline-aligned hubs for diabetes and hypertension with FAQ schema.</p>
+        </div>
+        <div class="opp-card">
+          <h4>🏢 HR Buyer Intent (+4%)</h4>
+          <p>Dedicated enterprise pages with pricing tiers, SSO, dashboards, and case studies.</p>
+        </div>
+        <div class="opp-card">
+          <h4>📈 Outcomes Proof (+5%)</h4>
+          <p>One-page outcomes snapshots with 12-week adherence uplift and methodology.</p>
+        </div>
+      </div>
 
-      // Initialize chart
-      initChart();
+      <h3 style="margin-top:32px;margin-bottom:10px;">Strategic Actions to Capture Opportunity</h3>
+      <div class="accordion expanded">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <div class="acc-title">Lead Insurer-Linked Rewards</div>
+          <div class="acc-chev">▼</div>
+        </div>
+        <div class="acc-body" style="max-height:1000px;">
+          <div style="padding:16px 18px;">
+            <ul style="margin:0 0 0 18px;">
+              <li>Compatibility page: “Works with your insurer” + partner logos.</li>
+              <li>Comparison content vs ${comp1} and ${comp2} with benefit grids.</li>
+              <li>Creator-led 30-day challenge showcasing rewards earn logic.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="accordion expanded">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <div class="acc-title">Launch Condition Hubs</div>
+          <div class="acc-chev">▼</div>
+        </div>
+        <div class="acc-body" style="max-height:1000px;">
+          <div style="padding:16px 18px;">
+            <ul style="margin:0 0 0 18px;">
+              <li>Guideline-aligned FAQs with clinician quotes.</li>
+              <li>SMBG/BP workflows and integration explainer.</li>
+              <li>HowTo/FAQ/MedicalEntity schema for AI extraction.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="accordion expanded">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <div class="acc-title">Win the HR Buyer</div>
+          <div class="acc-chev">▼</div>
+        </div>
+        <div class="acc-body" style="max-height:1000px;">
+          <div style="padding:16px 18px;">
+            <ul style="margin:0 0 0 18px;">
+              <li>Enterprise landing with pricing tiers and dashboards.</li>
+              <li>LinkedIn ads/creator program targeting HR leaders.</li>
+              <li>Comparison vs ${comp3} with outcomes and ROI.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-      // Keyboard accessibility
-      document.querySelectorAll('.accordion-header').forEach(h => { 
-        h.tabIndex = 0; 
-        h.addEventListener('keydown', (e) => { 
-          if(e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            h.click();
-          }
-        }); 
-      });
-    }
+      <h3 style="margin-top:32px;margin-bottom:8px;">Competitive Outlook</h3>
+      <table>
+        <thead><tr><th>Brand</th><th>Share of Voice</th><th>Trend</th></tr></thead>
+        <tbody>
+          <tr><td>${brand}</td><td>63%</td><td style="color:#059669;">▲ +5%</td></tr>
+          <tr><td>${comp1}</td><td>49%</td><td style="color:#059669;">▲ +3%</td></tr>
+          <tr><td>${comp2}</td><td>41%</td><td>➖ 0%</td></tr>
+          <tr><td>${comp3}</td><td>38%</td><td style="color:#B91C1C;">▼ –1%</td></tr>
+        </tbody>
+      </table>
 
-    function initChart(){
-      const canvas = document.getElementById('sovChart');
-      const ctx = canvas.getContext('2d');
-      const W = canvas.width;
-      const H = canvas.height;
+      <div class="subtle" style="text-align:center;margin-top:16px;">
+        Prioritize <strong>Insurer-Linked Rewards</strong> and <strong>Condition Hubs</strong> to push ${brand} beyond <strong>75% visibility</strong> in Singapore this quarter.
+        <div><button class="ghost-btn" onclick="alert('Generating Opportunity Summary…')">Download Opportunity Summary</button></div>
+      </div>
+    </div>
+  `;
 
-      const months = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'];
-      const datasets = [
-        { label: 'InterviewKickstart', color: '#d9534f', data: [50, 52, 51, 53, 55, 56, 55], width: 3 },
-        { label: 'AlgoExpert', color: '#f0ad4e', data: [43, 44, 45, 46, 48, 49, 50], width: 2 },
-        { label: 'Educative', color: '#337ab7', data: [36, 37, 38, 39, 40, 41, 42], width: 2 },
-        { label: 'LeetCode', color: '#5bc0de', data: [33, 35, 36, 37, 39, 40, 41], width: 2 },
-        { label: 'Exponent', color: '#5cb85c', data: [30, 31, 32, 33, 34, 35, 36], width: 2 }
-      ];
+  // initialize chart
+  renderChart();
 
-      const padding = { left: 44, right: 16, top: 16, bottom: 32 };
-      const chartW = W - padding.left - padding.right;
-      const chartH = H - padding.top - padding.bottom;
-      const maxVal = 80;
+  // animate opportunity number
+  animateNum('gain', 0, 22, 900, v => `+${v}%`);
+}
 
-      function drawGrid(){
-        ctx.clearRect(0,0,W,H);
-        ctx.font = '12px -apple-system, BlinkMacSystemFont, SF Pro Display';
-        ctx.fillStyle = '#86868B';
+function switchTab(id, btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
 
-        ctx.strokeStyle = '#E8E8ED'; ctx.lineWidth = 1;
-        for(let i=0;i<=4;i++){
-          const y = padding.top + (chartH * (i/4));
-          ctx.beginPath(); ctx.moveTo(padding.left, y); ctx.lineTo(padding.left + chartW, y); ctx.stroke();
-          const val = Math.round(maxVal - (maxVal*(i/4)));
-          ctx.fillText(val + '%', 6, y+4);
-        }
+/* Accordions */
+function toggleAcc(head){
+  const acc = head.parentElement;
+  acc.classList.toggle('expanded');
+  const body = head.nextElementSibling;
+  if(acc.classList.contains('expanded')) body.style.maxHeight='1000px';
+  else body.style.maxHeight='0';
+}
+function toggleBlock(id){
+  const el=document.getElementById(id);
+  const chev=document.getElementById(id+'-chev');
+  const showing=el.style.display!=='none';
+  el.style.display = showing ? 'none' : 'block';
+  if(chev) chev.style.transform = showing ? 'rotate(0deg)' : 'rotate(180deg)';
+}
 
-        ctx.fillStyle = '#86868B'; ctx.textAlign = 'center';
-        months.forEach((m, idx) => {
-          const x = padding.left + (chartW * (idx/(months.length-1)));
-          ctx.fillText(m, x, H - 8);
-        });
-      }
+/* Gaps → dynamic opportunity */
+let added = 0;
+function toggleGap(id, impact){
+  const card=document.getElementById(id);
+  const box=card.querySelector('.tick');
+  const checked=box.classList.contains('checked');
+  if(checked){ box.classList.remove('checked'); box.innerHTML=''; added-=impact; }
+  else { box.classList.add('checked'); box.innerHTML='✓'; added+=impact; }
+  const now = Math.min(85, 63 + added);
+  const sovEl = document.getElementById('sovNow');
+  if(sovEl){ sovEl.textContent = now; }
+  const barEl = document.getElementById('bar');
+  if(barEl){ barEl.style.width = now+'%'; }
+}
 
-      function drawLines(){
-        datasets.forEach(ds => {
-          ctx.beginPath();
-          ds.data.forEach((val, i) => {
-            const x = padding.left + (chartW * (i/(ds.data.length-1)));
-            const y = padding.top + chartH - ( (val/maxVal) * chartH );
-            if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-          });
-          ctx.strokeStyle = ds.color; ctx.lineWidth = ds.width; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke();
+/* Helpers */
+function animateNum(id, start, end, dur, fmt){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const t0=performance.now();
+  (function frame(t){
+    const p=Math.min(1,(t-t0)/dur);
+    const v=Math.round(start + (end-start)*(p<.5?2*p*p:-1+(4-2*p)*p));
+    el.textContent = fmt ? fmt(v) : v;
+    if(p<1) requestAnimationFrame(frame);
+  })(t0);
+}
 
-          ds.data.forEach((val, i) =>{
-            const x = padding.left + (chartW * (i/(ds.data.length-1)));
-            const y = padding.top + chartH - ( (val/maxVal) * chartH );
-            ctx.beginPath(); ctx.fillStyle = '#FFF'; ctx.strokeStyle = ds.color; ctx.lineWidth = 2; ctx.arc(x,y,5,0,Math.PI*2); ctx.fill(); ctx.stroke();
-          });
-        });
-      }
+/* Interactive chart (pure canvas) */
+function renderChart(){
+  const canvas=document.getElementById('sov');
+  const ctx=canvas?.getContext('2d');
+  if(!ctx) return;
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = Math.floor(rect.width * dpr);
+  canvas.height = Math.floor(300 * dpr);
+  ctx.scale(dpr,dpr);
 
-      drawGrid(); drawLines();
+  const W = rect.width, H = 300, pad=40;
+  const months=['May','Jun','Jul','Aug','Sep','Oct'];
+  const series={
+    [state.brand||'Elfie']:[55,56,57,59,61,63],
+    [state.c1||'AIA Vitality']:[44,45,46,47,48,49],
+    [state.c2||'Prudential Pulse']:[40,41,41,41,41,41],
+    [state.c3||'Naluri']:[36,37,38,38,38,38]
+  };
+  const colors=['#10B981','#3B82F6','#F59E0B','#8B5CF6'];
 
-      const tooltip = document.getElementById('chartTooltip');
-      canvas.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const mx = e.clientX - rect.left;
-        let nearest = 0; let nearestDist = Infinity;
-        months.forEach((m, idx) => {
-          const x = padding.left + (chartW * (idx/(months.length-1)));
-          const d = Math.abs(mx - x);
-          if(d < nearestDist){ nearest = idx; nearestDist = d; }
-        });
+  function x(i){ return pad + i*((W-2*pad)/(months.length-1)); }
+  function y(v){ const min=0,max=85; return H-pad - ( (v-min)/(max-min) )*(H-2*pad); }
 
-        const tx = padding.left + (chartW * (nearest/(months.length-1)));
-        tooltip.style.left = (canvas.offsetLeft + tx) + 'px';
-        tooltip.style.top = (canvas.offsetTop + padding.top + 6) + 'px';
+  // grid
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){ const yy=pad + i*((H-2*pad)/4); ctx.beginPath(); ctx.moveTo(pad, yy); ctx.lineTo(W-pad, yy); ctx.stroke(); }
+  ctx.fillStyle='#6B7280'; ctx.font='12px system-ui';
+  [0,20,40,60,80].forEach((v,i)=>{ const yy=y(v); ctx.fillText(v+'%', 8, yy+4); });
+  months.forEach((m,i)=>ctx.fillText(m, x(i)-10, H-pad+18));
 
-        let html = `<div style="font-weight:700;margin-bottom:8px;">${months[nearest]} 2025</div>`;
-        datasets.forEach(ds => { html += `<div style="display:flex;justify-content:space-between;gap:16px;margin:4px 0;"><div style="width:130px">${ds.label}</div><div style="font-weight:700;">${ds.data[nearest]}%</div></div>`; });
-        tooltip.innerHTML = html; tooltip.style.display = 'block';
-      });
-      canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
-    }
+  // lines
+  const keys=Object.keys(series);
+  keys.forEach((k,i)=>{
+    ctx.strokeStyle=colors[i]; ctx.lineWidth=2.5;
+    series[k].forEach((v,idx)=>{ const X=x(idx), Y=y(v); if(idx===0){ ctx.beginPath(); ctx.moveTo(X,Y);} else ctx.lineTo(X,Y); });
+    ctx.stroke();
+    series[k].forEach((v,idx)=>{ const X=x(idx), Y=y(v); ctx.beginPath(); ctx.fillStyle=colors[i]; ctx.arc(X,Y,3,0,Math.PI*2); ctx.fill(); });
+  });
 
-  </script>
+  // tooltip
+  const tip=document.getElementById('tip');
+  canvas.onmousemove=(e)=>{
+    const r=canvas.getBoundingClientRect();
+    const mx=(e.clientX - r.left);
+    let idx=0, best=1e9;
+    months.forEach((_,i)=>{ const dx=Math.abs(mx - x(i)); if(dx<best){ best=dx; idx=i; } });
+    const items = keys.map((k,i)=>`${k}: ${series[k][idx]}%`).join('<br>');
+    tip.innerHTML = `<strong>${months[idx]} 2025</strong><br>${items}`;
+    tip.style.display='block';
+    tip.style.left = (x(idx)+16)+'px';
+    tip.style.top = (y(80)-10)+'px';
+  };
+  canvas.onmouseleave=()=>{ tip.style.display='none'; };
+
+  // responsive
+  window.addEventListener('resize', ()=>{ renderChart(); }, {once:true});
+}
+
+// expose for onclick
+window.switchTab = switchTab;
+window.toggleAcc = toggleAcc;
+window.toggleGap = toggleGap;
+window.toggleBlock = toggleBlock;
+</script>
 </body>
 </html>
