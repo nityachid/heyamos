@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Elfie — AEO Dashboard v12 (Digital Health, Singapore)</title>
+  <title>Carousell Luxury — AEO Dashboard v12 (Luxury Resale, SG)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing:border-box; }
@@ -10,23 +10,23 @@
     .container{ max-width:1150px; margin:0 auto; }
     .content{ background:#FFF; border-radius:16px; padding:32px; box-shadow:0 4px 16px rgba(0,0,0,.06); }
     .progress{ display:flex; align-items:center; gap:8px; color:#86868B; margin-bottom:16px; font-size:13px; font-weight:600; }
-    .progress-dot{ width:8px; height:8px; background:#10B981; border-radius:50%; } /* Elfie-ish green accent */
+    .progress-dot{ width:8px; height:8px; background:#4A9B8E; border-radius:50%; }
     .question{ font-size:24px; font-weight:700; margin-bottom:16px; }
     .input{ width:100%; height:50px; padding:12px 14px; font-size:16px; border-radius:12px; border:1px solid #D2D2D7; outline:none; transition:.2s; }
-    .input:focus{ border:2px solid #10B981; box-shadow:0 0 0 4px rgba(16,185,129,.12); }
-    .button{ padding:12px 18px; border-radius:12px; font-weight:700; font-size:14px; background:#10B981; color:#FFF; border:none; cursor:pointer; transition:.15s; }
-    .button:hover{ background:#0ea371; transform:translateY(-1px); box-shadow:0 4px 12px rgba(16,185,129,.3); }
+    .input:focus{ border:2px solid #4A9B8E; box-shadow:0 0 0 4px rgba(74,155,142,.12); }
+    .button{ padding:12px 18px; border-radius:12px; font-weight:700; font-size:14px; background:#4A9B8E; color:#FFF; border:none; cursor:pointer; transition:.15s; }
+    .button:hover{ background:#3d8275; transform:translateY(-1px); box-shadow:0 4px 12px rgba(74,155,142,.3); }
     .button:disabled{ opacity:.5; cursor:not-allowed; }
     .tabbar{ position:sticky; top:0; background:#FFF; padding:8px 0; z-index:10; border-bottom:1px solid #E5E7EB; display:flex; gap:8px; }
     .tab{ border:none; background:#F3F4F6; color:#111827; padding:8px 14px; border-radius:22px; font-weight:700; cursor:pointer; }
-    .tab.active{ background:#10B981; color:#FFF; }
+    .tab.active{ background:#4A9B8E; color:#FFF; }
     .section{ display:none; }
     .section.active{ display:block; animation:fade .35s ease; }
     @keyframes fade{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
     .report-header{ text-align:center; padding:24px 0 28px; }
     .report-title{ font-size:34px; font-weight:800; letter-spacing:-.02em; }
     .badge{ display:inline-flex; gap:6px; align-items:center; padding:6px 12px; border-radius:20px; font-size:13px; font-weight:700; }
-    .badge.good{ background:#ECFDF5; color:#065F46; }
+    .badge.good{ background:#E8F8ED; color:#059669; }
     .card{ background:#FAFAFA; border:1px solid #E8E8ED; border-radius:12px; padding:18px; }
     .accordion{ background:#FFF; border:1px solid #E8E8ED; border-radius:12px; overflow:hidden; margin-bottom:10px; }
     .accordion:hover{ box-shadow:0 2px 10px rgba(0,0,0,.05); }
@@ -38,27 +38,27 @@
     .accordion.expanded .acc-body{ max-height:1000px; }
     table{ width:100%; border-collapse:collapse; }
     th,td{ padding:10px 12px; font-size:13px; }
-    thead th{ background:#10B981; color:#FFF; text-align:left; }
+    thead th{ background:#4A9B8E; color:#FFF; text-align:left; }
     .pill{ display:inline-block; padding:2px 8px; border-radius:8px; font-size:12px; font-weight:700; }
     .pill.pos{ background:#E8F8ED; color:#059669; }
     .pill.neu{ background:#F3F4F6; color:#374151; }
     .pill.neg{ background:#FEE2E2; color:#B91C1C; }
     .gap-card{ background:#FFF; border:2px solid #E8E8ED; border-radius:12px; padding:20px; margin-bottom:14px; }
-    .gap-card:hover{ border-color:#10B981; box-shadow:0 4px 12px rgba(16,185,129,.15); }
+    .gap-card:hover{ border-color:#4A9B8E; box-shadow:0 4px 12px rgba(74,155,142,.15); }
     .tick{ width:20px; height:20px; border:2px solid #D1D5DB; border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
-    .tick.checked{ background:#10B981; border-color:#10B981; color:#FFF; font-weight:900; }
+    .tick.checked{ background:#4A9B8E; border-color:#4A9B8E; color:#FFF; font-weight:900; }
     .chart-wrap{ position:relative; background:#FAFAFA; border:1px solid #E8E8ED; border-radius:12px; padding:16px; }
     canvas{ display:block; width:100%; height:300px; }
     .tooltip{ position:absolute; background:#111827; color:#FFF; padding:10px 12px; font-size:12px; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,.3); pointer-events:none; display:none; white-space:nowrap; }
-    .hero{ background:linear-gradient(135deg,#ECFDF5 0%,#DCFCE7 100%); border:1px solid #bbf7d0; border-radius:16px; padding:28px; text-align:center; }
+    .hero{ background:linear-gradient(135deg,#F0F9FF 0%,#E0F2FE 100%); border:1px solid #BAE6FD; border-radius:16px; padding:28px; text-align:center; }
     .subtle{ color:#6B7280; font-size:13px; }
     .opp-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:20px;}
-    .opp-card{background:#FFF;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,.04);padding:18px 20px;border-left:5px solid #10B981;transition:.2s;}
+    .opp-card{background:#FFF;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,.04);padding:18px 20px;border-left:5px solid #4A9B8E;transition:.2s;}
     .opp-card:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.08);}
     .opp-card h4{margin:0 0 6px;font-size:16px;}
     .opp-card p{margin:0;font-size:14px;color:#374151;}
-    .ghost-btn{background:transparent;border:1.5px solid #10B981;color:#065F46;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:700;margin-top:10px;}
-    .ghost-btn:hover{background:#ECFDF5;}
+    .ghost-btn{background:transparent;border:1.5px solid #4A9B8E;color:#4A9B8E;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:700;margin-top:10px;}
+    .ghost-btn:hover{background:#E8F8ED;}
     @keyframes spin{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
   </style>
 </head>
@@ -69,7 +69,7 @@
     <div class="progress"><div class="progress-dot"></div><span>Step 1 of 5</span></div>
     <div class="question">What is your category?</div>
     <input id="cat" class="input" placeholder="Enter your category" />
-    <div style="margin-top:14px;"><button id="btn1" class="button" disabled>Continue</button> <span class="subtle">Prefilled: Digital Health & Wellness Engagement</span></div>
+    <div style="margin-top:14px;"><button id="btn1" class="button" disabled>Continue</button> <span class="subtle">Prefilled: Luxury Resale & Authentication</span></div>
   </div>
 </div>
 
@@ -78,7 +78,7 @@ let state = {};
 const root = document.getElementById('root');
 const cat = document.getElementById('cat');
 const btn1 = document.getElementById('btn1');
-setTimeout(()=>{cat.value='Digital Health & Wellness Engagement'; state.category='Digital Health & Wellness Engagement'; btn1.disabled=false;},250);
+setTimeout(()=>{cat.value='Luxury Resale & Authentication'; state.category='Luxury Resale & Authentication'; btn1.disabled=false;},250);
 cat.oninput=()=>{state.category=cat.value.trim(); btn1.disabled=!state.category; };
 btn1.onclick=step2;
 
@@ -87,9 +87,9 @@ function step2(){
     <div class="progress"><div class="progress-dot"></div><span>Step 2 of 5</span></div>
     <div class="question">What is your brand?</div>
     <input id="brand" class="input" placeholder="Enter your brand" />
-    <div style="margin-top:14px;"><button id="btn2" class="button" disabled>Continue</button> <span class="subtle">Prefilled: Elfie</span></div>`;
+    <div style="margin-top:14px;"><button id="btn2" class="button" disabled>Continue</button> <span class="subtle">Prefilled: Carousell Luxury</span></div>`;
   const b=document.getElementById('brand'); const btn2=document.getElementById('btn2');
-  setTimeout(()=>{b.value='Elfie'; state.brand='Elfie'; btn2.disabled=false;},200);
+  setTimeout(()=>{b.value='Carousell Luxury'; state.brand='Carousell Luxury'; btn2.disabled=false;},200);
   b.oninput=()=>{state.brand=b.value.trim(); btn2.disabled=!state.brand; };
   btn2.onclick=step3;
 }
@@ -97,8 +97,8 @@ function step2(){
 function step3(){
   root.innerHTML = `
     <div class="progress"><div class="progress-dot"></div><span>Step 3 of 5</span></div>
-    <div class="question">Which country?</div>
-    <input id="country" class="input" placeholder="Enter country" />
+    <div class="question">Which country/market?</div>
+    <input id="country" class="input" placeholder="Enter market" />
     <div style="margin-top:14px;"><button id="btn3" class="button" disabled>Continue</button> <span class="subtle">Prefilled: Singapore</span></div>`;
   const c=document.getElementById('country'); const btn3=document.getElementById('btn3');
   setTimeout(()=>{c.value='Singapore'; state.country='Singapore'; btn3.disabled=false;},200);
@@ -111,9 +111,9 @@ function step4(){
     <div class="progress"><div class="progress-dot"></div><span>Step 4 of 5</span></div>
     <div class="question">Website?</div>
     <input id="site" class="input" placeholder="Enter website URL" />
-    <div style="margin-top:14px;"><button id="btn4" class="button" disabled>Continue</button> <span class="subtle">Prefilled: elfie.co</span></div>`;
+    <div style="margin-top:14px;"><button id="btn4" class="button" disabled>Continue</button> <span class="subtle">Prefilled: carousell.sg/luxury</span></div>`;
   const s=document.getElementById('site'); const btn4=document.getElementById('btn4');
-  setTimeout(()=>{s.value='https://www.elfie.co/'; state.website=s.value; btn4.disabled=false;},200);
+  setTimeout(()=>{s.value='https://www.carousell.sg/'; state.website=s.value; btn4.disabled=false;},200);
   s.oninput=()=>{state.website=s.value.trim(); btn4.disabled=!state.website; };
   btn4.onclick=step5;
 }
@@ -125,28 +125,28 @@ function step5(){
     <input id="c1" class="input" placeholder="Competitor 1" />
     <input id="c2" class="input" placeholder="Competitor 2" style="margin-top:10px;" />
     <input id="c3" class="input" placeholder="Competitor 3" style="margin-top:10px;" />
-    <div style="margin-top:14px;"><button id="btn5" class="button" disabled>Generate Report</button> <span class="subtle">Prefilled: AIA Vitality, Prudential Pulse, Naluri</span></div>`;
+    <div style="margin-top:14px;"><button id="btn5" class="button" disabled>Generate Report</button> <span class="subtle">Prefilled: Reebonz, Vestiaire Collective, The Fifth Collection</span></div>`;
   const c1=document.getElementById('c1'), c2=document.getElementById('c2'), c3=document.getElementById('c3'), btn5=document.getElementById('btn5');
-  setTimeout(()=>{c1.value='AIA Vitality';c2.value='Prudential Pulse';c3.value='Naluri'; state.c1=c1.value; state.c2=c2.value; state.c3=c3.value; btn5.disabled=false;},200);
+  setTimeout(()=>{c1.value='Reebonz';c2.value='Vestiaire Collective';c3.value='The Fifth Collection'; state.c1=c1.value; state.c2=c2.value; state.c3=c3.value; btn5.disabled=false;},200);
   [c1,c2,c3].forEach(el=>el.oninput=()=>{state.c1=c1.value.trim();state.c2=c2.value.trim();state.c3=c3.value.trim(); btn5.disabled=!(state.c1||state.c2||state.c3);});
   btn5.onclick=loading;
 }
 
-/* ---- Loading (≈10s) ---- */
+/* Loading */
 function loading(){
   const steps=[
-    'Crawling Elfie site, programs & rewards',
-    'Parsing condition hubs (diabetes, BP) and engagement features',
-    'Analyzing AIA Vitality, Prudential Pulse, and Naluri content',
-    'Processing digital health discovery queries (rewards, adherence, HR)',
+    'Crawling Carousell Luxury marketplace & trust pages',
+    'Parsing authentication & buyer protection content',
+    'Analyzing Reebonz, Vestiaire & The Fifth Collection visibility',
+    'Processing high‑intent queries (authenticate, buy, sell)',
     'Computing Share of Voice & sentiment across AI engines',
-    'Detecting visibility gaps (insurer-linked rewards, clinical phrasing)',
+    'Detecting visibility gaps (authentication, returns, concierge)',
     'Building competitive leaderboards & charts',
-    'Generating Elfie visibility dashboard'
+    'Generating Carousell Luxury dashboard for Singapore'
   ];
   let html = `<div style="text-align:center;padding:56px 12px;">
-    <div style="width:64px;height:64px;border:4px solid #E5E7EB;border-top:4px solid #10B981;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;"></div>
-    <h2 style="margin:18px 0 6px;">Generating your Elfie report…</h2>
+    <div style="width:64px;height:64px;border:4px solid #E5E7EB;border-top:4px solid #4A9B8E;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;"></div>
+    <h2 style="margin:18px 0 6px;">Generating your Carousell Luxury report…</h2>
     <div class="subtle">High-fidelity analysis for ${state.country||'Singapore'}</div>
     <div style="max-width:520px;margin:18px auto;text-align:left;">`;
   steps.forEach((t,i)=>{
@@ -162,15 +162,15 @@ function loading(){
     if(!el) return;
     el.style.opacity=1;
     const dot=el.children[0];
-    dot.style.background='#10B981'; dot.style.border='2px solid #10B981'; dot.innerHTML='<span style="color:#FFF;font-size:10px;font-weight:900;">✓</span>';
-  }, i*1200));
-  setTimeout(dashboard, steps.length*1200+300);
+    dot.style.background='#4A9B8E'; dot.style.border='2px solid #4A9B8E'; dot.innerHTML='<span style="color:#FFF;font-size:10px;font-weight:900;">✓</span>';
+  }, i*1100));
+  setTimeout(dashboard, steps.length*1100+300);
 }
 
-/* ---- Dashboard ---- */
+/* Dashboard */
 function dashboard(){
-  const brand = state.brand || 'Elfie';
-  const comp1 = state.c1 || 'AIA Vitality', comp2 = state.c2 || 'Prudential Pulse', comp3 = state.c3 || 'Naluri';
+  const brand = state.brand || 'Carousell Luxury';
+  const comp1 = state.c1 || 'Reebonz', comp2 = state.c2 || 'Vestiaire Collective', comp3 = state.c3 || 'The Fifth Collection';
 
   root.innerHTML = `
     <div class="tabbar">
@@ -183,9 +183,9 @@ function dashboard(){
     <div id="overview" class="section active">
       <div class="report-header">
         <div class="report-title">${brand} in ${state.country || 'Singapore'}</div>
-        <div style="font-size:72px;font-weight:900;color:#065F46;line-height:1;">63</div>
+        <div style="font-size:72px;font-weight:900;color:#4A9B8E;line-height:1;">64</div>
         <div class="badge good" style="margin-top:8px;"><span>↑</span><span>+5% from last month</span></div>
-        <div style="margin-top:10px;" class="subtle">Category: ${state.category || 'Digital Health & Wellness Engagement'}</div>
+        <div style="margin-top:10px;" class="subtle">Category: ${state.category || 'Luxury Resale & Authentication'}</div>
       </div>
 
       <div class="chart-wrap">
@@ -195,7 +195,7 @@ function dashboard(){
       </div>
 
       <div style="margin:10px 0 24px;" class="subtle">
-        ${brand} leads for gamified engagement and adherence challenges; ${comp1} dominates insurer-linked rewards, while ${comp2} has strong health navigation content and ${comp3} is recognized for behavior change coaching.
+        ${brand} leads in **local reach** and **speed to sell**, while ${comp2} dominates “sustainability & global buyer” narratives.
       </div>
 
       <h3 style="font-size:18px;margin:10px 0 8px;">Top Prompts for Your Category</h3>
@@ -203,23 +203,12 @@ function dashboard(){
         <table>
           <thead><tr><th>Prompt</th><th>Volume</th><th>Rank</th><th>Perception</th></tr></thead>
           <tbody>
-            <tr><td>Best health rewards app Singapore</td><td><span class="pill pos">High</span></td><td><strong>3</strong></td><td><span class="pill neu">Neutral</span></td></tr>
-            <tr><td>Digital patient engagement platform Singapore</td><td><span class="pill neu">High</span></td><td><strong>2</strong></td><td><span class="pill pos">Positive</span></td></tr>
-            <tr><td>Medication adherence rewards app</td><td><span class="pill neu">Medium</span></td><td><strong>1</strong></td><td><span class="pill pos">Positive</span></td></tr>
-            <tr><td>Chronic disease management app Singapore</td><td><span class="pill neu">Medium</span></td><td><strong>3</strong></td><td><span class="pill neu">Neutral</span></td></tr>
-            <tr><td>${comp1} vs ${brand} comparison</td><td><span class="pill neu">High</span></td><td><strong>4</strong></td><td><span class="pill neu">Neutral</span></td></tr>
+            <tr><td>Best place to buy authentic luxury bags Singapore</td><td><span class="pill pos">High</span></td><td><strong>1</strong></td><td><span class="pill pos">Positive</span></td></tr>
+            <tr><td>${comp2} vs ${brand} (fees, authenticity, shipping)</td><td><span class="pill neu">High</span></td><td><strong>2</strong></td><td><span class="pill neu">Neutral</span></td></tr>
+            <tr><td>How to authenticate a Chanel bag Singapore</td><td><span class="pill neu">Medium</span></td><td><strong>2</strong></td><td><span class="pill pos">Positive</span></td></tr>
+            <tr><td>Sell my designer bag fast Singapore</td><td><span class="pill neu">Medium</span></td><td><strong>1</strong></td><td><span class="pill pos">Positive</span></td></tr>
           </tbody>
         </table>
-      </div>
-
-      <h3 style="font-size:18px;margin:14px 0 8px;">Recent Competitive Activity</h3>
-      <div class="card">
-        <ul style="margin:0 0 0 18px;">
-          <li>${comp1} added new lifestyle partners and boosted earn rates (+6% visibility)</li>
-          <li>${comp2} launched proactive checkup nudges in-app (+4%)</li>
-          <li>${brand} introduced a condition-based adherence challenge (+5%)</li>
-          <li>${comp3} expanded corporate mental wellbeing programs (+3%)</li>
-        </ul>
       </div>
     </div>
 
@@ -227,39 +216,36 @@ function dashboard(){
       <h2 style="margin:12px 0 8px;">High-Visibility Wins</h2>
       ${[
         {
-          q:'Medication adherence rewards app',
-          rank:1, mentions:18, vis:'68%', perception:'Positive',
-          authority:'Clinic partners, app store reviews, health blogs',
-          competitors:`${comp1}, ${comp2}`,
-          how:'Known for adherence incentives and simple UI; quick onboarding and daily nudges',
+          q:'Best place to buy authentic luxury bags Singapore',
+          rank:1, mentions:44, vis:'72%', perception:'Positive',
+          authority:'Honeycombers, Tatler, local KOL roundups', competitors:`${comp2}, ${comp1}`,
+          how:'Appears as trusted local marketplace with buyer protection & strong selection',
           defend:[
-            'Publish a clear “Why adherence matters” page with metrics',
-            'Create a 12-week adherence case study with chart snapshots',
-            `Add ${comp1} & ${comp2} comparison blocks within 48h of their updates`
+            'Keep trust badges & buyer protection copy above the fold on category pages',
+            `Update “Top authentic sellers in SG” editorial monthly`,
+            'Pin verified authentication partners on PDPs (badge + link)'
           ]
         },
         {
-          q:`Digital patient engagement platform Singapore`,
-          rank:2, mentions:21, vis:'60%', perception:'Positive',
-          authority:'Hospital/clinic sites, digital health directories',
-          competitors:`${comp1}`,
-          how:'Positioned as a flexible B2B2C engagement layer for insurers & employers',
+          q:`${comp2} vs ${brand} (fees, authenticity, shipping)`,
+          rank:2, mentions:29, vis:'60%', perception:'Neutral',
+          authority:'Reddit r/SGExpat, forum threads, price comparison blogs', competitors:`${comp2}`,
+          how:'Strong on fees & speed, weaker on global reach & sustainability points',
           defend:[
-            'Build a partner logo wall and outcomes stats (click-to-expand)',
-            'Add HIPAA/PDPA & security badges with short proofs',
-            'Publish integration matrix (EHR, HRIS, claims feeds)'
+            'Create a living comparison page: fees, shipping time, returns policy',
+            'Showcase “Sell Fast” success metrics (median time-to-sale, SG only)',
+            'Add “re-commerce sustainability impact” stats to close narrative gap'
           ]
         },
         {
-          q:`Best health rewards app Singapore`,
-          rank:3, mentions:29, vis:'54%', perception:'Neutral',
-          authority:'Insurer program pages, lifestyle blogs',
-          competitors:`${comp1}, ${comp3}`,
-          how:'Insurer-led rewards dominate; Elfie appears as versatile, lighter-weight alternative',
+          q:'How to authenticate a Chanel bag Singapore',
+          rank:2, mentions:21, vis:'58%', perception:'Positive',
+          authority:'Bag forums, YouTube KOLs, brand care guides', competitors:`${comp1}, ${comp3}`,
+          how:'Highlighted for third-party authenticator integrations & dispute process',
           defend:[
-            'Create “Works with your insurer” explainer & partner logos',
-            'Run creator-driven “30-day healthy habits” challenge',
-            'Add rewards catalogue preview with earn logic examples'
+            'Publish “Authentication 101” microsite with step-by-step visuals',
+            'Bundle authentication + escrow in one CTA on listing flow',
+            'Quarterly AMAs with certified authenticators on IG/YouTube'
           ]
         }
       ].map((p,i)=>`
@@ -282,12 +268,12 @@ function dashboard(){
                   <tbody>
                     ${p.rank===1 ? `
                       <tr style="background:#E8F8ED;"><td>${brand} (You)</td><td>1</td><td style="text-align:right;">${p.vis}</td></tr>
-                      <tr><td>${p.competitors.split(',')[0]}</td><td>2</td><td style="text-align:right;">58%</td></tr>
+                      <tr><td>${p.competitors.split(',')[0]}</td><td>2</td><td style="text-align:right;">55%</td></tr>
                       <tr><td>${p.competitors.split(',')[1]||comp1}</td><td>3</td><td style="text-align:right;">49%</td></tr>
                     ` : `
-                      <tr><td>${p.competitors.split(',')[0]}</td><td>1</td><td style="text-align:right;">64%</td></tr>
-                      <tr style="background:#E8F8ED;"><td>${brand} (You)</td><td>${p.rank}</td><td style="text-align:right;">${p.vis}</td></tr>
-                      <tr><td>${p.competitors.split(',')[1]||comp1}</td><td>3</td><td style="text-align:right;">47%</td></tr>
+                      <tr><td>${p.competitors.split(',')[0]}</td><td>1</td><td style="text-align:right;">65%</td></tr>
+                      <tr style="background:#E8F8ED;"><td>${brand} (You)</td><td>2</td><td style="text-align:right;">${p.vis}</td></tr>
+                      <tr><td>${p.competitors.split(',')[1]||comp3}</td><td>3</td><td style="text-align:right;">46%</td></tr>
                     `}
                   </tbody>
                 </table>
@@ -316,77 +302,58 @@ function dashboard(){
       <h2 style="margin:12px 0 8px;">Where You're Missing Out</h2>
       ${[
         {
-          id:'gap1', title:'Insurance-linked wellness rewards intent', impact:7,
-          desc:`${comp1} dominates insurer-branded rewards searches`,
-          current:'Rank #5', comp:`${comp1} leads at #1–2`,
+          id:'gap1', title:'Authentication proof UX is buried on PDPs', impact:7,
+          desc:`${comp2} sets the standard with visible authenticity trackers; ${brand} info sits below the fold.`,
+          current:'Users scroll >50% to find trust info', comp:'${comp2} shows trust above the fold',
           tactics:[
-            'Create “Works with your insurer” explainer + partner logos',
-            `Comparison page: ${brand} vs ${comp1} (benefits grid)`,
-            'Publish insurer pilot case study (engagement uplift, claims proxy)'
+            'Move “Verified by [Partner]” + report preview to the first screen',
+            'Add standardized authenticity badge to search cards & seller pages',
+            'Show refund/appeal SLA inline near “Buy” CTA'
           ],
           compTable:[
-            [comp1, '1.6', '66%'],
-            [`${brand} (You)`, '5.0', '46%'],
-            [comp2, '3.7', '52%']
+            ['Vestiaire Collective', '1.8', '66%'],
+            [`${brand} (You)`, '3.5', '54%'],
+            ['Reebonz', '3.9', '49%']
           ],
           examples:[
-            ['best wellness rewards app Singapore', 'Rank #5 • 6 mentions', `${comp1} wins insurer intent`],
-            ['health rewards with insurance app', 'Rank #4 • 5 mentions', 'Need explicit insurer compatibility messaging']
+            ['is carousell luxury authentic', 'Rank #3 • 6 mentions', 'Missing above-the-fold proof'],
+            ['carousell buyer protection luxury', 'Rank #4 • 5 mentions', 'Policy page not linked on PDP']
           ]
         },
         {
-          id:'gap2', title:'Condition phrasing for diabetes/hypertension', impact:6,
-          desc:`Clinical phrasing underrepresented; ${comp2} and clinics surface more guides`,
-          current:'Rank #4', comp:`${comp2} favored for medical phrasing`,
+          id:'gap2', title:'Lower visibility for “sell my designer bag fast” outside SG', impact:8,
+          desc:`${comp2} wins “global buyers” intent; ${brand} wins only in SG‑centric threads.`,
+          current:'Rank #4 (regional queries)', comp:'${comp2} dominates #1–2',
           tactics:[
-            'Launch condition hubs with guideline-aligned FAQs',
-            'Co-author content with clinics; include SMBG/BP workflows',
-            'Add schema (HowTo, FAQ, MedicalEntity) for LLM grounding'
+            'Create “Global buyers on Carousell” landing with intl shipping partners',
+            'Offer concierge selling (pickup, photo, list) for top brands',
+            'Surface cross-border demand stats on seller onboarding'
           ],
           compTable:[
-            [comp2, '2.1', '63%'],
-            [`${brand} (You)`, '4.0', '50%']
+            ['Vestiaire Collective', '1.6', '68%'],
+            [`${brand} (You)`, '4.1', '47%']
           ],
           examples:[
-            ['diabetes program Singapore app', 'Rank #4 • 3 mentions', 'Provider-led content leads'],
-            ['hypertension management app Singapore', 'Not appearing • 0 mentions', 'Need dedicated landing pages']
+            ['sell chanel bag asia fastest', 'Rank #5 • 3 mentions', 'No cross-border proof points'],
+            ['best place to sell hermes bag international', 'Not appearing • 0 mentions', 'No dedicated content']
           ]
         },
         {
-          id:'gap3', title:'Employee wellness platform (HR buyer intent)', impact:4,
-          desc:'Low visibility for HR-focused queries in SG',
-          current:'Rank #6', comp:`${comp3} clearer on corporate outcomes`,
+          id:'gap3', title:'Returns & dispute policy not discoverable in AI answers', impact:6,
+          desc:'Forums mention uncertainty on returns; ${comp3} offers editorial clarity.',
+          current:'Rank #5 on “returns” prompts', comp:'The Fifth Collection shows clear policy CTA',
           tactics:[
-            'Dedicated HR buyer page (tiers, SSO, analytics screenshots)',
-            'LinkedIn creator program targeting HR leaders',
-            'Comparison vs Naluri / Virgin Pulse with outcomes claims'
+            'Write a single “Luxury Returns & Disputes” canonical page with FAQ',
+            'Add structured data (FAQPage) for policy questions',
+            'Short explainer video linked from every luxury PDP'
           ],
           compTable:[
-            [comp3, '3.0', '58%'],
-            [comp2, '3.2', '56%'],
-            [`${brand} (You)`, '6.0', '43%']
+            ['The Fifth Collection', '2.2', '61%'],
+            [`${brand} (You)`, '4.6', '45%']
           ],
           examples:[
-            ['employee wellness platform Singapore', 'Rank #6 • 2 mentions', 'Needs HR landing & pricing'],
-            ['corporate wellbeing app APAC', 'Not appearing • 0 mentions', 'No enterprise outcomes page']
-          ]
-        },
-        {
-          id:'gap4', title:'Outcomes proof (adherence improvement)', impact:5,
-          desc:'Scattered evidence; lacks concise RWE briefs',
-          current:'Low presence', comp:'Competitors surface single-page outcomes snapshots',
-          tactics:[
-            'Publish 12-week adherence uplift snapshots (metric blocks)',
-            'Add methodology notes; baseline vs 12 weeks chart',
-            'Structured data so LLMs can lift stats cleanly'
-          ],
-          compTable:[
-            [comp1, '2.8', '55%'],
-            [`${brand} (You)`, '5.2', '45%']
-          ],
-          examples:[
-            ['medication adherence improvement app', 'Rank #5 • 4 mentions', 'Evidence fragmented across posts'],
-            ['real-world outcomes digital health Singapore', 'Not appearing • 0 mentions', 'Need single outcomes page']
+            ['carousell luxury returns policy', 'Rank #5 • 4 mentions', 'Fragmented information across pages'],
+            ['what if luxury item is fake carousell', 'Rank #6 • 3 mentions', 'Appeals flow unclear in summaries']
           ]
         }
       ].map(g=>`
@@ -417,7 +384,7 @@ function dashboard(){
 
           <div style="margin-top:12px;padding-top:12px;border-top:1px solid #E8E8ED;">
             <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleBlock('${g.id}-comp')">
-              <div style="font-weight:800;color:#10B981;">View Competitive Position</div>
+              <div style="font-weight:800;color:#4A9B8E;">View Competitive Position</div>
               <div id="${g.id}-comp-chev" class="acc-chev">▼</div>
             </div>
             <div id="${g.id}-comp" style="display:none;margin-top:10px;">
@@ -432,12 +399,12 @@ function dashboard(){
 
           <div style="margin-top:12px;padding-top:12px;border-top:1px solid #E8E8ED;">
             <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleBlock('${g.id}-ex')">
-              <div style="font-weight:800;color:#10B981;">View Example Queries</div>
+              <div style="font-weight:800;color:#4A9B8E;">View Example Queries</div>
               <div id="${g.id}-ex-chev" class="acc-chev">▼</div>
             </div>
             <div id="${g.id}-ex" style="display:none;margin-top:10px;">
               ${g.examples.map(e=>`
-                <div class="card" style="margin-bottom:8px;border-left:3px solid #10B981;">
+                <div class="card" style="margin-bottom:8px;border-left:3px solid #4A9B8E;">
                   <div style="font-weight:700">${e[0]}</div>
                   <div class="subtle">${e[1]}</div>
                   <div class="subtle">${e[2]}</div>
@@ -451,88 +418,84 @@ function dashboard(){
 
     <div id="opps" class="section">
       <div class="hero">
-        <div style="color:#065F46;font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:12px;">Visibility Potential</div>
-        <div id="gain" style="font-size:64px;font-weight:900;color:#064E3B;letter-spacing:-.03em;margin:6px 0;">+22%</div>
-        <div style="color:#064E3B;font-size:15px;margin-bottom:6px;">${brand} can unlock an additional +22% visibility share by addressing its top competitive gaps.</div>
+        <div style="color:#0369A1;font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:12px;">Visibility Potential</div>
+        <div id="gain" style="font-size:64px;font-weight:900;color:#0C4A6E;letter-spacing:-.03em;margin:6px 0;">+19%</div>
+        <div style="color:#0369A1;font-size:15px;margin-bottom:6px;">${brand} can unlock an additional +19% visibility share by fixing authentication UX, cross-border selling, and returns discoverability.</div>
         <div style="max-width:640px;margin:14px auto 0;">
-          <div style="position:relative;height:14px;background:#DCFCE7;border-radius:8px;overflow:hidden;">
-            <div id="bar" style="position:absolute;left:0;top:0;height:100%;width:63%;background:linear-gradient(90deg,#10B981,#059669);"></div>
+          <div style="position:relative;height:14px;background:#E0F2FE;border-radius:8px;overflow:hidden;">
+            <div id="bar" style="position:absolute;left:0;top:0;height:100%;width:64%;background:linear-gradient(90deg,#0EA5E9,#0284C7);"></div>
+            <div style="position:absolute;left:64%;top:0;height:100%;width:19%;background:linear-gradient(90deg,rgba(16,185,129,.3),rgba(5,150,105,.3));"></div>
           </div>
           <div style="display:flex;justify-content:space-between;margin-top:8px;font-weight:800;">
-            <span class="subtle">Current: <span id="sovNow">63</span>%</span>
-            <span style="color:#059669;">Target: 85%</span>
+            <span class="subtle">Current: <span id="sovNow">64</span>%</span>
+            <span style="color:#059669;">Target: 83%</span>
           </div>
         </div>
         <div style="margin-top:10px;">
-          <span class="badge good">🟩 Insurer Rewards</span>
-          <span class="badge good">🟩 Clinical Phrasing</span>
-          <span class="badge good">🟩 HR Buyer Pages</span>
-          <span class="badge good">🟩 Outcomes Proof</span>
+          <span class="badge good">🟢 Local Trust & Speed</span>
+          <span class="badge good">🔵 Authentication Integrations</span>
+          <span class="badge good">🟠 Cross‑border Growth</span>
         </div>
       </div>
 
       <h3 style="margin-top:30px;margin-bottom:8px;">Where the Growth Comes From</h3>
       <div class="opp-cards">
-        <div class="opp-card">
-          <h4>🏦 Insurer-Linked Rewards (+7%)</h4>
-          <p>Own insurer intent with compatibility pages, logos, and comparison grids.</p>
+        <div class="opp-card" style="border-left-color:#10B981;">
+          <h4>🔒 Authentication Proof (+7%)</h4>
+          <p>Elevate trust signals to the first screen and standardize badges across PDP, search results, and seller pages.</p>
         </div>
-        <div class="opp-card">
-          <h4>🩺 Condition Hubs (+6%)</h4>
-          <p>Publish guideline-aligned hubs for diabetes and hypertension with FAQ schema.</p>
+        <div class="opp-card" style="border-left-color:#3B82F6;">
+          <h4>🌏 Cross‑Border Selling (+8%)</h4>
+          <p>Showcase global demand metrics and enable concierge listing for top-tier brands to attract sellers.</p>
         </div>
-        <div class="opp-card">
-          <h4>🏢 HR Buyer Intent (+4%)</h4>
-          <p>Dedicated enterprise pages with pricing tiers, SSO, dashboards, and case studies.</p>
-        </div>
-        <div class="opp-card">
-          <h4>📈 Outcomes Proof (+5%)</h4>
-          <p>One-page outcomes snapshots with 12-week adherence uplift and methodology.</p>
+        <div class="opp-card" style="border-left-color:#F59E0B;">
+          <h4>↩️ Returns Clarity (+4%)</h4>
+          <p>One canonical returns/dispute page with FAQ + schema to surface directly in AI answers.</p>
         </div>
       </div>
 
       <h3 style="margin-top:32px;margin-bottom:10px;">Strategic Actions to Capture Opportunity</h3>
       <div class="accordion expanded">
         <div class="acc-head" onclick="toggleAcc(this)">
-          <div class="acc-title">Lead Insurer-Linked Rewards</div>
+          <div class="acc-title">Make Trust Obvious</div>
           <div class="acc-chev">▼</div>
         </div>
         <div class="acc-body" style="max-height:1000px;">
           <div style="padding:16px 18px;">
             <ul style="margin:0 0 0 18px;">
-              <li>Compatibility page: “Works with your insurer” + partner logos.</li>
-              <li>Comparison content vs ${comp1} and ${comp2} with benefit grids.</li>
-              <li>Creator-led 30-day challenge showcasing rewards earn logic.</li>
+              <li>Authentication badge + preview report above the fold.</li>
+              <li>Show refund/appeal SLA inline with the purchase CTA.</li>
+              <li>“Meet the Authenticators” content hub + quarterly AMAs.</li>
             </ul>
           </div>
         </div>
       </div>
       <div class="accordion expanded">
         <div class="acc-head" onclick="toggleAcc(this)">
-          <div class="acc-title">Launch Condition Hubs</div>
+          <div class="acc-title">Unlock Global Demand</div>
           <div class="acc-chev">▼</div>
         </div>
         <div class="acc-body" style="max-height:1000px;">
           <div style="padding:16px 18px;">
             <ul style="margin:0 0 0 18px;">
-              <li>Guideline-aligned FAQs with clinician quotes.</li>
-              <li>SMBG/BP workflows and integration explainer.</li>
-              <li>HowTo/FAQ/MedicalEntity schema for AI extraction.</li>
+              <li>Dedicated “Global buyers on Carousell” landing page.</li>
+              <li>Concierge selling for Hermes, Chanel, Rolex categories.</li>
+              <li>Cross-border shipping partners & delivery estimates on PDP.</li>
             </ul>
           </div>
         </div>
       </div>
       <div class="accordion expanded">
         <div class="acc-head" onclick="toggleAcc(this)">
-          <div class="acc-title">Win the HR Buyer</div>
+          <div class="acc-title">Answer Returns Questions Where They Start</div>
           <div class="acc-chev">▼</div>
         </div>
         <div class="acc-body" style="max-height:1000px;">
           <div style="padding:16px 18px;">
             <ul style="margin:0 0 0 18px;">
-              <li>Enterprise landing with pricing tiers and dashboards.</li>
-              <li>LinkedIn ads/creator program targeting HR leaders.</li>
-              <li>Comparison vs ${comp3} with outcomes and ROI.</li>
+              <li>Canonical returns/disputes page + FAQPage schema.</li>
+              <li>Short explainer video linked on all luxury PDPs.</li>
+              <li>Community answers mirrored to forums (Reddit, HardwareZone).</li>
             </ul>
           </div>
         </div>
@@ -542,25 +505,22 @@ function dashboard(){
       <table>
         <thead><tr><th>Brand</th><th>Share of Voice</th><th>Trend</th></tr></thead>
         <tbody>
-          <tr><td>${brand}</td><td>63%</td><td style="color:#059669;">▲ +5%</td></tr>
-          <tr><td>${comp1}</td><td>49%</td><td style="color:#059669;">▲ +3%</td></tr>
-          <tr><td>${comp2}</td><td>41%</td><td>➖ 0%</td></tr>
-          <tr><td>${comp3}</td><td>38%</td><td style="color:#B91C1C;">▼ –1%</td></tr>
+          <tr><td>${brand}</td><td>64%</td><td style="color:#059669;">▲ +5%</td></tr>
+          <tr><td>${comp2}</td><td>57%</td><td style="color:#059669;">▲ +3%</td></tr>
+          <tr><td>${comp1}</td><td>34%</td><td style="color:#B91C1C;">▼ –2%</td></tr>
+          <tr><td>${comp3}</td><td>29%</td><td>➖ 0%</td></tr>
         </tbody>
       </table>
 
       <div class="subtle" style="text-align:center;margin-top:16px;">
-        Prioritize <strong>Insurer-Linked Rewards</strong> and <strong>Condition Hubs</strong> to push ${brand} beyond <strong>75% visibility</strong> in Singapore this quarter.
+        Prioritize <strong>Authentication Proof</strong> and <strong>Cross‑Border Selling</strong> to push ${brand} beyond <strong>80% visibility</strong> — clear category leadership in SG.
         <div><button class="ghost-btn" onclick="alert('Generating Opportunity Summary…')">Download Opportunity Summary</button></div>
       </div>
     </div>
   `;
 
-  // initialize chart
   renderChart();
-
-  // animate opportunity number
-  animateNum('gain', 0, 22, 900, v => `+${v}%`);
+  animateNum('gain', 0, 19, 900, v => `+${v}%`);
 }
 
 function switchTab(id, btn){
@@ -594,14 +554,14 @@ function toggleGap(id, impact){
   const checked=box.classList.contains('checked');
   if(checked){ box.classList.remove('checked'); box.innerHTML=''; added-=impact; }
   else { box.classList.add('checked'); box.innerHTML='✓'; added+=impact; }
-  const now = Math.min(85, 63 + added);
+  const now = Math.min(83, 64 + added);
   const sovEl = document.getElementById('sovNow');
   if(sovEl){ sovEl.textContent = now; }
   const barEl = document.getElementById('bar');
   if(barEl){ barEl.style.width = now+'%'; }
 }
 
-/* Helpers */
+/* Animate numbers */
 function animateNum(id, start, end, dur, fmt){
   const el=document.getElementById(id);
   if(!el) return;
@@ -628,15 +588,15 @@ function renderChart(){
   const W = rect.width, H = 300, pad=40;
   const months=['May','Jun','Jul','Aug','Sep','Oct'];
   const series={
-    [state.brand||'Elfie']:[55,56,57,59,61,63],
-    [state.c1||'AIA Vitality']:[44,45,46,47,48,49],
-    [state.c2||'Prudential Pulse']:[40,41,41,41,41,41],
-    [state.c3||'Naluri']:[36,37,38,38,38,38]
+    [state.brand||'Carousell Luxury']:[56,58,59,61,62,64],
+    [state.c2||'Vestiaire Collective']:[50,51,52,54,55,57],
+    [state.c1||'Reebonz']:[37,36,35,35,34,34],
+    [state.c3||'The Fifth Collection']:[28,28,28,29,29,29]
   };
-  const colors=['#10B981','#3B82F6','#F59E0B','#8B5CF6'];
+  const colors=['#10B981','#3B82F6','#F59E0B','#EF4444'];
 
   function x(i){ return pad + i*((W-2*pad)/(months.length-1)); }
-  function y(v){ const min=0,max=85; return H-pad - ( (v-min)/(max-min) )*(H-2*pad); }
+  function y(v){ const min=0,max=90; return H-pad - ( (v-min)/(max-min) )*(H-2*pad); }
 
   // grid
   ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
@@ -645,16 +605,16 @@ function renderChart(){
   [0,20,40,60,80].forEach((v,i)=>{ const yy=y(v); ctx.fillText(v+'%', 8, yy+4); });
   months.forEach((m,i)=>ctx.fillText(m, x(i)-10, H-pad+18));
 
-  // lines
   const keys=Object.keys(series);
+  const colorsArr=colors;
+
   keys.forEach((k,i)=>{
-    ctx.strokeStyle=colors[i]; ctx.lineWidth=2.5;
+    ctx.strokeStyle=colorsArr[i]; ctx.lineWidth=2.5;
     series[k].forEach((v,idx)=>{ const X=x(idx), Y=y(v); if(idx===0){ ctx.beginPath(); ctx.moveTo(X,Y);} else ctx.lineTo(X,Y); });
     ctx.stroke();
-    series[k].forEach((v,idx)=>{ const X=x(idx), Y=y(v); ctx.beginPath(); ctx.fillStyle=colors[i]; ctx.arc(X,Y,3,0,Math.PI*2); ctx.fill(); });
+    series[k].forEach((v,idx)=>{ const X=x(idx), Y=y(v); ctx.beginPath(); ctx.fillStyle=colorsArr[i]; ctx.arc(X,Y,3,0,Math.PI*2); ctx.fill(); });
   });
 
-  // tooltip
   const tip=document.getElementById('tip');
   canvas.onmousemove=(e)=>{
     const r=canvas.getBoundingClientRect();
@@ -665,11 +625,10 @@ function renderChart(){
     tip.innerHTML = `<strong>${months[idx]} 2025</strong><br>${items}`;
     tip.style.display='block';
     tip.style.left = (x(idx)+16)+'px';
-    tip.style.top = (y(80)-10)+'px';
+    tip.style.top = (y(85)-10)+'px';
   };
   canvas.onmouseleave=()=>{ tip.style.display='none'; };
 
-  // responsive
   window.addEventListener('resize', ()=>{ renderChart(); }, {once:true});
 }
 
