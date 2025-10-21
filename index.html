@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Carousell Luxury — AEO Dashboard v12 (Luxury Resale, SG)</title>
+  <title>Mars Petcare — AEO Dashboard v12 (Pet Care & Nutrition, Singapore)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing:border-box; }
@@ -69,7 +70,7 @@
     <div class="progress"><div class="progress-dot"></div><span>Step 1 of 5</span></div>
     <div class="question">What is your category?</div>
     <input id="cat" class="input" placeholder="Enter your category" />
-    <div style="margin-top:14px;"><button id="btn1" class="button" disabled>Continue</button> <span class="subtle">Prefilled: Luxury Resale & Authentication</span></div>
+    <div style="margin-top:14px;"><button id="btn1" class="button" disabled>Continue</button> <span class="subtle">Prefilled: Pet Care & Nutrition</span></div>
   </div>
 </div>
 
@@ -78,7 +79,7 @@ let state = {};
 const root = document.getElementById('root');
 const cat = document.getElementById('cat');
 const btn1 = document.getElementById('btn1');
-setTimeout(()=>{cat.value='Luxury Resale & Authentication'; state.category='Luxury Resale & Authentication'; btn1.disabled=false;},250);
+setTimeout(()=>{cat.value='Pet Care & Nutrition'; state.category='Pet Care & Nutrition'; btn1.disabled=false;},250);
 cat.oninput=()=>{state.category=cat.value.trim(); btn1.disabled=!state.category; };
 btn1.onclick=step2;
 
@@ -87,9 +88,9 @@ function step2(){
     <div class="progress"><div class="progress-dot"></div><span>Step 2 of 5</span></div>
     <div class="question">What is your brand?</div>
     <input id="brand" class="input" placeholder="Enter your brand" />
-    <div style="margin-top:14px;"><button id="btn2" class="button" disabled>Continue</button> <span class="subtle">Prefilled: Carousell Luxury</span></div>`;
+    <div style="margin-top:14px;"><button id="btn2" class="button" disabled>Continue</button> <span class="subtle">Prefilled: Mars Petcare</span></div>`;
   const b=document.getElementById('brand'); const btn2=document.getElementById('btn2');
-  setTimeout(()=>{b.value='Carousell Luxury'; state.brand='Carousell Luxury'; btn2.disabled=false;},200);
+  setTimeout(()=>{b.value='Mars Petcare'; state.brand='Mars Petcare'; btn2.disabled=false;},200);
   b.oninput=()=>{state.brand=b.value.trim(); btn2.disabled=!state.brand; };
   btn2.onclick=step3;
 }
@@ -98,7 +99,7 @@ function step3(){
   root.innerHTML = `
     <div class="progress"><div class="progress-dot"></div><span>Step 3 of 5</span></div>
     <div class="question">Which country/market?</div>
-    <input id="country" class="input" placeholder="Enter market" />
+    <input id="country" class="input" placeholder="Enter country" />
     <div style="margin-top:14px;"><button id="btn3" class="button" disabled>Continue</button> <span class="subtle">Prefilled: Singapore</span></div>`;
   const c=document.getElementById('country'); const btn3=document.getElementById('btn3');
   setTimeout(()=>{c.value='Singapore'; state.country='Singapore'; btn3.disabled=false;},200);
@@ -111,9 +112,9 @@ function step4(){
     <div class="progress"><div class="progress-dot"></div><span>Step 4 of 5</span></div>
     <div class="question">Website?</div>
     <input id="site" class="input" placeholder="Enter website URL" />
-    <div style="margin-top:14px;"><button id="btn4" class="button" disabled>Continue</button> <span class="subtle">Prefilled: carousell.sg/luxury</span></div>`;
+    <div style="margin-top:14px;"><button id="btn4" class="button" disabled>Continue</button> <span class="subtle">Prefilled: mars.com/petcare</span></div>`;
   const s=document.getElementById('site'); const btn4=document.getElementById('btn4');
-  setTimeout(()=>{s.value='https://www.carousell.sg/'; state.website=s.value; btn4.disabled=false;},200);
+  setTimeout(()=>{s.value='https://www.mars.com/mars-petcare'; state.website=s.value; btn4.disabled=false;},200);
   s.oninput=()=>{state.website=s.value.trim(); btn4.disabled=!state.website; };
   btn4.onclick=step5;
 }
@@ -125,28 +126,28 @@ function step5(){
     <input id="c1" class="input" placeholder="Competitor 1" />
     <input id="c2" class="input" placeholder="Competitor 2" style="margin-top:10px;" />
     <input id="c3" class="input" placeholder="Competitor 3" style="margin-top:10px;" />
-    <div style="margin-top:14px;"><button id="btn5" class="button" disabled>Generate Report</button> <span class="subtle">Prefilled: Reebonz, Vestiaire Collective, The Fifth Collection</span></div>`;
+    <div style="margin-top:14px;"><button id="btn5" class="button" disabled>Generate Report</button> <span class="subtle">Prefilled: Nestlé Purina, Hill's, Wellness</span></div>`;
   const c1=document.getElementById('c1'), c2=document.getElementById('c2'), c3=document.getElementById('c3'), btn5=document.getElementById('btn5');
-  setTimeout(()=>{c1.value='Reebonz';c2.value='Vestiaire Collective';c3.value='The Fifth Collection'; state.c1=c1.value; state.c2=c2.value; state.c3=c3.value; btn5.disabled=false;},200);
+  setTimeout(()=>{c1.value='Nestlé Purina';c2.value="Hill's";c3.value='Wellness'; state.c1=c1.value; state.c2=c2.value; state.c3=c3.value; btn5.disabled=false;},200);
   [c1,c2,c3].forEach(el=>el.oninput=()=>{state.c1=c1.value.trim();state.c2=c2.value.trim();state.c3=c3.value.trim(); btn5.disabled=!(state.c1||state.c2||state.c3);});
   btn5.onclick=loading;
 }
 
-/* Loading */
+/* ---- Loading (≈10s) ---- */
 function loading(){
   const steps=[
-    'Crawling Carousell Luxury marketplace & trust pages',
-    'Parsing authentication & buyer protection content',
-    'Analyzing Reebonz, Vestiaire & The Fifth Collection visibility',
-    'Processing high‑intent queries (authenticate, buy, sell)',
+    'Crawling Mars Petcare portfolio (Royal Canin, Pedigree, Whiskas, Sheba, Cesar)',
+    'Parsing Singapore retailer pages (FairPrice, Shopee, Lazada)',
+    'Analyzing competitor brand answers (Purina, Hill\'s, Wellness)',
+    'Processing pet nutrition queries (dog, cat, vet-recommended, hypoallergenic)',
     'Computing Share of Voice & sentiment across AI engines',
-    'Detecting visibility gaps (authentication, returns, concierge)',
+    'Detecting visibility gaps (vet-recommended, hypoallergenic, grain-free)',
     'Building competitive leaderboards & charts',
-    'Generating Carousell Luxury dashboard for Singapore'
+    'Generating Mars Petcare visibility dashboard'
   ];
   let html = `<div style="text-align:center;padding:56px 12px;">
     <div style="width:64px;height:64px;border:4px solid #E5E7EB;border-top:4px solid #4A9B8E;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;"></div>
-    <h2 style="margin:18px 0 6px;">Generating your Carousell Luxury report…</h2>
+    <h2 style="margin:18px 0 6px;">Generating your Mars Petcare report…</h2>
     <div class="subtle">High-fidelity analysis for ${state.country||'Singapore'}</div>
     <div style="max-width:520px;margin:18px auto;text-align:left;">`;
   steps.forEach((t,i)=>{
@@ -167,10 +168,10 @@ function loading(){
   setTimeout(dashboard, steps.length*1100+300);
 }
 
-/* Dashboard */
+/* ---- Dashboard ---- */
 function dashboard(){
-  const brand = state.brand || 'Carousell Luxury';
-  const comp1 = state.c1 || 'Reebonz', comp2 = state.c2 || 'Vestiaire Collective', comp3 = state.c3 || 'The Fifth Collection';
+  const brand = state.brand || 'Mars Petcare';
+  const comp1 = state.c1 || 'Nestlé Purina', comp2 = state.c2 || "Hill's", comp3 = state.c3 || 'Wellness';
 
   root.innerHTML = `
     <div class="tabbar">
@@ -183,9 +184,9 @@ function dashboard(){
     <div id="overview" class="section active">
       <div class="report-header">
         <div class="report-title">${brand} in ${state.country || 'Singapore'}</div>
-        <div style="font-size:72px;font-weight:900;color:#4A9B8E;line-height:1;">64</div>
+        <div style="font-size:72px;font-weight:900;color:#4A9B8E;line-height:1;">58</div>
         <div class="badge good" style="margin-top:8px;"><span>↑</span><span>+5% from last month</span></div>
-        <div style="margin-top:10px;" class="subtle">Category: ${state.category || 'Luxury Resale & Authentication'}</div>
+        <div style="margin-top:10px;" class="subtle">Category: ${state.category || 'Pet Care & Nutrition'}</div>
       </div>
 
       <div class="chart-wrap">
@@ -195,7 +196,7 @@ function dashboard(){
       </div>
 
       <div style="margin:10px 0 24px;" class="subtle">
-        ${brand} leads in **local reach** and **speed to sell**, while ${comp2} dominates “sustainability & global buyer” narratives.
+        ${brand} leads in <strong>vet-trusted nutrition</strong> via Royal Canin and dominates <strong>mass-market awareness</strong> via Pedigree & Whiskas; ${comp1} is strong in performance/active formulas.
       </div>
 
       <h3 style="font-size:18px;margin:10px 0 8px;">Top Prompts for Your Category</h3>
@@ -203,10 +204,10 @@ function dashboard(){
         <table>
           <thead><tr><th>Prompt</th><th>Volume</th><th>Rank</th><th>Perception</th></tr></thead>
           <tbody>
-            <tr><td>Best place to buy authentic luxury bags Singapore</td><td><span class="pill pos">High</span></td><td><strong>1</strong></td><td><span class="pill pos">Positive</span></td></tr>
-            <tr><td>${comp2} vs ${brand} (fees, authenticity, shipping)</td><td><span class="pill neu">High</span></td><td><strong>2</strong></td><td><span class="pill neu">Neutral</span></td></tr>
-            <tr><td>How to authenticate a Chanel bag Singapore</td><td><span class="pill neu">Medium</span></td><td><strong>2</strong></td><td><span class="pill pos">Positive</span></td></tr>
-            <tr><td>Sell my designer bag fast Singapore</td><td><span class="pill neu">Medium</span></td><td><strong>1</strong></td><td><span class="pill pos">Positive</span></td></tr>
+            <tr><td>Best dog food Singapore 2025</td><td><span class="pill pos">High</span></td><td><strong>1</strong></td><td><span class="pill pos">Positive</span></td></tr>
+            <tr><td>${comp1} vs Royal Canin (which is better?)</td><td><span class="pill neu">High</span></td><td><strong>2</strong></td><td><span class="pill neu">Neutral</span></td></tr>
+            <tr><td>Vet-recommended cat food Singapore</td><td><span class="pill neu">Medium</span></td><td><strong>1</strong></td><td><span class="pill pos">Positive</span></td></tr>
+            <tr><td>Hypoallergenic dog food Singapore</td><td><span class="pill neu">Medium</span></td><td><strong>3</strong></td><td><span class="pill neu">Neutral</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -216,36 +217,39 @@ function dashboard(){
       <h2 style="margin:12px 0 8px;">High-Visibility Wins</h2>
       ${[
         {
-          q:'Best place to buy authentic luxury bags Singapore',
-          rank:1, mentions:44, vis:'72%', perception:'Positive',
-          authority:'Honeycombers, Tatler, local KOL roundups', competitors:`${comp2}, ${comp1}`,
-          how:'Appears as trusted local marketplace with buyer protection & strong selection',
+          q:'Best dog food Singapore 2025',
+          rank:1, mentions:42, vis:'66%', perception:'Positive',
+          authority:'Vet blogs, retailer guides (FairPrice, Pet Lovers Centre), comparison posts',
+          competitors:`${comp1}, ${comp2}`,
+          how:'Royal Canin cited for vet-trusted formulations; Pedigree wins on availability/value',
           defend:[
-            'Keep trust badges & buyer protection copy above the fold on category pages',
-            `Update “Top authentic sellers in SG” editorial monthly`,
-            'Pin verified authentication partners on PDPs (badge + link)'
+            'Publish balanced “best dog food SG” explainer that cites life-stage & breed needs',
+            `Refresh retailer PDPs monthly with feeding guides & AAFCO claims`,
+            'Maintain comparison grids with ${comp1} & ${comp2} formulations'
           ]
         },
         {
-          q:`${comp2} vs ${brand} (fees, authenticity, shipping)`,
-          rank:2, mentions:29, vis:'60%', perception:'Neutral',
-          authority:'Reddit r/SGExpat, forum threads, price comparison blogs', competitors:`${comp2}`,
-          how:'Strong on fees & speed, weaker on global reach & sustainability points',
+          q:`${comp1} vs Royal Canin (which is better?)`,
+          rank:2, mentions:31, vis:'57%', perception:'Neutral',
+          authority:'Third‑party blogs, YouTube reviews, Reddit threads',
+          competitors:`${comp1}`,
+          how:'Performance claims favor ${comp1}; vet-prescription and breed-specific strength favor Royal Canin',
           defend:[
-            'Create a living comparison page: fees, shipping time, returns policy',
-            'Showcase “Sell Fast” success metrics (median time-to-sale, SG only)',
-            'Add “re-commerce sustainability impact” stats to close narrative gap'
+            'Create neutral “Purina vs Royal Canin” landing page with nutrition tables',
+            'Highlight clinical nutrition & breed-specific ranges with case studies',
+            'Add calculator for cost-per-day by pet weight'
           ]
         },
         {
-          q:'How to authenticate a Chanel bag Singapore',
-          rank:2, mentions:21, vis:'58%', perception:'Positive',
-          authority:'Bag forums, YouTube KOLs, brand care guides', competitors:`${comp1}, ${comp3}`,
-          how:'Highlighted for third-party authenticator integrations & dispute process',
+          q:'Vet-recommended cat food Singapore',
+          rank:1, mentions:24, vis:'63%', perception:'Positive',
+          authority:'Clinic sites, veterinary associations, specialty retailers',
+          competitors:`${comp2}, ${comp3}`,
+          how:'Royal Canin frequently appears in vet lists; Hill’s presence consistent',
           defend:[
-            'Publish “Authentication 101” microsite with step-by-step visuals',
-            'Bundle authentication + escrow in one CTA on listing flow',
-            'Quarterly AMAs with certified authenticators on IG/YouTube'
+            'Launch “Ask a Vet” micro-content series (short Q&As)',
+            'Ensure clinic partner pages cite updated formulas & SKUs',
+            'Pin vet endorsements and clinical studies on category hubs'
           ]
         }
       ].map((p,i)=>`
@@ -268,12 +272,12 @@ function dashboard(){
                   <tbody>
                     ${p.rank===1 ? `
                       <tr style="background:#E8F8ED;"><td>${brand} (You)</td><td>1</td><td style="text-align:right;">${p.vis}</td></tr>
-                      <tr><td>${p.competitors.split(',')[0]}</td><td>2</td><td style="text-align:right;">55%</td></tr>
-                      <tr><td>${p.competitors.split(',')[1]||comp1}</td><td>3</td><td style="text-align:right;">49%</td></tr>
+                      <tr><td>${p.competitors.split(',')[0]}</td><td>2</td><td style="text-align:right;">52%</td></tr>
+                      <tr><td>${p.competitors.split(',')[1]||comp2}</td><td>3</td><td style="text-align:right;">47%</td></tr>
                     ` : `
-                      <tr><td>${p.competitors.split(',')[0]}</td><td>1</td><td style="text-align:right;">65%</td></tr>
+                      <tr><td>${p.competitors.split(',')[0]}</td><td>1</td><td style="text-align:right;">61%</td></tr>
                       <tr style="background:#E8F8ED;"><td>${brand} (You)</td><td>2</td><td style="text-align:right;">${p.vis}</td></tr>
-                      <tr><td>${p.competitors.split(',')[1]||comp3}</td><td>3</td><td style="text-align:right;">46%</td></tr>
+                      <tr><td>${p.competitors.split(',')[1]||comp2}</td><td>3</td><td style="text-align:right;">43%</td></tr>
                     `}
                   </tbody>
                 </table>
@@ -302,58 +306,79 @@ function dashboard(){
       <h2 style="margin:12px 0 8px;">Where You're Missing Out</h2>
       ${[
         {
-          id:'gap1', title:'Authentication proof UX is buried on PDPs', impact:7,
-          desc:`${comp2} sets the standard with visible authenticity trackers; ${brand} info sits below the fold.`,
-          current:'Users scroll >50% to find trust info', comp:'${comp2} shows trust above the fold',
+          id:'gap1', title:'Under-indexed in “hypoallergenic dog food” searches', impact:8,
+          desc:`${comp2} and boutique brands lead discovery for sensitivities; Mars portfolio appears inconsistently`,
+          current:'Rank #5', comp:'Leaders at #2–3',
           tactics:[
-            'Move “Verified by [Partner]” + report preview to the first screen',
-            'Add standardized authenticity badge to search cards & seller pages',
-            'Show refund/appeal SLA inline near “Buy” CTA'
+            'Create clear “sensitivity & hydrolyzed protein” hub with ingredient transparency',
+            `Comparison page: Royal Canin Hypoallergenic vs ${comp2} Prescription Diet`,
+            'Retail PDP upgrade: allergy FAQs, vet Q&A, transition plan'
           ],
           compTable:[
-            ['Vestiaire Collective', '1.8', '66%'],
-            [`${brand} (You)`, '3.5', '54%'],
-            ['Reebonz', '3.9', '49%']
+            ["Hill's", '2.4', '64%'],
+            ['Wellness', '2.9', '55%'],
+            [`${brand} (You)`, '5.0', '44%'],
           ],
           examples:[
-            ['is carousell luxury authentic', 'Rank #3 • 6 mentions', 'Missing above-the-fold proof'],
-            ['carousell buyer protection luxury', 'Rank #4 • 5 mentions', 'Policy page not linked on PDP']
+            ['best hypoallergenic dog food singapore', 'Rank #5 • 4 mentions', `${comp2} guides dominate`],
+            ['hydrolyzed protein dog food singapore', 'Not consistent • 1–2 mentions', 'Lacking dedicated landing page']
           ]
         },
         {
-          id:'gap2', title:'Lower visibility for “sell my designer bag fast” outside SG', impact:8,
-          desc:`${comp2} wins “global buyers” intent; ${brand} wins only in SG‑centric threads.`,
-          current:'Rank #4 (regional queries)', comp:'${comp2} dominates #1–2',
+          id:'gap2', title:'Low visibility for “grain-free safety” intent', impact:7,
+          desc:`Searchers ask about taurine/DCF concerns; authoritative content is fragmented`,
+          current:'Low presence', comp:`${comp1} & indie brands active`,
           tactics:[
-            'Create “Global buyers on Carousell” landing with intl shipping partners',
-            'Offer concierge selling (pickup, photo, list) for top brands',
-            'Surface cross-border demand stats on seller onboarding'
+            'Publish science-led explainer on grain-free vs grain-inclusive with citations',
+            'Create vet-authored myth-busting series (video + short answers)',
+            'Add decision tree tool on PDPs to guide safe choices'
           ],
           compTable:[
-            ['Vestiaire Collective', '1.6', '68%'],
-            [`${brand} (You)`, '4.1', '47%']
+            [`${comp1}`, '2.6', '58%'],
+            ['Orijen/Acana', '3.1', '53%'],
+            [`${brand} (You)`, '5.2', '43%']
           ],
           examples:[
-            ['sell chanel bag asia fastest', 'Rank #5 • 3 mentions', 'No cross-border proof points'],
-            ['best place to sell hermes bag international', 'Not appearing • 0 mentions', 'No dedicated content']
+            ['is grain-free dog food safe 2025', 'Rank #6 • 2 mentions', `${comp1} editorial content present`],
+            ['taurine deficiency dog food singapore', 'Not appearing • 0 mentions', 'No centralized FAQ hub']
           ]
         },
         {
-          id:'gap3', title:'Returns & dispute policy not discoverable in AI answers', impact:6,
-          desc:'Forums mention uncertainty on returns; ${comp3} offers editorial clarity.',
-          current:'Rank #5 on “returns” prompts', comp:'The Fifth Collection shows clear policy CTA',
+          id:'gap3', title:'Weak in “wet cat food toppers” discovery', impact:7,
+          desc:'Sheba & Cesar are strong SKUs but not surfaced in AI answers',
+          current:'Rank #4', comp:`${comp1}, ${comp3} favored`,
           tactics:[
-            'Write a single “Luxury Returns & Disputes” canonical page with FAQ',
-            'Add structured data (FAQPage) for policy questions',
-            'Short explainer video linked from every luxury PDP'
+            'Create “wet toppers & palatants” guide with portioning & mixing tips',
+            'Short-form creator tests (fussy cat acceptance) on TikTok/YouTube',
+            'Retail search enrichment: attributes (texture, aroma, acceptance)'
           ],
           compTable:[
-            ['The Fifth Collection', '2.2', '61%'],
-            [`${brand} (You)`, '4.6', '45%']
+            [`${comp1}`, '2.5', '59%'],
+            [`${comp3}`, '2.8', '56%'],
+            [`${brand} (You)`, '4.0', '49%']
           ],
           examples:[
-            ['carousell luxury returns policy', 'Rank #5 • 4 mentions', 'Fragmented information across pages'],
-            ['what if luxury item is fake carousell', 'Rank #6 • 3 mentions', 'Appeals flow unclear in summaries']
+            ['best wet cat food topper singapore', 'Rank #4 • 5 mentions', `${comp3} content prominent`],
+            ['how to mix kibble with wet food cat', 'Not appearing • 0 mentions', 'Missing care guides']
+          ]
+        },
+        {
+          id:'gap4', title:'Sustainability & packaging visibility is low', impact:5,
+          desc:'Consumers ask about recyclable packaging & sourcing ethics',
+          current:'Rank #6', comp:'Indie brands fill the gap',
+          tactics:[
+            'Publish SG-specific sustainability page (packaging, sourcing, certifications)',
+            'Retail badges: recyclable materials, responsible sourcing',
+            'PR: local recycling/food bank partnerships for near-expiry donations'
+          ],
+          compTable:[
+            ['Wellness', '2.9', '54%'],
+            ['Orijen/Acana', '3.3', '51%'],
+            [`${brand} (You)`, '6.0', '40%']
+          ],
+          examples:[
+            ['sustainable dog food packaging singapore', 'Rank #6 • 1 mention', 'Indie DTC brands surface'],
+            ['ethical cat food brand singapore', 'Not appearing • 0 mentions', 'No SG landing page']
           ]
         }
       ].map(g=>`
@@ -419,83 +444,83 @@ function dashboard(){
     <div id="opps" class="section">
       <div class="hero">
         <div style="color:#0369A1;font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:12px;">Visibility Potential</div>
-        <div id="gain" style="font-size:64px;font-weight:900;color:#0C4A6E;letter-spacing:-.03em;margin:6px 0;">+19%</div>
-        <div style="color:#0369A1;font-size:15px;margin-bottom:6px;">${brand} can unlock an additional +19% visibility share by fixing authentication UX, cross-border selling, and returns discoverability.</div>
+        <div id="gain" style="font-size:64px;font-weight:900;color:#0C4A6E;letter-spacing:-.03em;margin:6px 0;">+22%</div>
+        <div style="color:#0369A1;font-size:15px;margin-bottom:6px;">${brand} can unlock an additional +22% visibility share by addressing its top three competitive gaps.</div>
         <div style="max-width:640px;margin:14px auto 0;">
           <div style="position:relative;height:14px;background:#E0F2FE;border-radius:8px;overflow:hidden;">
-            <div id="bar" style="position:absolute;left:0;top:0;height:100%;width:64%;background:linear-gradient(90deg,#0EA5E9,#0284C7);"></div>
-            <div style="position:absolute;left:64%;top:0;height:100%;width:19%;background:linear-gradient(90deg,rgba(16,185,129,.3),rgba(5,150,105,.3));"></div>
+            <div id="bar" style="position:absolute;left:0;top:0;height:100%;width:58%;background:linear-gradient(90deg,#0EA5E9,#0284C7);"></div>
+            <div style="position:absolute;left:58%;top:0;height:100%;width:22%;background:linear-gradient(90deg,rgba(16,185,129,.3),rgba(5,150,105,.3));"></div>
           </div>
           <div style="display:flex;justify-content:space-between;margin-top:8px;font-weight:800;">
-            <span class="subtle">Current: <span id="sovNow">64</span>%</span>
-            <span style="color:#059669;">Target: 83%</span>
+            <span class="subtle">Current: <span id="sovNow">58</span>%</span>
+            <span style="color:#059669;">Target: 80%</span>
           </div>
         </div>
         <div style="margin-top:10px;">
-          <span class="badge good">🟢 Local Trust & Speed</span>
-          <span class="badge good">🔵 Authentication Integrations</span>
-          <span class="badge good">🟠 Cross‑border Growth</span>
+          <span class="badge good">🟢 Vet‑Trusted Leadership</span>
+          <span class="badge good">🔵 Retail Availability</span>
+          <span class="badge good">🟠 Hypoallergenic + Education</span>
         </div>
       </div>
 
       <h3 style="margin-top:30px;margin-bottom:8px;">Where the Growth Comes From</h3>
       <div class="opp-cards">
         <div class="opp-card" style="border-left-color:#10B981;">
-          <h4>🔒 Authentication Proof (+7%)</h4>
-          <p>Elevate trust signals to the first screen and standardize badges across PDP, search results, and seller pages.</p>
+          <h4>🧪 Hypoallergenic Hub (+8%)</h4>
+          <p>Own “sensitivity” intent with hydrolyzed protein education, comparison pages, and PDP upgrades.</p>
         </div>
         <div class="opp-card" style="border-left-color:#3B82F6;">
-          <h4>🌏 Cross‑Border Selling (+8%)</h4>
-          <p>Showcase global demand metrics and enable concierge listing for top-tier brands to attract sellers.</p>
+          <h4>📚 Science Explainers (+7%)</h4>
+          <p>Authoritative, vet-led content around grain-free safety and taurine to win trust queries.</p>
         </div>
         <div class="opp-card" style="border-left-color:#F59E0B;">
-          <h4>↩️ Returns Clarity (+4%)</h4>
-          <p>One canonical returns/dispute page with FAQ + schema to surface directly in AI answers.</p>
+          <h4>🍽️ Wet Toppers Discoverability (+7%)</h4>
+          <p>Surface Sheba & Cesar use-cases with creator tests and retail attribute enrichment.</p>
         </div>
       </div>
 
       <h3 style="margin-top:32px;margin-bottom:10px;">Strategic Actions to Capture Opportunity</h3>
       <div class="accordion expanded">
         <div class="acc-head" onclick="toggleAcc(this)">
-          <div class="acc-title">Make Trust Obvious</div>
+          <div class="acc-title">Build the Hypoallergenic Narrative</div>
           <div class="acc-chev">▼</div>
         </div>
         <div class="acc-body" style="max-height:1000px;">
           <div style="padding:16px 18px;">
             <ul style="margin:0 0 0 18px;">
-              <li>Authentication badge + preview report above the fold.</li>
-              <li>Show refund/appeal SLA inline with the purchase CTA.</li>
-              <li>“Meet the Authenticators” content hub + quarterly AMAs.</li>
+              <li>Launch “Sensitivity & Allergies” hub with ingredient transparency and FAQs.</li>
+              <li>Comparison page: Royal Canin Hypoallergenic vs Hill’s z/d & d/d.</li>
+              <li>Retail PDP enrichment: allergy badges, transition plan, vet Q&A.</li>
             </ul>
           </div>
         </div>
       </div>
       <div class="accordion expanded">
         <div class="acc-head" onclick="toggleAcc(this)">
-          <div class="acc-title">Unlock Global Demand</div>
+          <div class="acc-title">Win Science & Safety Questions</div>
           <div class="acc-chev">▼</div>
         </div>
         <div class="acc-body" style="max-height:1000px;">
           <div style="padding:16px 18px;">
             <ul style="margin:0 0 0 18px;">
-              <li>Dedicated “Global buyers on Carousell” landing page.</li>
-              <li>Concierge selling for Hermes, Chanel, Rolex categories.</li>
-              <li>Cross-border shipping partners & delivery estimates on PDP.</li>
+              <li>Publish vet-authored explainers on taurine/DCM and grain-free considerations.</li>
+              <li>Short-form video myth-busters; surface in FAQ schema and answer boxes.</li>
+              <li>Add “cost-per-day” and “feeding calculator” tools to key PDPs.</li>
             </ul>
           </div>
         </div>
       </div>
       <div class="accordion expanded">
         <div class="acc-head" onclick="toggleAcc(this)">
-          <div class="acc-title">Answer Returns Questions Where They Start</div>
+          <div class="acc-title">Boost Wet Toppers Discovery</div>
           <div class="acc-chev">▼</div>
         </div>
         <div class="acc-body" style="max-height:1000px;">
           <div style="padding:16px 18px;">
             <ul style="margin:0 0 0 18px;">
-              <li>Canonical returns/disputes page + FAQPage schema.</li>
-              <li>Short explainer video linked on all luxury PDPs.</li>
-              <li>Community answers mirrored to forums (Reddit, HardwareZone).</li>
+              <li>“How to Mix” guides with portion suggestions by weight and age.</li>
+              <li>Creator acceptance tests (fussy cats) to show real outcomes.</li>
+              <li>Enable richer attributes on retailer search (texture, aroma, acceptance).</li>
             </ul>
           </div>
         </div>
@@ -505,22 +530,25 @@ function dashboard(){
       <table>
         <thead><tr><th>Brand</th><th>Share of Voice</th><th>Trend</th></tr></thead>
         <tbody>
-          <tr><td>${brand}</td><td>64%</td><td style="color:#059669;">▲ +5%</td></tr>
-          <tr><td>${comp2}</td><td>57%</td><td style="color:#059669;">▲ +3%</td></tr>
-          <tr><td>${comp1}</td><td>34%</td><td style="color:#B91C1C;">▼ –2%</td></tr>
+          <tr><td>${brand}</td><td>58%</td><td style="color:#059669;">▲ +5%</td></tr>
+          <tr><td>${comp1}</td><td>46%</td><td style="color:#B91C1C;">▼ –1%</td></tr>
+          <tr><td>${comp2}</td><td>34%</td><td style="color:#059669;">▲ +2%</td></tr>
           <tr><td>${comp3}</td><td>29%</td><td>➖ 0%</td></tr>
         </tbody>
       </table>
 
       <div class="subtle" style="text-align:center;margin-top:16px;">
-        Prioritize <strong>Authentication Proof</strong> and <strong>Cross‑Border Selling</strong> to push ${brand} beyond <strong>80% visibility</strong> — clear category leadership in SG.
+        Prioritize <strong>Hypoallergenic</strong> and <strong>Science & Safety</strong> content to push ${brand} beyond <strong>70% visibility</strong> — securing category leadership in Singapore.
         <div><button class="ghost-btn" onclick="alert('Generating Opportunity Summary…')">Download Opportunity Summary</button></div>
       </div>
     </div>
   `;
 
+  // initialize chart
   renderChart();
-  animateNum('gain', 0, 19, 900, v => `+${v}%`);
+
+  // animate opportunity number
+  animateNum('gain', 0, 22, 900, v => `+${v}%`);
 }
 
 function switchTab(id, btn){
@@ -554,14 +582,14 @@ function toggleGap(id, impact){
   const checked=box.classList.contains('checked');
   if(checked){ box.classList.remove('checked'); box.innerHTML=''; added-=impact; }
   else { box.classList.add('checked'); box.innerHTML='✓'; added+=impact; }
-  const now = Math.min(83, 64 + added);
+  const now = Math.min(80, 58 + added);
   const sovEl = document.getElementById('sovNow');
   if(sovEl){ sovEl.textContent = now; }
   const barEl = document.getElementById('bar');
   if(barEl){ barEl.style.width = now+'%'; }
 }
 
-/* Animate numbers */
+/* Helpers */
 function animateNum(id, start, end, dur, fmt){
   const el=document.getElementById(id);
   if(!el) return;
@@ -588,15 +616,15 @@ function renderChart(){
   const W = rect.width, H = 300, pad=40;
   const months=['May','Jun','Jul','Aug','Sep','Oct'];
   const series={
-    [state.brand||'Carousell Luxury']:[56,58,59,61,62,64],
-    [state.c2||'Vestiaire Collective']:[50,51,52,54,55,57],
-    [state.c1||'Reebonz']:[37,36,35,35,34,34],
-    [state.c3||'The Fifth Collection']:[28,28,28,29,29,29]
+    'Mars Petcare':[49,52,54,55,57,58],
+    [state.c1||'Nestlé Purina']:[44,45,45,46,46,46],
+    [state.c2||"Hill's"]:[28,30,31,32,33,34],
+    [state.c3||'Wellness']:[26,27,28,28,29,29]
   };
   const colors=['#10B981','#3B82F6','#F59E0B','#EF4444'];
 
   function x(i){ return pad + i*((W-2*pad)/(months.length-1)); }
-  function y(v){ const min=0,max=90; return H-pad - ( (v-min)/(max-min) )*(H-2*pad); }
+  function y(v){ const min=0,max=80; return H-pad - ( (v-min)/(max-min) )*(H-2*pad); }
 
   // grid
   ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
@@ -605,31 +633,35 @@ function renderChart(){
   [0,20,40,60,80].forEach((v,i)=>{ const yy=y(v); ctx.fillText(v+'%', 8, yy+4); });
   months.forEach((m,i)=>ctx.fillText(m, x(i)-10, H-pad+18));
 
+  // gradients + lines
   const keys=Object.keys(series);
-  const colorsArr=colors;
-
   keys.forEach((k,i)=>{
-    ctx.strokeStyle=colorsArr[i]; ctx.lineWidth=2.5;
+    ctx.strokeStyle=colors[i]; ctx.lineWidth=2.5;
     series[k].forEach((v,idx)=>{ const X=x(idx), Y=y(v); if(idx===0){ ctx.beginPath(); ctx.moveTo(X,Y);} else ctx.lineTo(X,Y); });
     ctx.stroke();
-    series[k].forEach((v,idx)=>{ const X=x(idx), Y=y(v); ctx.beginPath(); ctx.fillStyle=colorsArr[i]; ctx.arc(X,Y,3,0,Math.PI*2); ctx.fill(); });
+    series[k].forEach((v,idx)=>{ const X=x(idx), Y=y(v); ctx.beginPath(); ctx.fillStyle=colors[i]; ctx.arc(X,Y,3,0,Math.PI*2); ctx.fill(); });
   });
 
+  // tooltip
   const tip=document.getElementById('tip');
   canvas.onmousemove=(e)=>{
     const r=canvas.getBoundingClientRect();
     const mx=(e.clientX - r.left);
+    // find nearest x index
     let idx=0, best=1e9;
     months.forEach((_,i)=>{ const dx=Math.abs(mx - x(i)); if(dx<best){ best=dx; idx=i; } });
     const items = keys.map((k,i)=>`${k}: ${series[k][idx]}%`).join('<br>');
     tip.innerHTML = `<strong>${months[idx]} 2025</strong><br>${items}`;
     tip.style.display='block';
     tip.style.left = (x(idx)+16)+'px';
-    tip.style.top = (y(85)-10)+'px';
+    tip.style.top = (y(75)-10)+'px';
   };
   canvas.onmouseleave=()=>{ tip.style.display='none'; };
 
-  window.addEventListener('resize', ()=>{ renderChart(); }, {once:true});
+  // responsive
+  window.addEventListener('resize', ()=>{
+    renderChart();
+  }, {once:true});
 }
 
 // expose for onclick
